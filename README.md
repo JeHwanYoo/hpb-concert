@@ -81,5 +81,57 @@
 
 ## API Specifications
 
+- 유저 토큰: 요구사항에 따라, 유저 토큰은 DB 데이터를 기반으로 임의로 생성 (로그인 ❌)
+- 대기열 토큰: 대기열을 이용한 API 토큰
+
+### 대기열 요청
+
+- Endpoint: POST /enqueues
+- Request
+    - Authorization: 유저 토큰
+- Response
+    - 200: OK. 대기열 입장 성공
+    - 400: Bad Request
+    - 401: Unauthorized
+
+## 예약 가능 날짜 / 좌석 API
+
+- Endpoint: GET /seats
+- Response
+    - 200: Ok. 예약 가능 날짜 / 좌석
+
+## 좌석 예약 요청 API
+
+- Endpoint: PATCH /seats/:seat_id/reservations
+- Request
+    - Authorization: 대기열 토큰
+- Response
+    - 200: OK. 예약 완료
+    - 400: Bad Request
+    - 401: Unauthorized
+    - 403: Forbidden
+
+## 잔액 충전 / 조회 API
+
+- Endpoint: [GET | PATCH] /recharges
+- Request
+    - Authorization: 유저 토큰
+- Response
+    - 200: OK. 충전 / 조회 완료
+    - 400: Bad Request
+    - 401: Unauthorized
+    - 403: Forbidden
+
+## 결제 API
+
+- Endpoint: [POST] /payments
+- Request
+    - Authorization: 대기열 토큰
+- Response
+    - 200: OK. 충전 / 조회 완료
+    - 400: Bad Request
+    - 401: Unauthorized
+    - 403: Forbidden
+
 ## Mock API
 
