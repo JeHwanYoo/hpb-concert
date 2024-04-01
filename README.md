@@ -77,6 +77,8 @@
 
 ## Sequence Diagram
 
+![sequence diagram](./assets/sequence.jpg)
+
 ## API Specifications
 
 ## Mock API
