@@ -63,6 +63,18 @@
 
 ## Milestone
 
+- 3주차 (설계 & Mock API)
+    - SPRINT 1 [[상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/1)]
+    - SPRINT 2 [[상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/2)]
+- 4주차 (기능 구현)
+    - SPRINT 3 [[상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/3)]
+    - SPRINT 4 [상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/4)
+- 5주차 (기능 고도화)
+    - SPRINT 5 [[상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/5)]
+    - SPRINT 6 [[상세보기](https://github.com/JeHwanYoo/hpb-concert/milestone/6)]
+
+간트차트 (작성 예정): https://github.com/users/JeHwanYoo/projects/1/views/2
+
 ## Sequence Diagram
 
 ## API Specifications
