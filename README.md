@@ -126,7 +126,7 @@
 
 ## 결제 API
 
-- Endpoint: [POST] /payments
+- Endpoint: POST /payments
 - Request
     - Authorization: 대기열 토큰
 - Response
