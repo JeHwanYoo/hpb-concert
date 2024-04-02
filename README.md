@@ -104,7 +104,7 @@
 
 ## 좌석 예약 요청 API
 
-- Endpoint: PATCH /seats/:seat_id/reservations
+- Endpoint: POST /seats/:seat_id/reservations
 - Request
     - Authorization: 대기열 토큰
 - Response
