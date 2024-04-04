@@ -93,7 +93,7 @@
     - 200: OK. 대기열 입장 성공
     - 400: Bad Request
     - 401: Unauthorized
- 
+
 - 🚧 고려사항, `SSE`, `소켓` 등을 이용한 실시간 통신
 
 ## 예약 가능 날짜 / 좌석 API
@@ -134,6 +134,10 @@
     - 400: Bad Request
     - 401: Unauthorized
     - 403: Forbidden
+
+## ERD
+
+![hpb tables](./assets/hpb%20tables.jpg)
 
 ## Mock API
 
