@@ -1,9 +1,10 @@
 import { Controller, Get, Patch, Post } from '@nestjs/common'
+import { MockUserId } from './mocks.user-id.decorator'
 
 @Controller('mocks')
 export class MocksController {
   @Post('enqueues')
-  enqueue() {
+  enqueue(@MockUserId() userId: string) {
     return
   }
 
@@ -18,12 +19,12 @@ export class MocksController {
   }
 
   @Patch('charges')
-  charge() {
+  charge(@MockUserId() userId: string) {
     return
   }
 
   @Get('charges')
-  getCharges() {
+  getCharges(@MockUserId() userId: string) {
     return
   }
 
