@@ -1,6 +1,70 @@
 # 대기열 입장
-# 대기열 입장 성공시 201 및 토큰 반환
+# expect
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYjIzOTQ4OC00ZmE0LTQzMzQtYmE3MC04YTZmYmU4MDU5MmMiLCJleHBpcmVkX2F0IjoiMjAyNC0wNi0xMlQyMzozODoyNC44MDhaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDQtMDRUMTI6NTk6MjQuODA4WiIsImlhdCI6MTcxMjIzNTU2NH0.2OHmzbGoHoA6PTeW5_g0LkMgQavOWtt9reryAPmXuV4
+# mock 에서는 99999분 동안 토큰 이용 가능
 POST http://localhost:3000/mocks/enqueues
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGIyMzk0ODgtNGZhNC00MzM0LWJhNzAtOGE2ZmJlODA1OTJjIn0.YBil_FU8XF2U5V_er5AWOYW8SqIxaLVmwBszyolHFRU
 
-#
+###
+
+# 예약 가능 날짜 / 좌석 API
+# expect
+# [
+#  {
+#    "id": "afbee32b-19fb-4d7e-9f79-bdb749bbb89c",
+#    "concert_id": "c10ea49e-82aa-4807-b93b-adee4d2c7c9e",
+#    "row_name": "A열",
+#    "col_name": "18",
+#    "price": 10000
+#  }
+#]
+GET http://localhost:3000/mocks/concerts/c10ea49e-82aa-4807-b93b-adee4d2c7c9e/seats
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYjIzOTQ4OC00ZmE0LTQzMzQtYmE3MC04YTZmYmU4MDU5MmMiLCJleHBpcmVkX2F0IjoiMjAyNC0wNi0xMlQyMzozNjoxNS4zNTRaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDQtMDRUMTI6NTc6MTUuMzU0WiIsImlhdCI6MTcxMjIzNTQzNX0.Gywvr6ZpT0tPhgqrpTLB3pfu36rh_eNmZWF0rtRUUDk
+
+###
+
+# 좌석 예약 요청 API
+# expect
+# {
+#  "id": "a92efe38-cc9a-41a8-b2d0-758bc07c9c4c",
+#  "concert_id": "c10ea49e-82aa-4807-b93b-adee4d2c7c9e",
+#  "row_name": "A열",
+#  "col_name": "18",
+#  "price": 10000,
+#  "reserved_at": "2024-04-04T13:01:46.292Z",
+#  "deadline": "2024-04-04T13:06:46.292Z"
+# }
+POST http://localhost:3000/mocks/concerts/c10ea49e-82aa-4807-b93b-adee4d2c7c9e/seats/a92efe38-cc9a-41a8-b2d0-758bc07c9c4c/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYjIzOTQ4OC00ZmE0LTQzMzQtYmE3MC04YTZmYmU4MDU5MmMiLCJleHBpcmVkX2F0IjoiMjAyNC0wNi0xMlQyMzozNjoxNS4zNTRaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDQtMDRUMTI6NTc6MTUuMzU0WiIsImlhdCI6MTcxMjIzNTQzNX0.Gywvr6ZpT0tPhgqrpTLB3pfu36rh_eNmZWF0rtRUUDk
+
+###
+# 잔액 조회 API
+# {
+#  "userId": "0b239488-4fa4-4334-ba70-8a6fbe80592c",
+#  "balance": 300000
+#}
+GET http://localhost:3000/mocks/charges
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGIyMzk0ODgtNGZhNC00MzM0LWJhNzAtOGE2ZmJlODA1OTJjIn0.YBil_FU8XF2U5V_er5AWOYW8SqIxaLVmwBszyolHFRU
+
+###
+# 잔액 충전 API
+# {
+#  "userId": "0b239488-4fa4-4334-ba70-8a6fbe80592c",
+#  "balance": 300000
+#}
+PATCH http://localhost:3000/mocks/charges
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGIyMzk0ODgtNGZhNC00MzM0LWJhNzAtOGE2ZmJlODA1OTJjIn0.YBil_FU8XF2U5V_er5AWOYW8SqIxaLVmwBszyolHFRU
+
+{
+  "amount": 300000
+}
+
+###
+# 결제 API
+# {
+#  "seat_id": "a92efe38-cc9a-41a8-b2d0-758bc07c9c4c",
+#  "cost": 10000,
+#  "created_at": "2024-04-04T13:09:28.308Z"
+# }
+POST http://localhost:3000/mocks/concerts/c10ea49e-82aa-4807-b93b-adee4d2c7c9e/seats/a92efe38-cc9a-41a8-b2d0-758bc07c9c4c/payments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYjIzOTQ4OC00ZmE0LTQzMzQtYmE3MC04YTZmYmU4MDU5MmMiLCJleHBpcmVkX2F0IjoiMjAyNC0wNi0xMlQyMzozNjoxNS4zNTRaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDQtMDRUMTI6NTc6MTUuMzU0WiIsImlhdCI6MTcxMjIzNTQzNX0.Gywvr6ZpT0tPhgqrpTLB3pfu36rh_eNmZWF0rtRUUDk

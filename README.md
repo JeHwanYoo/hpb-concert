@@ -90,7 +90,7 @@
 - Request
     - Authorization: 유저 토큰
 - Response
-    - 200: OK. 대기열 입장 성공
+    - 200: OK. 대기열 토큰 반환
     - 400: Bad Request
     - 401: Unauthorized
 
@@ -98,13 +98,13 @@
 
 ## 예약 가능 날짜 / 좌석 API
 
-- Endpoint: GET /seats
+- Endpoint: GET /concerts/:concert_id/seats
 - Response
     - 200: Ok. 예약 가능 날짜 / 좌석
 
 ## 좌석 예약 요청 API
 
-- Endpoint: POST /seats/:seat_id/reservations
+- Endpoint: POST /concerts/:concert_id/seats/:seat_id/reservations
 - Request
     - Authorization: 대기열 토큰
 - Response
@@ -115,7 +115,7 @@
 
 ## 잔액 충전 / 조회 API
 
-- Endpoint: [GET | PATCH] /recharges
+- Endpoint: [GET | PATCH] /charges
 - Request
     - Authorization: 유저 토큰
 - Response
@@ -126,11 +126,11 @@
 
 ## 결제 API
 
-- Endpoint: POST /payments
+- Endpoint: POST /concerts/:concert_id/seats/:seat_id/payments
 - Request
     - Authorization: 대기열 토큰
 - Response
-    - 200: OK. 충전 / 조회 완료
+    - 200: OK. 결제 완료
     - 400: Bad Request
     - 401: Unauthorized
     - 403: Forbidden

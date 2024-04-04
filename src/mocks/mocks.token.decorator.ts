@@ -1,11 +1,18 @@
 import {
   createParamDecorator,
   ExecutionContext,
+  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
-export const MockUserId = createParamDecorator(
+export interface MockToken {
+  user_id: string
+  expired_at: string
+  created_at: string
+}
+
+export const MockToken = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest()
     const authorization = request.headers['authorization']
@@ -16,12 +23,15 @@ export const MockUserId = createParamDecorator(
       throw new UnauthorizedException('Unauthorized')
     }
 
-    const payload = jwtService.decode<{ user_id?: string }>(jwt)
+    const payload = jwtService.decode<MockToken>(jwt)
 
-    if (!payload.user_id) {
-      throw new UnauthorizedException()
+    if (
+      !payload.expired_at ||
+      new Date(payload.expired_at).getTime() < new Date().getTime()
+    ) {
+      throw new ForbiddenException('Token expired')
     }
 
-    return payload.user_id
+    return payload
   },
 )
