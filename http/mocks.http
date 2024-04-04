@@ -1,0 +1,6 @@
+# 대기열 입장
+# 대기열 입장 성공시 201 및 토큰 반환
+POST http://localhost:3000/mocks/enqueues
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGIyMzk0ODgtNGZhNC00MzM0LWJhNzAtOGE2ZmJlODA1OTJjIn0.YBil_FU8XF2U5V_er5AWOYW8SqIxaLVmwBszyolHFRU
+
+#
