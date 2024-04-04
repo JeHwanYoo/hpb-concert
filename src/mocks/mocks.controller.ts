@@ -1,8 +1,11 @@
 import { Controller, Get, Patch, Post } from '@nestjs/common'
 import { MockUserId } from './mocks.user-id.decorator'
+import { JwtService } from '@nestjs/jwt'
 
 @Controller('mocks')
 export class MocksController {
+  constructor(private readonly jwtService: JwtService) {}
+
   @Post('enqueues')
   enqueue(@MockUserId() userId: string) {
     return
