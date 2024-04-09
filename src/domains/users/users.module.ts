@@ -3,7 +3,7 @@ import { UsersService } from './users.service'
 import { UsersRepository, UsersRepositoryToken } from './users.repository'
 
 export interface UsersModuleProps {
-  UsersRepository: new () => UsersRepository
+  UsersRepository: new (...args: unknown[]) => UsersRepository
 }
 
 @Module({})
