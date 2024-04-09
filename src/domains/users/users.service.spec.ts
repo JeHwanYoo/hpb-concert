@@ -56,9 +56,34 @@ describe('UsersService', () => {
       const result = await service.findOne(uuid)
       expect(result).to.not.be.undefined
       expect(validateUUID(result.id)).to.be.true
-      expect(result).has.property('name').and.be.a('string')
-      expect(result).has.property('createdAt').and.be.instanceof(Date)
-      expect(result).has.property('updatedAt').and.be.instanceof(Date)
+      expect(result).has.property('name').and.to.be.a('string')
+      expect(result).has.property('createdAt').and.to.be.instanceof(Date)
+      expect(result).has.property('updatedAt').and.to.be.instanceof(Date)
+    })
+  })
+
+  describe('.find()', () => {
+    it('should return the paginated results', async () => {
+      mockRepository.find = vi.fn().mockResolvedValue({
+        total: 3,
+        items: Array.from({ length: 3 }, () => ({
+          id: uuidv4(),
+          name: faker.person.firstName(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })),
+      })
+
+      const result = await service.find({ page: 1, size: 10 })
+      expect(result).to.not.be.undefined
+      expect(result).has.property('total').and.to.be.a('number')
+      expect(result).has.property('items').and.to.be.a('array')
+      for (const item of result.items) {
+        expect(validateUUID(item.id)).to.be.true
+        expect(item).has.property('name').and.to.be.a('string')
+        expect(item).has.property('createdAt').and.to.be.instanceof(Date)
+        expect(item).has.property('updatedAt').and.to.be.instanceof(Date)
+      }
     })
   })
 })
