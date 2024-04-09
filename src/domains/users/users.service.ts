@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { UsersRepository, UsersRepositoryToken } from './users.repository'
+import { UserMutationModel } from './models/user.mutation.model'
 
 @Injectable()
 export class UsersService {
@@ -7,4 +8,8 @@ export class UsersService {
     @Inject(UsersRepositoryToken)
     private readonly usersRepository: UsersRepository,
   ) {}
+
+  create(mutationModel: UserMutationModel): Promise<string> {
+    return
+  }
 }
