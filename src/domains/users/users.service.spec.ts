@@ -30,7 +30,7 @@ describe('UsersService', () => {
   })
 
   it('should be defined', () => {
-    expect(service).toBeDefined()
+    expect(service).to.not.be.undefined
   })
 
   describe('.create()', () => {
@@ -38,8 +38,8 @@ describe('UsersService', () => {
       mockRepository.create = vi.fn().mockResolvedValue(uuidv4())
 
       const result = await service.create({ name: faker.person.firstName() })
-      expect(result).toBeDefined()
-      expect(validateUUID(result)).toBeTruthy()
+      expect(result).to.not.be.undefined
+      expect(validateUUID(result)).to.be.true
     })
   })
 })
