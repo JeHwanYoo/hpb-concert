@@ -6,7 +6,7 @@ export const UsersRepositoryToken = 'UsersRepository'
 export interface UsersRepository {
   create(mutationModel: UserMutationModel): string
 
-  findOne(): UserModel
+  findOne(id: string): UserModel
 
   findAll(): UserModel[]
 
