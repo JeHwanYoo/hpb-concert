@@ -1,5 +1,9 @@
 import { UserModel } from './models/user.model'
 import { UserMutationModel } from './models/user.mutation.model'
+import {
+  OffsetBasedPaginationQuery,
+  OffsetBasedPaginationResult,
+} from '../../shared/shared.dto'
 
 export const UsersRepositoryToken = 'UsersRepository'
 
@@ -8,7 +12,9 @@ export interface UsersRepository {
 
   findOne(id: string): UserModel
 
-  findAll(): UserModel[]
+  find(
+    query: OffsetBasedPaginationQuery,
+  ): OffsetBasedPaginationResult<UserModel>
 
   update(id: string, mutationModel: UserMutationModel): string
 
