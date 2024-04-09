@@ -8,15 +8,15 @@ import {
 export const UsersRepositoryToken = 'UsersRepository'
 
 export interface UsersRepository {
-  create(mutationModel: UserMutationModel): string
+  create(mutationModel: UserMutationModel): Promise<string>
 
-  findOne(id: string): UserModel
+  findOne(id: string): Promise<UserModel>
 
   find(
     query: OffsetBasedPaginationQuery,
-  ): OffsetBasedPaginationResult<UserModel>
+  ): Promise<OffsetBasedPaginationResult<UserModel>>
 
-  update(id: string, mutationModel: UserMutationModel): string
+  update(id: string, mutationModel: UserMutationModel): Promise<string>
 
-  remove(id: string): string
+  remove(id: string): Promise<string>
 }
