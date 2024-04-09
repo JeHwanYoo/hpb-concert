@@ -86,4 +86,7 @@ describe('UsersService', () => {
       }
     })
   })
+
+  describe.todo('.update()')
+  describe.todo('.remove()')
 })
