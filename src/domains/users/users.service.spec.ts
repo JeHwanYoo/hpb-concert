@@ -3,14 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { UsersService } from './users.service'
 import { UsersRepositoryToken } from './users.repository'
 import { faker } from '@faker-js/faker'
-import { validate as validateUUID } from 'uuid'
+import { v4 as uuidv4, validate as validateUUID } from 'uuid'
 
 describe('UsersService', () => {
   let service: UsersService
-  let mockRepository: Mock
+  let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
-    mockRepository = vi.fn()
+    mockRepository = {}
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -35,6 +35,8 @@ describe('UsersService', () => {
 
   describe('.create()', () => {
     it('should be create a user', async () => {
+      mockRepository.create = vi.fn().mockResolvedValue(uuidv4())
+
       const result = await service.create({ name: faker.person.firstName() })
       expect(result).toBeDefined()
       expect(validateUUID(result)).toBeTruthy()
