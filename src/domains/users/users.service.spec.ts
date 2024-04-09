@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { UsersService } from './users.service'
 import { UsersRepositoryToken } from './users.repository'
+import { faker } from '@faker-js/faker'
+import { validate as validateUUID } from 'uuid'
 
 describe('UsersService', () => {
   let service: UsersService
@@ -29,5 +31,13 @@ describe('UsersService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
+  })
+
+  describe('.create()', () => {
+    it('should be create a user', async () => {
+      const result = await service.create({ name: faker.person.firstName() })
+      expect(result).toBeDefined()
+      expect(validateUUID(result)).toBeTruthy()
+    })
   })
 })
