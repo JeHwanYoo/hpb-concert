@@ -15,6 +15,6 @@ export class UsersService {
   }
 
   findOne(id: string): Promise<UserModel> {
-    return
+    return this.usersRepository.findOne(id)
   }
 }
