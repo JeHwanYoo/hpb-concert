@@ -10,6 +10,6 @@ export class UsersService {
   ) {}
 
   create(mutationModel: UserMutationModel): Promise<string> {
-    return
+    return this.usersRepository.create(mutationModel)
   }
 }
