@@ -25,6 +25,6 @@ export class UsersService {
   find(
     query: OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {
-    return
+    return this.usersRepository.find(query)
   }
 }
