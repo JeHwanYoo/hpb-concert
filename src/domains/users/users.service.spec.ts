@@ -42,4 +42,23 @@ describe('UsersService', () => {
       expect(validateUUID(result)).to.be.true
     })
   })
+
+  describe('.findOne()', () => {
+    it('should return the user with the given id', async () => {
+      mockRepository.findOne = vi.fn().mockResolvedValue({
+        id: uuidv4(),
+        name: faker.person.firstName(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+
+      const uuid = uuidv4()
+      const result = await service.findOne(uuid)
+      expect(result).to.not.be.undefined
+      expect(validateUUID(result.id)).to.be.true
+      expect(result).has.property('name').and.be.a('string')
+      expect(result).has.property('createdAt').and.be.instanceof(Date)
+      expect(result).has.property('updatedAt').and.be.instanceof(Date)
+    })
+  })
 })
