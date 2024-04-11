@@ -43,12 +43,9 @@ describe('EnqueuesService', () => {
 
       const token = await service.createToken('fake-user-id')
 
-      console.log(token)
-
       expect(token).to.be.a('string')
 
       const verified = jwtService.verify<TokenModel>(token, { secret: 'test' })
-      console.log(verified)
 
       expect(verified).to.be.a('object')
       expect(verified.userId).to.be.string('fake-user-id')
@@ -57,6 +54,20 @@ describe('EnqueuesService', () => {
       expect(verified.exp - verified.availableTime).to.be.greaterThanOrEqual(
         5 * 60,
       )
+    })
+  })
+
+  describe('.completeToken()', () => {
+    it('should make the token completed', async () => {
+      mockRedis.decr = vi.fn().mockResolvedValue(0)
+      const fakeToken = jwtService.sign({})
+
+      const completedToken = await service.completeToken(fakeToken)
+
+      const decoded = jwtService.decode(completedToken)
+
+      expect(decoded).to.be.a('object')
+      expect(decoded.completed).to.be.true
     })
   })
 })
