@@ -5,4 +5,6 @@ export interface TokenModel {
   availableTime: number
   // RFC 7519 (seconds)
   exp: number
+  // Payment completed
+  completed: boolean
 }

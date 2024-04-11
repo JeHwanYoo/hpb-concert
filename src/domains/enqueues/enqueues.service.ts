@@ -3,6 +3,11 @@ import { InjectRedis } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
+import { TokenModel } from './models/token.model'
+
+export const redisKeys = {
+  waitingCount: 'waitingCount',
+}
 
 @Injectable()
 export class EnqueuesService {
@@ -25,16 +30,27 @@ export class EnqueuesService {
     // expire after 5 minutes
     const expirationTime = availableTime + 5 * 60
 
-    await this.addWaitingCount()
+    await this.incrWaitingCount()
     return this.jwtService.sign({
       userId,
       availableTime,
       exp: expirationTime,
+      completed: false,
+    })
+  }
+
+  async completeToken(token: string): Promise<string> {
+    const decoded = this.jwtService.decode<TokenModel>(token)
+
+    await this.decrWaitingCount()
+    return this.jwtService.sign({
+      ...decoded,
+      completed: true,
     })
   }
 
   private async getAvailableTime(): Promise<Date> {
-    const waitingCount = parseInt(await this.redis.get('waitingCount'))
+    const waitingCount = parseInt(await this.redis.get(redisKeys.waitingCount))
 
     const currentTime = new Date()
     const currentCount = waitingCount + 1
@@ -45,7 +61,11 @@ export class EnqueuesService {
     )
   }
 
-  private async addWaitingCount(): Promise<number> {
-    return this.redis.incr('waitingCount')
+  private async incrWaitingCount(): Promise<number> {
+    return this.redis.incr(redisKeys.waitingCount)
+  }
+
+  private async decrWaitingCount() {
+    return this.redis.decr(redisKeys.waitingCount)
   }
 }
