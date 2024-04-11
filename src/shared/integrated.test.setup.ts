@@ -8,7 +8,7 @@ import { PrismaService } from '../infra/prisma/prisma.service'
  * Due to the use of Docker image,
  * consider setting a timeout of more than one minute for the initial run.
  */
-export async function setUpIntegratedTest(
+export async function setUpPrismaIntegratedTest(
   cb: (prisma: PrismaService) => Promise<void>,
 ) {
   // Initialize the container
