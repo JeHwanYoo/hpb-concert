@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { UsersPrismaRepository } from './users.prisma.repository'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   assertAllFulfilled,
-  setUpIntegratedTest,
+  setUpPrismaIntegratedTest,
 } from '../../../shared/integrated.test.setup'
 import { UserModel } from '../../../domains/users/models/user.model'
 import { faker } from '@faker-js/faker'
@@ -17,7 +17,7 @@ describe('UsersPrismaRepository', () => {
   // Prepare a TestContainer for setting up a PostgreSQL instance.
   beforeAll(
     () =>
-      setUpIntegratedTest(async _prisma => {
+      setUpPrismaIntegratedTest(async _prisma => {
         prisma = _prisma
 
         const module: TestingModule = await Test.createTestingModule({
