@@ -14,7 +14,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  create(mutationModel: UserMutationModel): Promise<string> {
+  create(mutationModel: UserMutationModel): Promise<UserModel> {
     return this.usersRepository.create(mutationModel)
   }
 

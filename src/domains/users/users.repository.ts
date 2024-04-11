@@ -13,7 +13,7 @@ export interface UsersRepository {
    * @param mutationModel to create
    * @returns The UUID that was created
    */
-  create(mutationModel: UserMutationModel): Promise<string>
+  create(mutationModel: UserMutationModel): Promise<UserModel>
 
   /**
    *
@@ -37,7 +37,7 @@ export interface UsersRepository {
    * @param mutationModel to update
    * @returns The UUID that was updated
    */
-  update(id: string, mutationModel: UserMutationModel): Promise<string>
+  update(id: string, mutationModel: UserMutationModel): Promise<UserModel>
 
   /**
    *
