@@ -141,10 +141,12 @@
 
 ## Mock API
 
-MockAPI 를 NestJS 로 구현
+<del>MockAPI 를 NestJS 로 구현</del>
 
-- mocks/mocks.module.ts
-- http/mocks.http
+- <del>mocks/mocks.module.ts</del>
+- <del>http/mocks.http</del>
+
+> Todo: Swagger Mock API 로 제공 예정
 
 ## 기술 스택
 
