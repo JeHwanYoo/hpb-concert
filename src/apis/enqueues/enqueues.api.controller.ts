@@ -9,11 +9,12 @@ import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
 } from '../../shared/share.openapi'
+import { EnqueuesApiUseCase } from './enqueues.api.use.case'
 
 @Controller('v1/enqueues')
 @ApiTags('Enqueues')
 export class EnqueuesApiController {
-  constructor() {}
+  constructor(private readonly enqueuesApiUseCase: EnqueuesApiUseCase) {}
 
   @Post()
   @ApiOperation({
