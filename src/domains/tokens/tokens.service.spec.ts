@@ -7,6 +7,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
 import {
   DEFAULT_REDIS_NAMESPACE,
   getRedisToken,
+  RedisService,
 } from '@liaoliaots/nestjs-redis'
 import { TokenModel } from './models/token.model'
 
@@ -22,8 +23,12 @@ describe('TokensService', () => {
       providers: [
         TokensService,
         {
-          provide: getRedisToken(DEFAULT_REDIS_NAMESPACE),
-          useValue: mockRedis,
+          provide: RedisService,
+          useValue: {
+            getClient() {
+              return mockRedis
+            },
+          },
         },
       ],
     }).compile()

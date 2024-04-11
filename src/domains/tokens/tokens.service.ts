@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { InjectRedis } from '@liaoliaots/nestjs-redis'
-import Redis from 'ioredis'
+import { RedisService } from '@liaoliaots/nestjs-redis'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { TokenModel } from './models/token.model'
+import Redis from 'ioredis'
 
 export const redisKeys = {
   waitingCount: 'waitingCount',
@@ -12,15 +12,17 @@ export const redisKeys = {
 @Injectable()
 export class TokensService {
   private readonly throughputPerMinute: number
+  private readonly redis: Redis
 
   constructor(
-    @InjectRedis() private readonly redis: Redis,
+    private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {
     this.throughputPerMinute = parseInt(
       this.configService.get('THROUGHPUT_PER_MINUTE', '100'),
     )
+    this.redis = redisService.getClient()
   }
 
   async createToken(userId: string): Promise<string> {
