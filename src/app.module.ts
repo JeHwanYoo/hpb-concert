@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common'
-import { MocksModule } from './mocks/mocks.module'
 import { RedisConnectionModule } from './infra/redis/redis.connection.module'
 import { ConfigModule } from '@nestjs/config'
+import { EnqueuesApiModule } from './apis/enqueues/enqueues.api.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MocksModule,
+    // MocksModule,
     RedisConnectionModule,
+    EnqueuesApiModule,
   ],
   controllers: [],
   providers: [],
