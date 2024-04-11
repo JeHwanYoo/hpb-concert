@@ -4,24 +4,13 @@ import { EnqueuesService } from './enqueues.service'
 import Redis from 'ioredis'
 
 describe('EnqueuesService', () => {
-  const throughputPerMinute = 100
   let service: EnqueuesService
   let mockRedis: Redis
 
   beforeEach(async () => {
     mockRedis = {} as Redis
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        {
-          provide: EnqueuesService,
-          useValue: new EnqueuesService(
-            {
-              throughputPerMinute,
-            },
-            mockRedis,
-          ),
-        },
-      ],
+      providers: [EnqueuesService],
     }).compile()
 
     service = module.get<EnqueuesService>(EnqueuesService)
