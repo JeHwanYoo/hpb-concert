@@ -149,6 +149,6 @@ MockAPI 를 NestJS 로 구현
 ## 기술 스택
 
 - Main Framework: NestJS (Fastify + SWC)
-- Test Framework: Vitest
+- Test Framework: Vitest & testcontainer (integrated, e2e...)
 - DBMS: Postgres + Prisma
 - Queue Service: Redis + @nestjs/bull 
