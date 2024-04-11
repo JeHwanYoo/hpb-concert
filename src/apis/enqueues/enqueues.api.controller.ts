@@ -4,6 +4,7 @@ import {
   ApiHeader,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 import {
   EnqueueTokenExampleValue,
@@ -26,6 +27,7 @@ export class EnqueuesApiController {
   @ApiHeader({
     name: 'Authorization',
     description: 'User Bearer token (JWT)',
+    required: true,
     schema: {
       type: 'string',
       example: `Bearer ${UserTokenExampleValue}`,
@@ -39,6 +41,7 @@ export class EnqueuesApiController {
       example: EnqueueTokenExampleValue,
     },
   })
+  @ApiUnauthorizedResponse()
   @UseGuards(UserTokensGuard)
   enqueues(@DecodedToken() decodedUserToken: UserTokenModel): Promise<string> {
     return this.enqueuesApiUseCase.createToken(decodedUserToken.userId)
