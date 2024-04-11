@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
-import { RedisConnectionModule } from '../../infra/redis/redis.connection.module'
 import { TokensService } from './tokens.service'
+import { RedisModule } from '@liaoliaots/nestjs-redis'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
-  imports: [RedisConnectionModule],
+  imports: [RedisModule, JwtModule],
   providers: [TokensService],
   exports: [TokensService],
 })

@@ -8,7 +8,6 @@ import { EnqueuesApiModule } from './apis/enqueues/enqueues.api.module'
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // MocksModule,
     RedisConnectionModule,
     EnqueuesApiModule,
   ],
