@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { RedisService } from '@liaoliaots/nestjs-redis'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { TokenModel } from './models/token.model'
+import { EnqueueTokenModel } from './models/enqueueTokenModel'
 import Redis from 'ioredis'
 
 export const redisKeys = {
@@ -42,7 +42,7 @@ export class TokensService {
   }
 
   async completeToken(token: string): Promise<string> {
-    const decoded = this.jwtService.decode<TokenModel>(token)
+    const decoded = this.jwtService.decode<EnqueueTokenModel>(token)
 
     await this.decrWaitingCount()
     return this.jwtService.sign({
@@ -52,7 +52,9 @@ export class TokensService {
   }
 
   private async getAvailableTime(): Promise<Date> {
-    const waitingCount = parseInt(await this.redis.get(redisKeys.waitingCount))
+    const waitingCount = parseInt(
+      (await this.redis.get(redisKeys.waitingCount)) ?? '0',
+    )
 
     const currentTime = new Date()
     const currentCount = waitingCount + 1

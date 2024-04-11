@@ -1,4 +1,4 @@
-export interface TokenModel {
+export interface EnqueueTokenModel {
   // requested userId
   userId: string
   // RFC 7519 (seconds)
@@ -7,4 +7,10 @@ export interface TokenModel {
   exp: number
   // Payment completed
   completed: boolean
+}
+
+export interface UserTokenModel {
+  // UUID
+  userId: string
+  name: string
 }

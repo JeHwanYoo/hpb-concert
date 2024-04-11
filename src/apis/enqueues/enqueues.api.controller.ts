@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common'
+import { Controller, Post, UseGuards } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiHeader,
@@ -10,8 +10,11 @@ import {
   UserTokenExampleValue,
 } from '../../shared/share.openapi'
 import { EnqueuesApiUseCase } from './enqueues.api.use.case'
+import { UserTokensGuard } from '../../domains/tokens/tokens.guard'
+import { DecodedToken } from '../../domains/tokens/tokens.decorator'
+import { UserTokenModel } from '../../domains/tokens/models/enqueueTokenModel'
 
-@Controller('v1/tokens')
+@Controller('v1/enqueues')
 @ApiTags('Enqueues')
 export class EnqueuesApiController {
   constructor(private readonly enqueuesApiUseCase: EnqueuesApiUseCase) {}
@@ -36,7 +39,8 @@ export class EnqueuesApiController {
       example: EnqueueTokenExampleValue,
     },
   })
-  enqueues(): Promise<string> {
-    return
+  @UseGuards(UserTokensGuard)
+  enqueues(@DecodedToken() decodedUserToken: UserTokenModel): Promise<string> {
+    return this.enqueuesApiUseCase.createToken(decodedUserToken.userId)
   }
 }

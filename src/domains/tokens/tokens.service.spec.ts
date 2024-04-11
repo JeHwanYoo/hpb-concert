@@ -4,12 +4,8 @@ import { TokensService } from './tokens.service'
 import Redis from 'ioredis'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule, JwtService } from '@nestjs/jwt'
-import {
-  DEFAULT_REDIS_NAMESPACE,
-  getRedisToken,
-  RedisService,
-} from '@liaoliaots/nestjs-redis'
-import { TokenModel } from './models/token.model'
+import { RedisService } from '@liaoliaots/nestjs-redis'
+import { EnqueueTokenModel } from './models/enqueueTokenModel'
 
 describe('TokensService', () => {
   let service: TokensService
@@ -50,7 +46,9 @@ describe('TokensService', () => {
 
       expect(token).to.be.a('string')
 
-      const verified = jwtService.verify<TokenModel>(token, { secret: 'test' })
+      const verified = jwtService.verify<EnqueueTokenModel>(token, {
+        secret: 'test',
+      })
 
       expect(verified).to.be.a('object')
       expect(verified.userId).to.be.string('fake-user-id')

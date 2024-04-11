@@ -16,18 +16,17 @@ describe('UsersPrismaRepository', () => {
 
   // Prepare a TestContainer for setting up a PostgreSQL instance.
   beforeAll(
-    () =>
-      setUpPrismaIntegratedTest(async _prisma => {
-        prisma = _prisma
+    setUpPrismaIntegratedTest(async _prisma => {
+      prisma = _prisma
 
-        const module: TestingModule = await Test.createTestingModule({
-          imports: [PrismaModule],
-          providers: [UsersPrismaRepository],
-        }).compile()
-        await module.init()
+      const module: TestingModule = await Test.createTestingModule({
+        imports: [PrismaModule],
+        providers: [UsersPrismaRepository],
+      }).compile()
+      await module.init()
 
-        repository = module.get<UsersPrismaRepository>(UsersPrismaRepository)
-      }),
+      repository = module.get<UsersPrismaRepository>(UsersPrismaRepository)
+    }),
     1000 * 60 * 3,
   )
 
