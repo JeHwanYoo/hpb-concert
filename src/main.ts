@@ -5,6 +5,8 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -21,6 +23,13 @@ async function bootstrap() {
     .build()
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('docs', app, document)
+
+  fs.writeFile(
+    path.resolve('docs', 'swagger-spec.json'),
+    JSON.stringify(document),
+  )
+    .then(() => console.log('Swagger Exported'))
+    .catch(console.error)
 
   await app.listen(3000, '0.0.0.0')
 }
