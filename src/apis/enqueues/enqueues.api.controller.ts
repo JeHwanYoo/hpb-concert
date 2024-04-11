@@ -12,7 +12,7 @@ import {
 
 @Controller('v1/enqueues')
 @ApiTags('Enqueues')
-export class EnqueuesController {
+export class EnqueuesApiController {
   constructor() {}
 
   @Post()
@@ -35,7 +35,7 @@ export class EnqueuesController {
       example: EnqueueTokenExampleValue,
     },
   })
-  enqueues(): string {
+  enqueues(): Promise<string> {
     return
   }
 }
