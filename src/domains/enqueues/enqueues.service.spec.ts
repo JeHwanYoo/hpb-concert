@@ -1,19 +1,25 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { EnqueuesService } from './enqueues.service'
+import Redis from 'ioredis'
 
 describe('EnqueuesService', () => {
   const throughputPerMinute = 100
   let service: EnqueuesService
+  let mockRedis: Redis
 
   beforeEach(async () => {
+    mockRedis = {} as Redis
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: EnqueuesService,
-          useValue: new EnqueuesService({
-            throughputPerMinute,
-          }),
+          useValue: new EnqueuesService(
+            {
+              throughputPerMinute,
+            },
+            mockRedis,
+          ),
         },
       ],
     }).compile()
