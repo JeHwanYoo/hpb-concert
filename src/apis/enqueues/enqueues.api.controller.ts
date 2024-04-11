@@ -11,7 +11,7 @@ import {
 } from '../../shared/share.openapi'
 import { EnqueuesApiUseCase } from './enqueues.api.use.case'
 
-@Controller('v1/enqueues')
+@Controller('v1/tokens')
 @ApiTags('Enqueues')
 export class EnqueuesApiController {
   constructor(private readonly enqueuesApiUseCase: EnqueuesApiUseCase) {}

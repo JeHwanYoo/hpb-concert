@@ -10,7 +10,7 @@ export const redisKeys = {
 }
 
 @Injectable()
-export class EnqueuesService {
+export class TokensService {
   private readonly throughputPerMinute: number
 
   constructor(
