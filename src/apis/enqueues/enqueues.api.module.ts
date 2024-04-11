@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
-import { EnqueuesController } from './enqueues.controller'
+import { EnqueuesApiController } from './enqueues.api.controller'
 
 @Module({
-  controllers: [EnqueuesController],
+  controllers: [EnqueuesApiController],
 })
 export class EnqueuesApiModule {}
