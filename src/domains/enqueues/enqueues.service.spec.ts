@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { EnqueuesService } from './enqueues.service'
 import Redis from 'ioredis'
 import { validate as validateUUID } from 'uuid'
+import { ConfigModule } from '@nestjs/config'
+import { JwtModule } from '@nestjs/jwt'
 
 describe('EnqueuesService', () => {
   let service: EnqueuesService
@@ -11,6 +13,7 @@ describe('EnqueuesService', () => {
   beforeEach(async () => {
     mockRedis = {} as Redis
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot(), JwtModule.register({ secret: 'test' })],
       providers: [EnqueuesService],
     }).compile()
 
@@ -23,7 +26,7 @@ describe('EnqueuesService', () => {
 
   describe('.createToken()', () => {
     it('should create a token', async () => {
-      mockRedis.get = vi.fn().mockResolvedValue(0)
+      mockRedis.get = vi.fn().mockResolvedValue('0')
       mockRedis.incr = vi.fn().mockResolvedValue(1)
 
       const token = await service.createToken()
