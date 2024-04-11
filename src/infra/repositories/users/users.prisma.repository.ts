@@ -40,11 +40,35 @@ export class UsersPrismaRepository implements UsersRepository {
    *
    * @param query
    * @returns The paginated result of the query
+   *
+   * Please be aware, the 'total' might not always be accurate as data may change between fetching the data and counting it.
+   * This is an accepted trade-off for better performance.
    */
-  find(
+  async find(
     query: OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {
-    throw new Error('Method not implemented.')
+    const { page, size } = query
+    const skip = (page - 1) * size
+
+    const items = await this.prisma.user.findMany({
+      take: size,
+      skip,
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+        {
+          id: 'asc',
+        },
+      ],
+    })
+
+    const total = await this.prisma.user.count()
+
+    return {
+      total,
+      items,
+    }
   }
 
   /**
