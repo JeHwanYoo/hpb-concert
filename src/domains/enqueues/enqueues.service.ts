@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRedis } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
-
-export interface EnqueuesServiceProps {
-  /**
-   * @description Throughput per minute
-   */
-  throughputPerMinute: number
-}
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class EnqueuesService {
+  private readonly throughputPerMinute: number
+
   constructor(
-    private readonly props: EnqueuesServiceProps,
     @InjectRedis() private readonly client: Redis,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.throughputPerMinute = parseInt(
+      this.configService.get('THROUGHPUT_PER_MINUTE', '100'),
+    )
+  }
 
   async createToken() {}
 

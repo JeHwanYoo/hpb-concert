@@ -4,11 +4,7 @@ import { EnqueuesApiUseCase } from './enqueues.api.use.case'
 import { EnqueuesModule } from '../../domains/enqueues/enqueues.module'
 
 @Module({
-  imports: [
-    EnqueuesModule.forFeature({
-      throughputPerMinute: 100,
-    }),
-  ],
+  imports: [EnqueuesModule],
   controllers: [EnqueuesApiController],
   providers: [EnqueuesApiUseCase],
 })
