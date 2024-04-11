@@ -37,3 +37,9 @@ export async function setUpIntegratedTest(
 
   await cb(prisma)
 }
+
+export function assertAllFulfilled<T>(
+  settledResults: PromiseSettledResult<T>[],
+): settledResults is PromiseFulfilledResult<T>[] {
+  return !settledResults.some(r => r.status !== 'fulfilled')
+}

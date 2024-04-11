@@ -3,8 +3,12 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { UsersPrismaRepository } from './users.prisma.repository'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
-import { setUpIntegratedTest } from '../../../shared/integrated.test.setup'
+import {
+  assertAllFulfilled,
+  setUpIntegratedTest,
+} from '../../../shared/integrated.test.setup'
 import { UserModel } from '../../../domains/users/models/user.model'
+import { faker } from '@faker-js/faker'
 
 describe('UsersPrismaRepository', () => {
   let repository: UsersPrismaRepository
@@ -59,6 +63,46 @@ describe('UsersPrismaRepository', () => {
       const expectedUser = await repository.findOne(createdUser.id)
 
       assertUser(expectedUser, createdUser)
+    })
+  })
+
+  describe('.find()', () => {
+    it('should find users', async () => {
+      const settledResults = await Promise.allSettled(
+        Array.from({ length: 12 }, () =>
+          prisma.user.create({
+            data: {
+              name: faker.person.firstName(),
+            },
+          }),
+        ),
+      )
+      const expectedUsers = await repository.find({ page: 1, size: 10 })
+
+      assertAllFulfilled(settledResults)
+
+      const wantedUsers = settledResults
+        .map(
+          (settledResult: PromiseFulfilledResult<UserModel>) =>
+            settledResult.value,
+        )
+        // stubbing order query (1. createdAt desc, 2. id asc)
+        .sort((a, b) => {
+          const aTime = a.createdAt.getTime()
+          const bTime = b.createdAt.getTime()
+          return aTime === bTime
+            ? a.id.localeCompare(b.id)
+            : b.createdAt.getTime() - a.createdAt.getTime()
+        })
+        // stubbing pagination (page: 1, size: 10)
+        .slice(0, 10)
+
+      expect(expectedUsers).to.have.keys('total', 'items')
+      expect(expectedUsers.total).to.be.eq(12)
+      expect(expectedUsers.items).to.be.a('array')
+      for (const [index, expectedUser] of Object.entries(expectedUsers.items)) {
+        assertUser(expectedUser, wantedUsers[index])
+      }
     })
   })
 })
