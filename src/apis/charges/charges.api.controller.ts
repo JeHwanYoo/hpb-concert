@@ -31,7 +31,7 @@ export class ChargesApiController {
     type: ChargesResponseDto,
   })
   @ApiUnauthorizedResponse()
-  getCharge(@Param() userId: string): Promise<ChargeModel> {
+  getCharge(@Param('user_id') userId: string): Promise<ChargeModel> {
     return
   }
 
@@ -55,7 +55,7 @@ export class ChargesApiController {
     type: ChargesResponseDto,
   })
   @ApiUnauthorizedResponse()
-  patchCharge(@Param() userId: string): Promise<ChargeModel> {
+  patchCharge(@Param('user_id') userId: string): Promise<ChargeModel> {
     return
   }
 }
