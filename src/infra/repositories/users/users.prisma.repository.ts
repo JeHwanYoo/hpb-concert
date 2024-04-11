@@ -29,7 +29,11 @@ export class UsersPrismaRepository implements UsersRepository {
    * @returns The UserModel that matched
    */
   findOne(id: string): Promise<UserModel> {
-    throw new Error('Method not implemented.')
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
   }
 
   /**
