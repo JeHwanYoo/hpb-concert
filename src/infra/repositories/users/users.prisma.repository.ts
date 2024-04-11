@@ -17,8 +17,10 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param mutationModel to create
    * @returns The UUID that was created
    */
-  create(mutationModel: UserMutationModel): Promise<string> {
-    throw new Error('Method not implemented.')
+  async create(mutationModel: UserMutationModel): Promise<UserModel> {
+    return this.prisma.user.create({
+      data: mutationModel,
+    })
   }
 
   /**
@@ -47,7 +49,7 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param mutationModel to update
    * @returns The UUID that was updated
    */
-  update(id: string, mutationModel: UserMutationModel): Promise<string> {
+  update(id: string, mutationModel: UserMutationModel): Promise<UserModel> {
     throw new Error('Method not implemented.')
   }
 
