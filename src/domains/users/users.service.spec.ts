@@ -35,11 +35,19 @@ describe('UsersService', () => {
 
   describe('.create()', () => {
     it('should be create a user', async () => {
-      mockRepository.create = vi.fn().mockResolvedValue(uuidv4())
+      mockRepository.create = vi.fn().mockResolvedValue({
+        id: uuidv4(),
+        name: 'john',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
 
       const result = await service.create({ name: faker.person.firstName() })
       expect(result).to.not.be.undefined
-      expect(validateUUID(result)).to.be.true
+      expect(validateUUID(result.id)).to.be.true
+      expect(result.name).to.be.a('string')
+      expect(result.createdAt).to.be.instanceof(Date)
+      expect(result.updatedAt).to.be.instanceof(Date)
     })
   })
 
