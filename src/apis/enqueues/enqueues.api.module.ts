@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 import { EnqueuesApiController } from './enqueues.api.controller'
 import { EnqueuesApiUseCase } from './enqueues.api.use.case'
-import { EnqueuesModule } from '../../domains/enqueues/enqueues.module'
+import { TokensModule } from '../../domains/tokens/tokens.module'
 
 @Module({
-  imports: [EnqueuesModule],
+  imports: [TokensModule],
   controllers: [EnqueuesApiController],
   providers: [EnqueuesApiUseCase],
 })

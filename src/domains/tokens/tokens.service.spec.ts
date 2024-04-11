@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { EnqueuesService } from './enqueues.service'
+import { TokensService } from './tokens.service'
 import Redis from 'ioredis'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule, JwtService } from '@nestjs/jwt'
@@ -10,8 +10,8 @@ import {
 } from '@liaoliaots/nestjs-redis'
 import { TokenModel } from './models/token.model'
 
-describe('EnqueuesService', () => {
-  let service: EnqueuesService
+describe('TokensService', () => {
+  let service: TokensService
   let mockRedis: Redis
   let jwtService: JwtService
 
@@ -20,7 +20,7 @@ describe('EnqueuesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot(), JwtModule.register({ secret: 'test' })],
       providers: [
-        EnqueuesService,
+        TokensService,
         {
           provide: getRedisToken(DEFAULT_REDIS_NAMESPACE),
           useValue: mockRedis,
@@ -28,7 +28,7 @@ describe('EnqueuesService', () => {
       ],
     }).compile()
 
-    service = module.get<EnqueuesService>(EnqueuesService)
+    service = module.get<TokensService>(TokensService)
     jwtService = module.get<JwtService>(JwtService)
   })
 
