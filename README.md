@@ -158,3 +158,18 @@
 ## OpenAPI
 
 ![](./assets/SwaggerUI.jpeg)
+
+## 디렉토리 구조
+
+- `src/apis/*`: API Controller, UseCase Layers
+- `src/domains/*`: Business(Service) Layers
+- `src/infra/*`: Infrastructure Layers
+    - `prisma`: Prisma Connection
+    - `redis`: Redis Connection
+    - `repositories/*`: The implementations of repository interfaces
+
+## 서비스 실행 (로컬)
+
+```yaml
+docker compose up --build -d
+```

@@ -16,3 +16,20 @@ services:
     restart: always
     ports:
       - "6379:6379"
+
+  nest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://user:password@postgres:5432/test?schema=public"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      THROUGHPUT_PER_MINUTE: 100
+      JWT_SECRET: test
+      NODE_ENV: development
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "3000:3000"
