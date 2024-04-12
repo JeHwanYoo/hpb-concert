@@ -2,16 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { SeatsService } from './seats.service'
 import { SeatsRepositoryToken } from './seats.repository'
-import { SeatCreationModel } from './models/seat.model'
 import { v4 } from 'uuid'
-import { differenceInMinutes, sub } from 'date-fns'
+import { differenceInMinutes } from 'date-fns'
 
 describe('SeatsService', () => {
   let service: SeatsService
   let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
-    mockRepository = {}
+    mockRepository = {
+      withTransaction: vi.fn().mockImplementation(cb => cb()),
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

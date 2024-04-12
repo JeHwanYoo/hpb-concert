@@ -26,17 +26,32 @@ export class SeatsService {
       'reservedAt' | 'deadline' | 'paidAt'
     >,
   ): Promise<SeatModel> {
-    const reservedAt = new Date()
-    const deadline = addMinutes(reservedAt, 5)
-    return this.seatsRepository.create({
-      ...reservationModel,
-      reservedAt,
-      deadline,
-    })
+    return this.seatsRepository.withTransaction<SeatModel>(
+      connectingSession => {
+        const reservedAt = new Date()
+        const deadline = addMinutes(reservedAt, 5)
+        return this.seatsRepository.create(
+          {
+            ...reservationModel,
+            reservedAt,
+            deadline,
+          },
+          connectingSession,
+        )
+      },
+    )
   }
 
   pay(seatId: string, paymentModel: Pick<SeatUpdatingModel, 'paidAt'>) {
-    return this.seatsRepository.update(seatId, paymentModel)
+    return this.seatsRepository.withTransaction<SeatModel>(
+      connectingSession => {
+        return this.seatsRepository.update(
+          seatId,
+          paymentModel,
+          connectingSession,
+        )
+      },
+    )
   }
 
   find(concertId: string): Promise<SeatModel[]> {
