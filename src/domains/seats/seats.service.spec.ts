@@ -31,7 +31,14 @@ describe('SeatsService', () => {
     expect(service).to.not.be.undefined
   })
 
-  describe.todo('.reserve()')
+  describe('.reserve()', () => {
+    it.todo('should reserve a seat')
+    it.todo('should not reserve a seat if it was already reserved')
+    it.todo(
+      'should reserve a seat and it was already reserved but the deadline exceeds',
+    )
+    it.todo('should not reserve a seat if it was already paid')
+  })
 
   describe.todo('.pay()')
 
