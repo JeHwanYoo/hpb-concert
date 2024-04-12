@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
-import { SeatsService } from './seats.service'
-import { SeatsRepositoryToken } from './seats.repository'
+import { BillsService } from './bills.service'
+import { BillsRepositoryToken } from './bills.repository'
 
-describe('SeatsService', () => {
-  let service: SeatsService
+describe('BillsService', () => {
+  let service: BillsService
   let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
@@ -12,15 +12,15 @@ describe('SeatsService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SeatsService,
+        BillsService,
         {
-          provide: SeatsRepositoryToken,
+          provide: BillsRepositoryToken,
           useValue: mockRepository,
         },
       ],
     }).compile()
 
-    service = module.get<SeatsService>(SeatsService)
+    service = module.get<BillsService>(BillsService)
   })
 
   afterEach(() => {
@@ -33,11 +33,5 @@ describe('SeatsService', () => {
 
   describe.todo('.create()')
 
-  describe.todo('.find()')
-
-  describe.todo('.findOneBySeatNo()')
-
-  describe.todo('.assign()')
-
-  describe.todo('.pay()')
+  describe.todo('.findOne()')
 })
