@@ -1,5 +1,13 @@
 export class BillCreationModel {
   /**
+   * @description The seat's id
+   */
+  seatId: string
+  /**
+   * @description The holder's id
+   */
+  holderId: string
+  /**
    * @description The paid amount
    */
   cost: number
