@@ -5,7 +5,7 @@ import { ConcertsRepositoryToken } from './concerts.repository'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
 
-describe('UsersService', () => {
+describe('ConcertsService', () => {
   let service: ConcertsService
   let mockRepository: Record<string, Mock>
 
