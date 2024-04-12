@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
   ChargeModel,
-  ChargeUpdatingModel,
+  ChargeOrUseModel,
 } from '../../../domains/charges/models/charge.model'
 
-export class ChargesPatchRequestDto implements ChargeUpdatingModel {
+export class ChargesPatchRequestDto implements ChargeOrUseModel {
   @ApiProperty({
     type: Number,
     description: '충전 금액',
     minimum: 0,
   })
-  amount: number
+  balance: number
 }
 
 export class ChargesResponseDto implements ChargeModel {

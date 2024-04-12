@@ -1,8 +1,12 @@
-export interface ChargeUpdatingModel {
+export interface ChargeOrUseModel {
   /**
    * @description The amount of charging
    */
   amount: number
+}
+
+export interface ChargeUpdatingModel {
+  balance: number
 }
 
 export interface ChargeModel {

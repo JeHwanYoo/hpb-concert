@@ -5,15 +5,24 @@ export const ChargesRepositoryToken = 'ChargesRepository'
 export interface ChargesRepository {
   findOneByUserId(userId: string): Promise<ChargeModel>
 
-  findOneByChargeId(chargeId: string): Promise<ChargeModel>
-
-  charge(
+  findOneByChargeId<S = unknown>(
     chargeId: string,
-    updatingModel: ChargeUpdatingModel,
+    connectingSession?: S,
   ): Promise<ChargeModel>
 
-  use(
+  charge<S = unknown>(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
+    connectingSession: S,
   ): Promise<ChargeModel>
+
+  use<S = unknown>(
+    chargeId: string,
+    updatingModel: ChargeUpdatingModel,
+    connectingSession: S,
+  ): Promise<ChargeModel>
+
+  withTransaction<T, S = unknown>(
+    cb: (connectingSession: S) => Promise<T>,
+  ): Promise<T>
 }
