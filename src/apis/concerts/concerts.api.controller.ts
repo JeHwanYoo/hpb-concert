@@ -94,7 +94,7 @@ export class ConcertsApiController {
     return
   }
 
-  @Post(':concert_id/seats/:seat_id/reservations')
+  @Post(':concert_id/seats/:seat_no/reservations')
   @ApiOperation({
     description: '좌석 예약',
   })
@@ -113,12 +113,12 @@ export class ConcertsApiController {
   @ApiUnauthorizedResponse()
   createReservation(
     @Param('concert_id') concertId: string,
-    @Param('seat_id') seatId: string,
+    @Param('seat_no') seatId: string,
   ): Promise<SeatsResponseDto> {
     return
   }
 
-  @Post(':concert_id/seats/:seat_id/payments')
+  @Post(':concert_id/seats/:seat_no/payments')
   @ApiOperation({
     description: '결제',
   })
@@ -137,7 +137,7 @@ export class ConcertsApiController {
   @ApiUnauthorizedResponse()
   createPayment(
     @Param('concert_id') concertId: string,
-    @Param('seat_id') seatId: string,
+    @Param('seat_no') seatId: string,
   ): Promise<BillsResponseDto> {
     return
   }

@@ -104,7 +104,7 @@
 
 ## 좌석 예약 요청 API
 
-- Endpoint: POST /concerts/:concert_id/seats/:seat_id/reservations
+- Endpoint: POST /concerts/:concert_id/seats/:seat_no/reservations
 - Request
     - Authorization: 대기열 토큰
 - Response
@@ -126,7 +126,7 @@
 
 ## 결제 API
 
-- Endpoint: POST /concerts/:concert_id/seats/:seat_id/payments
+- Endpoint: POST /concerts/:concert_id/seats/:seat_no/payments
 - Request
     - Authorization: 대기열 토큰
 - Response
