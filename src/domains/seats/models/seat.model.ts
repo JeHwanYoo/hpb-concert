@@ -2,7 +2,7 @@ export interface SeatCreationModel {
   holderId: string
   concertId: string
   reservedAt: Date
-  deadlineAt: Date
+  deadline: Date
   paidAt: Date
 }
 

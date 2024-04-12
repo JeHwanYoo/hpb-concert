@@ -1,11 +1,15 @@
-import { SeatCreationModel, SeatModel } from './models/seat.model'
+import {
+  SeatCreationModel,
+  SeatModel,
+  SeatUpdatingModel,
+} from './models/seat.model'
 
 export const SeatsRepositoryToken = 'SeatRepository'
 
 export interface SeatsRepository {
-  create(creationModel: SeatCreationModel): SeatModel
+  create(creationModel: SeatCreationModel): Promise<SeatModel>
 
-  find(concertId: string): SeatModel[]
+  find(concertId: string): Promise<SeatModel[]>
 
-  update(updatingModel: SeatModel): SeatModel
+  update(seatId: string, updatingModel: SeatUpdatingModel): Promise<SeatModel>
 }
