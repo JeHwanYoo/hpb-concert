@@ -141,7 +141,7 @@ describe('SeatsService', () => {
         .fn()
         .mockImplementation((_, { paidAt }) => ({ paidAt }))
 
-      const paid = await service.pay('fake-id')
+      const paid = await service.pay('fake-id', 'fake-id')
 
       expect(paid.paidAt).to.be.instanceof(Date)
     })
@@ -152,7 +152,9 @@ describe('SeatsService', () => {
         deadline: addMinutes(past, 5),
       })
 
-      await expect(service.pay('fake-id')).rejects.toThrow('Deadline Exceeds')
+      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+        'Deadline Exceeds',
+      )
     })
     it('should not pay if it was already paid', async () => {
       const now = new Date()
@@ -162,12 +164,29 @@ describe('SeatsService', () => {
         paidAt: new Date(),
       })
 
-      await expect(service.pay('fake-id')).rejects.toThrow('Already paid')
+      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+        'Already paid',
+      )
     })
     it('should not pay if wat not reserved', async () => {
       mockRepository.findOneBySeatId = vi.fn().mockResolvedValue(null)
 
-      await expect(service.pay('fake-id')).rejects.toThrow('Not Reserved')
+      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+        'Not Reserved',
+      )
+    })
+    it('should not pay if the user is different with the holder', async () => {
+      const now = new Date()
+      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+        reservedAt: now,
+        deadline: addMinutes(now, 5),
+        paidAt: null,
+        holderId: v4(),
+      })
+
+      await expect(service.pay('fake-id', v4())).rejects.toThrow(
+        'Not Authorized',
+      )
     })
   })
 

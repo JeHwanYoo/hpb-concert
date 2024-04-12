@@ -53,13 +53,17 @@ export class SeatsService {
     )
   }
 
-  pay(seatId: string) {
+  pay(seatId: string, userId: string) {
     return this.seatsRepository.withTransaction<SeatModel>(
       async connectingSession => {
         const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
 
         if (!beforePaying) {
           throw new Error('Not Reserved')
+        }
+
+        if (beforePaying.holderId !== userId) {
+          throw new Error('Not Authorized')
         }
 
         if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
