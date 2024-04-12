@@ -8,7 +8,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
-import { ChargesRequestDto, ChargesResponseDto } from './dto/charges.api.dto'
+import {
+  ChargesPatchRequestDto,
+  ChargesResponseDto,
+} from './dto/charges.api.dto'
 import { UserTokenExampleValue } from '../../shared/share.openapi'
 
 @Controller('v1/charges')
@@ -49,7 +52,7 @@ export class ChargesApiController {
     },
   })
   @ApiBody({
-    type: ChargesRequestDto,
+    type: ChargesPatchRequestDto,
   })
   @ApiOkResponse({
     type: ChargesResponseDto,

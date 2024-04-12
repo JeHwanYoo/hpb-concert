@@ -4,7 +4,7 @@ import {
   ChargeUpdatingModel,
 } from '../../../domains/charges/models/charge.model'
 
-export class ChargesRequestDto implements ChargeUpdatingModel {
+export class ChargesPatchRequestDto implements ChargeUpdatingModel {
   @ApiProperty({
     type: Number,
     description: '충전 금액',

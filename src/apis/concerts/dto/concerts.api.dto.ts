@@ -1,7 +1,47 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ConcertModel } from '../../../domains/concerts/models/concert.model'
+import {
+  ConcertCreationModel,
+  ConcertModel,
+} from '../../../domains/concerts/models/concert.model'
 import { SeatModel } from '../../../domains/seats/models/seat.model'
 import { BillModel } from '../../../domains/bills/models/bill.model'
+
+export class ConcertsPostRequestDto implements ConcertCreationModel {
+  @ApiProperty({
+    type: Number,
+    description: '최대 좌석수',
+    minimum: 0,
+  })
+  capacity: number
+
+  @ApiProperty({
+    type: Number,
+    description: '좌석 가격 (모두 동일하다고 가정)',
+    minimum: 0,
+  })
+  price: number
+
+  @ApiProperty({
+    type: String,
+    description: '예매시작일',
+    format: 'date-time',
+  })
+  openingAt: Date
+
+  @ApiProperty({
+    type: String,
+    description: '예매종료일',
+    format: 'date-time',
+  })
+  closingAt: Date
+
+  @ApiProperty({
+    type: String,
+    description: '콘서트 날짜',
+    format: 'date-time',
+  })
+  eventDate: Date
+}
 
 export class ConcertsResponseDto implements ConcertModel {
   @ApiProperty({

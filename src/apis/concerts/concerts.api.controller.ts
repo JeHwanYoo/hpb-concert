@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Post } from '@nestjs/common'
 import {
+  ApiBody,
   ApiHeader,
   ApiOkResponse,
   ApiOperation,
@@ -8,6 +9,7 @@ import {
 } from '@nestjs/swagger'
 import {
   BillsResponseDto,
+  ConcertsPostRequestDto,
   ConcertsResponseDto,
   SeatsResponseDto,
 } from './dto/concerts.api.dto'
@@ -64,6 +66,11 @@ export class ConcertsApiController {
     return
   }
 
+  /**
+   * @description
+   * 콘서트 생성은 운영자만 가능하겠지만,
+   * Role 자체를 구현하지 않을 것이기 때문에, 유저라면 bypass
+   */
   @Post()
   @ApiOkResponse({
     description: '콘서트 생성',
@@ -77,7 +84,13 @@ export class ConcertsApiController {
       example: `Bearer ${UserTokenExampleValue}`,
     },
   })
-  createConcert() {
+  @ApiBody({
+    type: ConcertsPostRequestDto,
+  })
+  @ApiOkResponse({
+    type: ConcertsResponseDto,
+  })
+  createConcert(): Promise<ConcertsResponseDto> {
     return
   }
 
