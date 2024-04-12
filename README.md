@@ -168,6 +168,10 @@
     - `redis`: Redis Connection
     - `repositories/*`: The implementations of repository interfaces
 
+- `**/*.spec.ts`: 유닛 테스트 & 통합 테스트
+    - 레포지토리 구현은 실제 DB와 붙여서 테스트하는 것이 의미 있다 판단하여, 통합 테스트로 구현하였음.
+- `**/*.e2e-spec.ts`: E2E 테스트
+
 ## 서비스 실행 (로컬)
 
 ```yaml
