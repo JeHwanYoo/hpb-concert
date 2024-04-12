@@ -154,6 +154,16 @@ describe('SeatsService', () => {
 
       await expect(service.pay('fake-id')).rejects.toThrow('Deadline Exceeds')
     })
+    it('should not pay if it was already paid', async () => {
+      const now = new Date()
+      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+        reservedAt: now,
+        deadline: addMinutes(now, 5),
+        paidAt: new Date(),
+      })
+
+      await expect(service.pay('fake-id')).rejects.toThrow('Already paid')
+    })
   })
 
   describe.todo('.find()')
