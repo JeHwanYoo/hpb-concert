@@ -31,13 +31,11 @@ describe('SeatsService', () => {
     expect(service).to.not.be.undefined
   })
 
-  describe.todo('.create()')
+  describe.todo('.reserve()')
+
+  describe.todo('.pay()')
 
   describe.todo('.find()')
 
   describe.todo('.findOneBySeatNo()')
-
-  describe.todo('.assign()')
-
-  describe.todo('.pay()')
 })
