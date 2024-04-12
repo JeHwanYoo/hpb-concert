@@ -5,6 +5,8 @@ export const ChargesRepositoryToken = 'ChargesRepository'
 export interface ChargesRepository {
   findOneByUserId(userId: string): Promise<ChargeModel>
 
+  findOneByChargeId(chargeId: string): Promise<ChargeModel>
+
   charge(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
