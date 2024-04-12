@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ChargeModel } from '../../../domains/charges/models/charge.model'
+import {
+  ChargeModel,
+  ChargeUpdatingModel,
+} from '../../../domains/charges/models/charge.model'
 
-export class ChargesRequestDto {
+export class ChargesRequestDto implements ChargeUpdatingModel {
   @ApiProperty({
     type: Number,
     description: '충전 금액',

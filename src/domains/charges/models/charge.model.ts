@@ -1,3 +1,10 @@
+export interface ChargeUpdatingModel {
+  /**
+   * @description The amount of charging
+   */
+  amount: number
+}
+
 export interface ChargeModel {
   /**
    * @description UUID

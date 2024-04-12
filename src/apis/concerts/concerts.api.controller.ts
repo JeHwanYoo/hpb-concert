@@ -11,7 +11,10 @@ import {
   ConcertsResponseDto,
   SeatsResponseDto,
 } from './dto/concerts.api.dto'
-import { EnqueueTokenExampleValue } from '../../shared/share.openapi'
+import {
+  EnqueueTokenExampleValue,
+  UserTokenExampleValue,
+} from '../../shared/share.openapi'
 
 @Controller('v1/concerts')
 @ApiTags('Concerts')
@@ -58,6 +61,23 @@ export class ConcertsApiController {
   getSeats(
     @Param('concert_id') concertId: string,
   ): Promise<SeatsResponseDto[]> {
+    return
+  }
+
+  @Post()
+  @ApiOkResponse({
+    description: '콘서트 생성',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'User Bearer token (JWT)',
+    required: true,
+    schema: {
+      type: 'string',
+      example: `Bearer ${UserTokenExampleValue}`,
+    },
+  })
+  createConcert() {
     return
   }
 
