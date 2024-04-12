@@ -111,7 +111,19 @@ describe('SeatsService', () => {
       ).to.be.greaterThanOrEqual(5)
       expect(reserved.reservedAt).to.be.greaterThan(past)
     })
-    it.todo('should not reserve a seat if it was already paid')
+    it('should not reserve a seat if it was already paid', async () => {
+      mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
+        paidAt: new Date(),
+      })
+
+      await expect(
+        service.reserve({
+          holderId: 'fake-id',
+          concertId: 'fake-id',
+          seatNo: 0,
+        }),
+      ).rejects.toThrow('Already paid')
+    })
   })
 
   describe.todo('.pay()')

@@ -39,6 +39,10 @@ export class SeatsService {
           throw new Error('Already reserved')
         }
 
+        if (beforeReserving.paidAt !== null) {
+          throw new Error('Already paid')
+        }
+
         const reservedAt = new Date()
         const deadline = addMinutes(reservedAt, 5)
         return this.seatsRepository.create(
