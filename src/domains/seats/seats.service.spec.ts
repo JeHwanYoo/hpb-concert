@@ -45,6 +45,7 @@ describe('SeatsService', () => {
 
       mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
         reservedAt: null,
+        paidAt: null,
       })
 
       const reserved = await service.reserve({
@@ -85,6 +86,7 @@ describe('SeatsService', () => {
       mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
         reservedAt: past,
         deadline: addMinutes(past, 5),
+        paidAt: null,
       })
 
       mockRepository.create = vi.fn().mockImplementation(param => ({

@@ -1,10 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { SeatsRepository, SeatsRepositoryToken } from './seats.repository'
-import {
-  SeatCreationModel,
-  SeatModel,
-  SeatUpdatingModel,
-} from './models/seat.model'
+import { SeatCreationModel, SeatModel } from './models/seat.model'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 
 @Injectable()
