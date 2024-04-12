@@ -5,7 +5,7 @@ import {
   SeatModel,
   SeatUpdatingModel,
 } from './models/seat.model'
-import { addMinutes } from 'date-fns'
+import { addMinutes, differenceInMinutes } from 'date-fns'
 
 @Injectable()
 export class SeatsService {
@@ -27,7 +27,18 @@ export class SeatsService {
     >,
   ): Promise<SeatModel> {
     return this.seatsRepository.withTransaction<SeatModel>(
-      connectingSession => {
+      async connectingSession => {
+        const beforeReserving = await this.seatsRepository.findOneBySeatNo(
+          reservationModel.seatNo,
+        )
+
+        if (
+          beforeReserving.reservedAt !== null &&
+          differenceInMinutes(new Date(), beforeReserving.deadline) < 5
+        ) {
+          throw new Error('Already reserved')
+        }
+
         const reservedAt = new Date()
         const deadline = addMinutes(reservedAt, 5)
         return this.seatsRepository.create(
