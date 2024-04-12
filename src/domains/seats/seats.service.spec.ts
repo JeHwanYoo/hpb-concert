@@ -143,6 +143,15 @@ describe('SeatsService', () => {
 
       expect(paid.paidAt).to.be.instanceof(Date)
     })
+    it('should not pay if deadline exceeds', async () => {
+      const past = faker.date.past({ refDate: new Date() })
+      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+        reservedAt: past,
+        deadline: addMinutes(past, 5),
+      })
+
+      await expect(service.pay('fake-id')).rejects.toThrow('Deadline Exceeds')
+    })
   })
 
   describe.todo('.find()')
