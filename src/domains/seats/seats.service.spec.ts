@@ -2,6 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { SeatsService } from './seats.service'
 import { SeatsRepositoryToken } from './seats.repository'
+import { SeatCreationModel } from './models/seat.model'
+import { v4 } from 'uuid'
+import { differenceInMinutes, sub } from 'date-fns'
 
 describe('SeatsService', () => {
   let service: SeatsService
@@ -32,7 +35,30 @@ describe('SeatsService', () => {
   })
 
   describe('.reserve()', () => {
-    it.todo('should reserve a seat')
+    it('should reserve a seat and deadline is 5 minutes', async () => {
+      mockRepository.create = vi.fn().mockImplementation(param => ({
+        ...param,
+        id: v4(),
+      }))
+
+      const reserved = await service.reserve({
+        holderId: 'fake-id',
+        concertId: 'fake-id',
+        seatNo: 0,
+      })
+
+      expect(reserved).to.have.keys(
+        'id',
+        'holderId',
+        'concertId',
+        'seatNo',
+        'reservedAt',
+        'deadline',
+      )
+      expect(
+        differenceInMinutes(reserved.deadline, reserved.reservedAt),
+      ).to.be.greaterThanOrEqual(5)
+    })
     it.todo('should not reserve a seat if it was already reserved')
     it.todo(
       'should reserve a seat and it was already reserved but the deadline exceeds',
