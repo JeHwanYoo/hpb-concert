@@ -57,12 +57,25 @@ export class SeatsService {
     )
   }
 
-  pay(seatId: string, paymentModel: Pick<SeatUpdatingModel, 'paidAt'>) {
+  pay(seatId: string) {
     return this.seatsRepository.withTransaction<SeatModel>(
-      connectingSession => {
+      async connectingSession => {
+        const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
+
+        if (
+          beforePaying.reservedAt !== null &&
+          differenceInMinutes(new Date(), beforePaying.deadline) > 5
+        ) {
+          throw new Error('Deadline Exceeds')
+        }
+
+        if (beforePaying.paidAt !== null) {
+          throw new Error('Already paid')
+        }
+
         return this.seatsRepository.update(
           seatId,
-          paymentModel,
+          { paidAt: new Date() },
           connectingSession,
         )
       },

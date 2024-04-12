@@ -126,7 +126,24 @@ describe('SeatsService', () => {
     })
   })
 
-  describe.todo('.pay()')
+  describe('.pay()', () => {
+    it('should pay', async () => {
+      const now = new Date()
+      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+        reservedAt: now,
+        deadline: addMinutes(now, 5),
+        paidAt: null,
+      })
+
+      mockRepository.update = vi
+        .fn()
+        .mockImplementation((_, { paidAt }) => ({ paidAt }))
+
+      const paid = await service.pay('fake-id')
+
+      expect(paid.paidAt).to.be.instanceof(Date)
+    })
+  })
 
   describe.todo('.find()')
 

@@ -28,6 +28,19 @@ export interface SeatsRepository {
     connectingSession?: S,
   ): Promise<SeatModel>
 
+  /**
+   *
+   * @param seatId
+   * @param connectingSession
+   * @description
+   * seatId 가 존재한다는 것은 최소 한번 이상 예약 되었음을 보장함
+   * 존재하지 않으면 null 반환
+   */
+  findOneBySeatId<S = unknown>(
+    seatId: string,
+    connectingSession?: S,
+  ): Promise<SeatModel | null>
+
   update<S = unknown>(
     seatId: string,
     updatingModel: SeatUpdatingModel,
