@@ -1,5 +1,7 @@
-import { UserModel } from 'src/domains/users/models/user.model'
-import { UserMutationModel } from 'src/domains/users/models/user.mutation.model'
+import {
+  UserCreationModel,
+  UserModel,
+} from 'src/domains/users/models/user.model'
 import { UsersRepository } from '../../../domains/users/users.repository'
 import {
   OffsetBasedPaginationQuery,
@@ -17,7 +19,7 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param mutationModel to create
    * @returns The UUID that was created
    */
-  async create(mutationModel: UserMutationModel): Promise<UserModel> {
+  async create(mutationModel: UserCreationModel): Promise<UserModel> {
     return this.prisma.user.create({
       data: mutationModel,
     })
@@ -77,7 +79,7 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param mutationModel to update
    * @returns The UUID that was updated
    */
-  update(id: string, mutationModel: UserMutationModel): Promise<UserModel> {
+  update(id: string, mutationModel: UserCreationModel): Promise<UserModel> {
     throw new Error('Method not implemented.')
   }
 

@@ -4,3 +4,9 @@ export interface UserModel {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface UserCreationModel {
+  name: string
+}
+
+export type UserUpdatingModel = Partial<UserCreationModel>

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { UsersRepository, UsersRepositoryToken } from './users.repository'
-import { UserMutationModel } from './models/user.mutation.model'
-import { UserModel } from './models/user.model'
+import { UserCreationModel, UserModel } from './models/user.model'
 import {
   OffsetBasedPaginationQuery,
   OffsetBasedPaginationResult,
@@ -14,7 +13,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  create(mutationModel: UserMutationModel): Promise<UserModel> {
+  create(mutationModel: UserCreationModel): Promise<UserModel> {
     return this.usersRepository.create(mutationModel)
   }
 

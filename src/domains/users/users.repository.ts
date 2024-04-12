@@ -1,5 +1,4 @@
-import { UserModel } from './models/user.model'
-import { UserMutationModel } from './models/user.mutation.model'
+import { UserCreationModel, UserModel } from './models/user.model'
 import {
   OffsetBasedPaginationQuery,
   OffsetBasedPaginationResult,
@@ -13,7 +12,7 @@ export interface UsersRepository {
    * @param mutationModel to create
    * @returns The UUID that was created
    */
-  create(mutationModel: UserMutationModel): Promise<UserModel>
+  create(mutationModel: UserCreationModel): Promise<UserModel>
 
   /**
    *
@@ -37,7 +36,7 @@ export interface UsersRepository {
    * @param mutationModel to update
    * @returns The UUID that was updated
    */
-  update(id: string, mutationModel: UserMutationModel): Promise<UserModel>
+  update(id: string, mutationModel: UserCreationModel): Promise<UserModel>
 
   /**
    *
