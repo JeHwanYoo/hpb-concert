@@ -17,6 +17,6 @@ export class ConcertsService {
   }
 
   find(): Promise<ConcertModel[]> {
-    return
+    return this.concertsRepository.find()
   }
 }

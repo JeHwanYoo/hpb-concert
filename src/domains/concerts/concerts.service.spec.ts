@@ -67,8 +67,45 @@ describe('UsersService', () => {
     })
 
     // 이번 주차에는 구현하지 않음
-    it.todo('should satisfy date relations `openingAt < closingAt < eventDate`')
+    it.todo(
+      'should satisfy date relations `openingAt < closingAt < eventDate` or throw error',
+    )
   })
 
-  describe('.find()', () => {})
+  describe('.find()', () => {
+    it('should find all concerts', async () => {
+      mockRepository.find = vi.fn().mockResolvedValue(
+        Array.from({ length: 10 }, () => {
+          const openingAt = new Date()
+          const closingAt = faker.date.future({ refDate: openingAt })
+          const eventDate = faker.date.future({ refDate: closingAt })
+          return {
+            id: v4(),
+            createdAt: openingAt,
+            updatedAt: openingAt,
+            capacity: 50,
+            price: 5000,
+            openingAt,
+            closingAt,
+            eventDate,
+          }
+        }),
+      )
+
+      const foundConcerts = await service.find()
+
+      for (const foundConcert of foundConcerts) {
+        expect(foundConcert).to.have.keys(
+          'id',
+          'capacity',
+          'price',
+          'createdAt',
+          'updatedAt',
+          'closingAt',
+          'openingAt',
+          'eventDate',
+        )
+      }
+    })
+  })
 })
