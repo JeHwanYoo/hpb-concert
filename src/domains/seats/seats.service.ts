@@ -5,6 +5,7 @@ import {
   SeatModel,
   SeatUpdatingModel,
 } from './models/seat.model'
+import { addMinutes } from 'date-fns'
 
 @Injectable()
 export class SeatsService {
@@ -13,15 +14,36 @@ export class SeatsService {
     private readonly seatsRepository: SeatsRepository,
   ) {}
 
-  create(creationModel: SeatCreationModel): Promise<SeatModel> {
-    return
+  /**
+   *
+   * @param reservationModel
+   * @description
+   * create the seat when user reserve it
+   */
+  reserve(
+    reservationModel: Omit<
+      SeatCreationModel,
+      'reservedAt' | 'deadline' | 'paidAt'
+    >,
+  ): Promise<SeatModel> {
+    const reservedAt = new Date()
+    const deadline = addMinutes(reservedAt, 5)
+    return this.seatsRepository.create({
+      ...reservationModel,
+      reservedAt,
+      deadline,
+    })
+  }
+
+  pay(seatId: string, paymentModel: Pick<SeatUpdatingModel, 'paidAt'>) {
+    return this.seatsRepository.update(seatId, paymentModel)
   }
 
   find(concertId: string): Promise<SeatModel[]> {
-    return
+    return this.seatsRepository.find(concertId)
   }
 
-  reserve(updatingModel: SeatUpdatingModel): Promise<SeatModel> {
-    return
+  findOneBySeatNo(seatNo: number): Promise<SeatModel> {
+    return this.seatsRepository.findOneBySeatNo(seatNo)
   }
 }

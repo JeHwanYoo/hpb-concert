@@ -31,9 +31,9 @@ describe('SeatsService', () => {
     expect(service).to.not.be.undefined
   })
 
-  describe('.create()', () => {})
+  describe.todo('.create()')
 
-  describe('.find()', () => {})
+  describe.todo('.find()')
 
-  describe('.assign()', () => {})
+  describe.todo('.assign()')
 })

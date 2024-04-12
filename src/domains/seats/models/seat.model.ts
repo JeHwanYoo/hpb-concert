@@ -1,12 +1,15 @@
 export interface SeatCreationModel {
   holderId: string
   concertId: string
+  seatNo: number
   reservedAt: Date
   deadline: Date
-  paidAt: Date
 }
 
-export type SeatUpdatingModel = Partial<SeatCreationModel>
+export type SeatUpdatingModel = Omit<
+  Partial<SeatCreationModel>,
+  'concertId'
+> & { paidAt?: Date }
 
 export interface SeatModel {
   /**
@@ -17,6 +20,7 @@ export interface SeatModel {
   id: string | null
   holderId: string | null
   concertId: string
+  seatNo: number
   reservedAt: Date | null
   deadline: Date | null
   paidAt: Date | null
