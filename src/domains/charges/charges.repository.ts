@@ -10,13 +10,7 @@ export interface ChargesRepository {
     connectingSession?: S,
   ): Promise<ChargeModel>
 
-  charge<S = unknown>(
-    chargeId: string,
-    updatingModel: ChargeUpdatingModel,
-    connectingSession: S,
-  ): Promise<ChargeModel>
-
-  use<S = unknown>(
+  update<S = unknown>(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
     connectingSession: S,

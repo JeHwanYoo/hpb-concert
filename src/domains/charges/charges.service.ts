@@ -21,7 +21,7 @@ export class ChargesService {
           connectingSession,
         )
 
-        return this.chargesRepository.charge(
+        return this.chargesRepository.update(
           chargeId,
           { balance: beforeCharging.balance + chargeModel.amount },
           connectingSession,
@@ -44,7 +44,7 @@ export class ChargesService {
           throw new Error('Insufficient balance')
         }
 
-        return this.chargesRepository.use(
+        return this.chargesRepository.update(
           chargeId,
           {
             balance,

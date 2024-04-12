@@ -8,7 +8,9 @@ describe('ChargesService', () => {
   let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
-    mockRepository = {}
+    mockRepository = {
+      withTransaction: vi.fn().mockImplementation(cb => cb()),
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -35,5 +37,29 @@ describe('ChargesService', () => {
 
   describe.todo('.charge()')
 
-  describe.todo('.use()')
+  describe('.use()', () => {
+    it('should use the balance', async () => {
+      mockRepository.findOneByChargeId = vi
+        .fn()
+        .mockResolvedValue({ balance: 1000 })
+
+      mockRepository.update = vi.fn().mockImplementation((_, { balance }) => ({
+        balance,
+      }))
+
+      const used = await service.use('fake-id', { amount: 500 })
+
+      expect(used.balance).to.be.eq(500)
+    })
+
+    it('should throw an error if the balance is insufficient', async () => {
+      mockRepository.findOneByChargeId = vi
+        .fn()
+        .mockResolvedValue({ balance: 1000 })
+
+      await expect(service.use('fake-id', { amount: 3000 })).rejects.toThrow(
+        Error,
+      )
+    })
+  })
 })
