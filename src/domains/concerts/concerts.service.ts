@@ -13,7 +13,7 @@ export class ConcertsService {
   ) {}
 
   create(creationModel: ConcertCreationModel): Promise<ConcertModel> {
-    return
+    return this.concertsRepository.create(creationModel)
   }
 
   find(): Promise<ConcertModel[]> {

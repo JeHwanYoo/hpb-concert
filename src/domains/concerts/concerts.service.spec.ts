@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ConcertsService } from './concerts.service'
 import { ConcertsRepositoryToken } from './concerts.repository'
+import { faker } from '@faker-js/faker'
+import { v4 } from 'uuid'
 
 describe('UsersService', () => {
   let service: ConcertsService
@@ -31,7 +33,42 @@ describe('UsersService', () => {
     expect(service).to.not.be.undefined
   })
 
-  describe('.create()', () => {})
+  describe('.create()', () => {
+    it('should create a new concert', async () => {
+      const openingAt = new Date()
+      const closingAt = faker.date.future({ refDate: openingAt })
+      const eventDate = faker.date.future({ refDate: closingAt })
+      const creationModel = {
+        capacity: 50,
+        price: 5000,
+        openingAt,
+        closingAt,
+        eventDate,
+      }
+      mockRepository.create = vi.fn().mockResolvedValue({
+        ...creationModel,
+        id: v4(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+
+      const createdConcert = await service.create(creationModel)
+
+      expect(createdConcert).to.have.keys(
+        'id',
+        'capacity',
+        'price',
+        'createdAt',
+        'updatedAt',
+        'closingAt',
+        'openingAt',
+        'eventDate',
+      )
+    })
+
+    // 이번 주차에는 구현하지 않음
+    it.todo('should satisfy date relations `openingAt < closingAt < eventDate`')
+  })
 
   describe('.find()', () => {})
 })
