@@ -1,4 +1,14 @@
-export class SeatModel {
+export interface SeatCreationModel {
+  holderId: string
+  concertId: string
+  reservedAt: Date
+  deadlineAt: Date
+  paidAt: Date
+}
+
+export type SeatUpdatingModel = Partial<SeatCreationModel>
+
+export interface SeatModel {
   /**
    * @description UUID
    *
