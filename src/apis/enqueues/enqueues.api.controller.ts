@@ -43,7 +43,9 @@ export class EnqueuesApiController {
   })
   @ApiUnauthorizedResponse()
   @UseGuards(UserTokensGuard)
-  enqueues(@DecodedToken() decodedUserToken: UserTokenModel): Promise<string> {
+  enqueues(
+    @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
+  ): Promise<string> {
     return this.enqueuesApiUseCase.createToken(decodedUserToken.userId)
   }
 }
