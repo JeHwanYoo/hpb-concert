@@ -164,6 +164,11 @@ describe('SeatsService', () => {
 
       await expect(service.pay('fake-id')).rejects.toThrow('Already paid')
     })
+    it('should not pay if wat not reserved', async () => {
+      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue(null)
+
+      await expect(service.pay('fake-id')).rejects.toThrow('Not Reserved')
+    })
   })
 
   describe.todo('.find()')

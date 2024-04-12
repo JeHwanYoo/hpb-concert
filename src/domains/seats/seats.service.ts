@@ -58,10 +58,11 @@ export class SeatsService {
       async connectingSession => {
         const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
 
-        if (
-          beforePaying.reservedAt !== null &&
-          differenceInMinutes(new Date(), beforePaying.deadline) > 5
-        ) {
+        if (!beforePaying) {
+          throw new Error('Not Reserved')
+        }
+
+        if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
           throw new Error('Deadline Exceeds')
         }
 
