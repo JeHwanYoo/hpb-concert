@@ -149,6 +149,12 @@ export class SeatsResponseDto implements SeatModel {
     nullable: true,
   })
   paidAt: Date | null
+
+  @ApiProperty({
+    type: Number,
+    description: '좌석 번호',
+  })
+  seatNo: number
 }
 
 export class BillsResponseDto implements BillModel {

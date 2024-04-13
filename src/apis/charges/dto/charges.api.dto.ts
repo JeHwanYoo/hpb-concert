@@ -10,7 +10,7 @@ export class ChargesPatchRequestDto implements ChargeOrUseModel {
     description: '충전 금액',
     minimum: 0,
   })
-  balance: number
+  amount: number
 }
 
 export class ChargesResponseDto implements ChargeModel {
