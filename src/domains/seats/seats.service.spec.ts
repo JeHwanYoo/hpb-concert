@@ -135,6 +135,7 @@ describe('SeatsService', () => {
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: null,
+        holderId: 'fake-id',
       })
 
       mockRepository.update = vi
@@ -150,6 +151,7 @@ describe('SeatsService', () => {
       mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
         reservedAt: past,
         deadline: addMinutes(past, 5),
+        holderId: 'fake-id',
       })
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
@@ -162,6 +164,7 @@ describe('SeatsService', () => {
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: new Date(),
+        holderId: 'fake-id',
       })
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
