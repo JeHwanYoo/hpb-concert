@@ -25,6 +25,7 @@ model User {
 model Concert {
   id        String   @id @default(uuid())
   capacity  Int
+  price     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   openingAt DateTime
