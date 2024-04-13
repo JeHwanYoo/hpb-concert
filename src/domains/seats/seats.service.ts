@@ -13,6 +13,7 @@ export class SeatsService {
   /**
    *
    * @param reservationModel
+   * @returns reserved SeatModel
    * @description
    * create the seat when user reserve it
    */
@@ -53,7 +54,13 @@ export class SeatsService {
     )
   }
 
-  pay(seatId: string, userId: string) {
+  /**
+   *
+   * @param seatId
+   * @param userId
+   * @returns paid SeatModel
+   */
+  pay(seatId: string, userId: string): Promise<SeatModel> {
     return this.seatsRepository.withTransaction<SeatModel>(
       async connectingSession => {
         const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
@@ -83,10 +90,20 @@ export class SeatsService {
     )
   }
 
+  /**
+   *
+   * @param concertId
+   * @returns found SeatModel
+   */
   find(concertId: string): Promise<SeatModel[]> {
     return this.seatsRepository.find(concertId)
   }
 
+  /**
+   *
+   * @param seatNo
+   * @returns found SeatModel
+   */
   findOneBySeatNo(seatNo: number): Promise<SeatModel> {
     return this.seatsRepository.findOneBySeatNo(seatNo)
   }

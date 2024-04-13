@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { BillsRepository, BillsRepositoryToken } from './bills.repository'
-import { BillCreationModel } from './models/bill.model'
+import { BillCreationModel, BillModel } from './models/bill.model'
 
 @Injectable()
 export class BillsService {
@@ -9,11 +9,21 @@ export class BillsService {
     private readonly billsRepository: BillsRepository,
   ) {}
 
-  create(createModel: BillCreationModel) {
+  /**
+   *
+   * @param createModel
+   * @returns created bill
+   */
+  create(createModel: BillCreationModel): Promise<BillModel> {
     return this.billsRepository.create(createModel)
   }
 
-  findByUserId(userId: string) {
+  /**
+   *
+   * @param userId
+   * @returns found bill
+   */
+  findByUserId(userId: string): Promise<BillModel> {
     return this.billsRepository.findOneByUserId(userId)
   }
 }

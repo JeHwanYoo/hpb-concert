@@ -13,14 +13,29 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
+  /**
+   *
+   * @param mutationModel
+   * @returns created UserModel
+   */
   create(mutationModel: UserCreationModel): Promise<UserModel> {
     return this.usersRepository.create(mutationModel)
   }
 
+  /**
+   *
+   * @param id
+   * @returns found UserModel
+   */
   findOne(id: string): Promise<UserModel> {
     return this.usersRepository.findOne(id)
   }
 
+  /**
+   *
+   * @param query
+   * @returns paginated UserModel
+   */
   find(
     query: OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {

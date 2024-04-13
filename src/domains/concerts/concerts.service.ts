@@ -12,10 +12,19 @@ export class ConcertsService {
     private readonly concertsRepository: ConcertsRepository,
   ) {}
 
+  /**
+   *
+   * @param creationModel
+   * @returns created ConcertModel
+   */
   create(creationModel: ConcertCreationModel): Promise<ConcertModel> {
     return this.concertsRepository.create(creationModel)
   }
 
+  /**
+   *
+   * @returns found ConcertModel
+   */
   find(): Promise<ConcertModel[]> {
     return this.concertsRepository.find()
   }

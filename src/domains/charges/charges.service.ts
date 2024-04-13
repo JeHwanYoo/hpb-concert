@@ -9,11 +9,25 @@ export class ChargesService {
     private chargesRepository: ChargesRepository,
   ) {}
 
-  findOneByUserId(userId: string) {
+  /**
+   *
+   * @param userId
+   * @returns found ChargeModel
+   */
+  findOneByUserId(userId: string): Promise<ChargeModel> {
     return this.chargesRepository.findOneByUserId(userId)
   }
 
-  charge(chargeId: string, chargeModel: ChargeOrUseModel) {
+  /**
+   *
+   * @param chargeId
+   * @param chargeModel
+   * @returns charged ChargeModel
+   */
+  charge(
+    chargeId: string,
+    chargeModel: ChargeOrUseModel,
+  ): Promise<ChargeModel> {
     return this.chargesRepository.withTransaction<ChargeModel>(
       async connectingSession => {
         const beforeCharging = await this.chargesRepository.findOneByChargeId(
@@ -30,7 +44,14 @@ export class ChargesService {
     )
   }
 
-  use(chargeId: string, useModel: ChargeOrUseModel) {
+  /**
+   *
+   * @param chargeId
+   * @param useModel
+   * @returns used ChargeModel
+   * @throws Error Insufficient balance
+   */
+  use(chargeId: string, useModel: ChargeOrUseModel): Promise<ChargeModel> {
     return this.chargesRepository.withTransaction<ChargeModel>(
       async connectingSession => {
         const beforeCharging = await this.chargesRepository.findOneByChargeId(

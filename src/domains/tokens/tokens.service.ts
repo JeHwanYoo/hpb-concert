@@ -25,6 +25,11 @@ export class TokensService {
     this.redis = redisService.getClient()
   }
 
+  /**
+   *
+   * @param userId
+   * @returns created token (JWT)
+   */
   async createToken(userId: string): Promise<string> {
     const availableTime = Math.floor(
       (await this.getAvailableTime()).getTime() / 1000,
@@ -41,6 +46,11 @@ export class TokensService {
     })
   }
 
+  /**
+   *
+   * @param token
+   * @returns completed token (JWT)
+   */
   async completeToken(token: string): Promise<string> {
     const decoded = this.jwtService.decode<EnqueueTokenModel>(token)
 
@@ -51,6 +61,11 @@ export class TokensService {
     })
   }
 
+  /**
+   *
+   * @private
+   * @returns availableTime
+   */
   private async getAvailableTime(): Promise<Date> {
     const waitingCount = parseInt(
       (await this.redis.get(redisKeys.waitingCount)) ?? '0',
@@ -65,11 +80,21 @@ export class TokensService {
     )
   }
 
+  /**
+   *
+   * @private
+   * @returns increased count
+   */
   private async incrWaitingCount(): Promise<number> {
     return this.redis.incr(redisKeys.waitingCount)
   }
 
-  private async decrWaitingCount() {
+  /**
+   *
+   * @private
+   * @returns decreased count
+   */
+  private async decrWaitingCount(): Promise<number> {
     return this.redis.decr(redisKeys.waitingCount)
   }
 }
