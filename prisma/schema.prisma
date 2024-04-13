@@ -21,3 +21,13 @@ model User {
 
   @@index([createdAt])
 }
+
+model Concert {
+  id        String   @id @default(uuid())
+  capacity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  openingAt DateTime
+  closingAt DateTime
+  eventDate DateTime
+}
