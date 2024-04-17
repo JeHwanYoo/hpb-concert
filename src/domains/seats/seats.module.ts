@@ -9,14 +9,14 @@ export interface ConcertsModuleProps {
 @Module({})
 export class SeatsModule {
   static forFeature(props: ConcertsModuleProps): DynamicModule {
-    const dynamicUsersRepositoryProvider: Provider = {
+    const dynamicRepositoryProvider: Provider = {
       provide: SeatsRepositoryToken,
       useClass: props.SeatsRepository,
     }
 
     return {
       module: SeatsModule,
-      providers: [SeatsService, dynamicUsersRepositoryProvider],
+      providers: [SeatsService, dynamicRepositoryProvider],
       exports: [SeatsService],
     }
   }
