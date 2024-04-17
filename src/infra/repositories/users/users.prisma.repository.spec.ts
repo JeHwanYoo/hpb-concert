@@ -59,7 +59,7 @@ describe('UsersPrismaRepository', () => {
           name: 'John',
         },
       })
-      const expectedUser = await repository.findOne(createdUser.id)
+      const expectedUser = await repository.findOneById(createdUser.id)
 
       assertUser(expectedUser, createdUser)
     })
@@ -76,7 +76,10 @@ describe('UsersPrismaRepository', () => {
           }),
         ),
       )
-      const expectedUsers = await repository.find({ page: 1, size: 10 })
+      const expectedUsers = await repository.findManyBy({
+        page: 1,
+        size: 10,
+      })
 
       assertAllFulfilled(settledResults)
 

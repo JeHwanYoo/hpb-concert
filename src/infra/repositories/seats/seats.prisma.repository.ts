@@ -11,42 +11,23 @@ import { PrismaService } from '../../prisma/prisma.service'
 export class SeatsPrismaRepository implements SeatsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create<S = unknown>(
-    creationModel: SeatCreationModel,
-    connectingSession: S,
-  ): Promise<SeatModel> {
+  create(creationModel: SeatCreationModel): Promise<SeatModel> {
     return Promise.resolve(undefined)
   }
 
-  find(concertId: string): Promise<SeatModel[]> {
+  findManyByConcertId(concertId: string): Promise<SeatModel[]> {
     return Promise.resolve([])
   }
 
-  findOneBySeatId<S = unknown>(
-    seatId: string,
-    connectingSession?: S,
-  ): Promise<SeatModel | null> {
+  findOneById(seatId: string): Promise<SeatModel | null> {
     return Promise.resolve(undefined)
   }
 
-  findOneBySeatNo<S = unknown>(
-    seatNo: number,
-    connectingSession?: S,
-  ): Promise<SeatModel> {
+  findOneBySeatNo(seatNo: number): Promise<SeatModel> {
     return Promise.resolve(undefined)
   }
 
-  update<S = unknown>(
-    seatId: string,
-    updatingModel: SeatUpdatingModel,
-    connectingSession: S,
-  ): Promise<SeatModel> {
-    return Promise.resolve(undefined)
-  }
-
-  withTransaction<T, S = unknown>(
-    cb: (connectingSession: S) => Promise<T>,
-  ): Promise<T> {
+  update(seatId: string, updatingModel: SeatUpdatingModel): Promise<SeatModel> {
     return Promise.resolve(undefined)
   }
 }

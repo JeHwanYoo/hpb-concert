@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { BillsRepository, BillsRepositoryToken } from './bills.repository'
 import { BillCreationModel, BillModel } from './models/bill.model'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class BillsService {
@@ -20,10 +21,10 @@ export class BillsService {
 
   /**
    *
-   * @param userId
+   * @param identifier
    * @returns found bill
    */
-  findByUserId(userId: string): Promise<BillModel> {
-    return this.billsRepository.findOneByUserId(userId)
+  findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel> {
+    return this.billsRepository.findOneBy(identifier)
   }
 }

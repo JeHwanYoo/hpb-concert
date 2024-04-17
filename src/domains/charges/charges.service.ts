@@ -21,7 +21,7 @@ export class ChargesService {
    * @returns found ChargeModel
    */
   findOneByUserId(userId: string): Promise<ChargeModel> {
-    return this.chargesRepository.findOneByUserId(userId)
+    return this.chargesRepository.findOneBy(userId)
   }
 
   /**

@@ -1,22 +1,27 @@
 import { ChargeModel, ChargeUpdatingModel } from './models/charge.model'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 export const ChargesRepositoryToken = 'ChargesRepository'
 
-export interface ChargesRepository {
-  findOneByUserId(userId: string): Promise<ChargeModel>
+export interface ChargesRepository<S = unknown> {
+  /**
+   *
+   * @param by
+   * @param session
+   * @returns Found ChargeModel which matches the given condition
+   */
+  findOneBy(by: IdentifierFrom<ChargeModel>, session?: S): Promise<ChargeModel>
 
-  findOneByChargeId<S = unknown>(
-    chargeId: string,
-    connectingSession?: S,
-  ): Promise<ChargeModel>
-
-  update<S = unknown>(
+  /**
+   *
+   * @param chargeId
+   * @param updatingModel
+   * @param session
+   * @retruns Updated ChargeModel
+   */
+  update(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
-    connectingSession: S,
+    session?: S,
   ): Promise<ChargeModel>
-
-  withTransaction<T, S = unknown>(
-    cb: (connectingSession: S) => Promise<T>,
-  ): Promise<T>
 }

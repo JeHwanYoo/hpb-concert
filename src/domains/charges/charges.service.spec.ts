@@ -38,10 +38,6 @@ describe('ChargesService', () => {
     expect(service).to.not.be.undefined
   })
 
-  describe.todo('.findOneByUserId()')
-
-  describe.todo('.charge()')
-
   describe('.use()', () => {
     it('should use the balance', async () => {
       mockRepository.findOneByChargeId = vi
