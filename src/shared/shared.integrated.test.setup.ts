@@ -69,6 +69,10 @@ export function setUpRedisIntegratedTest(cb: (redis: Redis) => Promise<void>) {
   }
 }
 
+/**
+ * Run setUp stages sequentially
+ * @param stages
+ */
 export async function setUpPipeline(
   ...stages: ((...args: unknown[]) => Promise<void>)[]
 ) {
