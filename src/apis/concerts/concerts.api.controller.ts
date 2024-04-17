@@ -16,7 +16,7 @@ import {
 import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
-} from '../../shared/share.openapi'
+} from '../../shared/shared.openapi'
 
 @Controller('v1/concerts')
 @ApiTags('Concerts')
