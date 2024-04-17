@@ -29,12 +29,7 @@ export function setUpPrismaIntegratedTest(
     process.env.DATABASE_URL = `postgresql://user:password@localhost:${mappedPort}/test?schema=public`
 
     // Migrate TestContainer and PostgreSQL image
-    execSync('npx prisma migrate dev', {
-      env: {
-        ...process.env,
-        DATABASE_URL: process.env.DATABASE_URL,
-      },
-    })
+    execSync('npx prisma migrate dev')
 
     const prisma = new PrismaService()
 
