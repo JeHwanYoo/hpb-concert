@@ -9,6 +9,8 @@ import {
 } from 'src/shared/shared.dto'
 import { PrismaService } from '../../prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
+import { IdentifierFrom } from '../../../shared/shared.type.helper'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class UsersPrismaRepository implements UsersRepository {
@@ -27,14 +29,12 @@ export class UsersPrismaRepository implements UsersRepository {
 
   /**
    *
-   * @param id User's id
+   * @param by
    * @returns The UserModel that matched
    */
-  findOneById(id: string): Promise<UserModel> {
+  findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
     return this.prisma.user.findUnique({
-      where: {
-        id,
-      },
+      where: by as Prisma.UserWhereUniqueInput,
     })
   }
 

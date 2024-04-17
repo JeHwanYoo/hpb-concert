@@ -87,7 +87,7 @@ describe('ConcertsPrismaRepository', () => {
     })
 
     it('should find all concerts', async () => {
-      const foundConcerts = await repository.findManyBy()
+      const foundConcerts = await repository.findManyBy({})
       expect(foundConcerts).to.be.deep.eq(createdConcerts)
     })
   })
