@@ -12,14 +12,14 @@ export interface ConcertsModuleProps {
 @Module({})
 export class ConcertsModule {
   static forFeature(props: ConcertsModuleProps): DynamicModule {
-    const dynamicUsersRepositoryProvider: Provider = {
+    const dynamicRepositoryProvider: Provider = {
       provide: ConcertsRepositoryToken,
       useClass: props.ConcertsRepository,
     }
 
     return {
       module: ConcertsModule,
-      providers: [ConcertsService, dynamicUsersRepositoryProvider],
+      providers: [ConcertsService, dynamicRepositoryProvider],
       exports: [ConcertsService],
     }
   }
