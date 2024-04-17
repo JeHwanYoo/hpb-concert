@@ -21,7 +21,11 @@ export class ConcertsPrismaRepository implements ConcertsRepository {
     })
   }
 
+  /**
+   *
+   * @returns Found Concerts
+   */
   find(): Promise<ConcertModel[]> {
-    return Promise.resolve([])
+    return this.prisma.concert.findMany()
   }
 }
