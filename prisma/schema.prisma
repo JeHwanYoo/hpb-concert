@@ -18,6 +18,7 @@ model User {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+  Seat      Seat[]
 
   @@index([createdAt])
 }
@@ -31,4 +32,13 @@ model Concert {
   openingAt DateTime
   closingAt DateTime
   eventDate DateTime
+  Seat      Seat[]
+}
+
+model Seat {
+  id        String  @id @default(uuid())
+  holderId  String
+  concertId String
+  holder    User    @relation(fields: [holderId], references: [id])
+  concert   Concert @relation(fields: [concertId], references: [id])
 }
