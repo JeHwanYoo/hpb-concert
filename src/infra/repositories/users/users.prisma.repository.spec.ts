@@ -6,7 +6,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import {
   assertAllFulfilled,
   setUpPrismaIntegratedTest,
-} from '../../../shared/integrated.test.setup'
+} from '../../../shared/shared.integrated.test.setup'
 import { UserModel } from '../../../domains/users/models/user.model'
 import { faker } from '@faker-js/faker'
 

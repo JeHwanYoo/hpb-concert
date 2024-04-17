@@ -5,7 +5,7 @@ import {
   setUpPipeline,
   setUpPrismaIntegratedTest,
   setUpRedisIntegratedTest,
-} from '../../../src/shared/integrated.test.setup'
+} from '../../../src/shared/shared.integrated.test.setup'
 import Redis from 'ioredis'
 import { PrismaService } from '../../../src/infra/prisma/prisma.service'
 import { AppModule } from '../../../src/app.module'
