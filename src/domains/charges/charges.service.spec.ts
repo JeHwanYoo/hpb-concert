@@ -2,15 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ChargesService } from './charges.service'
 import { ChargesRepositoryToken } from './charges.repository'
+import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
 
 describe('ChargesService', () => {
   let service: ChargesService
   let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
-    mockRepository = {
-      withTransaction: vi.fn().mockImplementation(cb => cb()),
-    }
+    mockRepository = {}
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -18,6 +17,12 @@ describe('ChargesService', () => {
         {
           provide: ChargesRepositoryToken,
           useValue: mockRepository,
+        },
+        {
+          provide: TransactionServiceToken,
+          useValue: {
+            tx: vi.fn().mockImplementation(cb => cb()),
+          },
         },
       ],
     }).compile()
