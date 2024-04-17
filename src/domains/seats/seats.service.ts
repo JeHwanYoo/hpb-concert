@@ -2,12 +2,18 @@ import { Inject, Injectable } from '@nestjs/common'
 import { SeatsRepository, SeatsRepositoryToken } from './seats.repository'
 import { SeatCreationModel, SeatModel } from './models/seat.model'
 import { addMinutes, differenceInMinutes } from 'date-fns'
+import {
+  TransactionService,
+  TransactionServiceToken,
+} from '../../shared/transaction/transaction.service'
 
 @Injectable()
 export class SeatsService {
   constructor(
     @Inject(SeatsRepositoryToken)
     private readonly seatsRepository: SeatsRepository,
+    @Inject(TransactionServiceToken)
+    private readonly transactionService: TransactionService,
   ) {}
 
   /**
@@ -23,35 +29,33 @@ export class SeatsService {
       'reservedAt' | 'deadline' | 'paidAt'
     >,
   ): Promise<SeatModel> {
-    return this.seatsRepository.withTransaction<SeatModel>(
-      async connectingSession => {
-        const beforeReserving = await this.seatsRepository.findOneBySeatNo(
-          reservationModel.seatNo,
-        )
+    return this.transactionService.tx<SeatModel>(async connectingSession => {
+      const beforeReserving = await this.seatsRepository.findOneBySeatNo(
+        reservationModel.seatNo,
+      )
 
-        if (
-          beforeReserving.reservedAt !== null &&
-          differenceInMinutes(new Date(), beforeReserving.deadline) < 5
-        ) {
-          throw new Error('Already reserved')
-        }
+      if (
+        beforeReserving.reservedAt !== null &&
+        differenceInMinutes(new Date(), beforeReserving.deadline) < 5
+      ) {
+        throw new Error('Already reserved')
+      }
 
-        if (beforeReserving.paidAt !== null) {
-          throw new Error('Already paid')
-        }
+      if (beforeReserving.paidAt !== null) {
+        throw new Error('Already paid')
+      }
 
-        const reservedAt = new Date()
-        const deadline = addMinutes(reservedAt, 5)
-        return this.seatsRepository.create(
-          {
-            ...reservationModel,
-            reservedAt,
-            deadline,
-          },
-          connectingSession,
-        )
-      },
-    )
+      const reservedAt = new Date()
+      const deadline = addMinutes(reservedAt, 5)
+      return this.seatsRepository.create(
+        {
+          ...reservationModel,
+          reservedAt,
+          deadline,
+        },
+        connectingSession,
+      )
+    })
   }
 
   /**
@@ -61,33 +65,31 @@ export class SeatsService {
    * @returns paid SeatModel
    */
   pay(seatId: string, userId: string): Promise<SeatModel> {
-    return this.seatsRepository.withTransaction<SeatModel>(
-      async connectingSession => {
-        const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
+    return this.transactionService.tx<SeatModel>(async connectingSession => {
+      const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
 
-        if (!beforePaying) {
-          throw new Error('Not Reserved')
-        }
+      if (!beforePaying) {
+        throw new Error('Not Reserved')
+      }
 
-        if (beforePaying.holderId !== userId) {
-          throw new Error('Not Authorized')
-        }
+      if (beforePaying.holderId !== userId) {
+        throw new Error('Not Authorized')
+      }
 
-        if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-          throw new Error('Deadline Exceeds')
-        }
+      if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
+        throw new Error('Deadline Exceeds')
+      }
 
-        if (beforePaying.paidAt !== null) {
-          throw new Error('Already paid')
-        }
+      if (beforePaying.paidAt !== null) {
+        throw new Error('Already paid')
+      }
 
-        return this.seatsRepository.update(
-          seatId,
-          { paidAt: new Date() },
-          connectingSession,
-        )
-      },
-    )
+      return this.seatsRepository.update(
+        seatId,
+        { paidAt: new Date() },
+        connectingSession,
+      )
+    })
   }
 
   /**

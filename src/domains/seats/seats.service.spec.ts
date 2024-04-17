@@ -5,15 +5,14 @@ import { SeatsRepositoryToken } from './seats.repository'
 import { v4 } from 'uuid'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import { faker } from '@faker-js/faker'
+import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
 
 describe('SeatsService', () => {
   let service: SeatsService
   let mockRepository: Record<string, Mock>
 
   beforeEach(async () => {
-    mockRepository = {
-      withTransaction: vi.fn().mockImplementation(cb => cb()),
-    }
+    mockRepository = {}
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -21,6 +20,12 @@ describe('SeatsService', () => {
         {
           provide: SeatsRepositoryToken,
           useValue: mockRepository,
+        },
+        {
+          provide: TransactionServiceToken,
+          useValue: {
+            tx: vi.fn().mockImplementation(cb => cb()),
+          },
         },
       ],
     }).compile()
