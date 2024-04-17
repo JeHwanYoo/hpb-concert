@@ -167,6 +167,8 @@
     - `prisma`: Prisma Connection
     - `redis`: Redis Connection
     - `repositories/*`: The implementations of repository interfaces
+- `src/shared/*`: 공통파일
+    - `src/shared/transaction`: 트랜잭션 공통 인터페이스 모듈
 
 - `**/*.spec.ts`: 유닛 테스트 & 통합 테스트
     - 레포지토리 구현은 실제 DB와 붙여서 테스트하는 것이 의미 있다 판단하여, 통합 테스트로 구현하였음.
