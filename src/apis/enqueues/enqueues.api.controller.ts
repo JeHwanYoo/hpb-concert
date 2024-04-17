@@ -9,7 +9,7 @@ import {
 import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
-} from '../../shared/share.openapi'
+} from '../../shared/shared.openapi'
 import { EnqueuesApiUseCase } from './enqueues.api.use.case'
 import { UserTokensGuard } from '../../domains/tokens/tokens.guard'
 import { DecodedToken } from '../../domains/tokens/tokens.decorator'

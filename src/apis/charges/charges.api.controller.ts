@@ -12,7 +12,7 @@ import {
   ChargesPatchRequestDto,
   ChargesResponseDto,
 } from './dto/charges.api.dto'
-import { UserTokenExampleValue } from '../../shared/share.openapi'
+import { UserTokenExampleValue } from '../../shared/shared.openapi'
 
 @Controller('v1/charges')
 @ApiTags('Charges')
