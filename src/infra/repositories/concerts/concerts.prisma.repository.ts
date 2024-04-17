@@ -4,12 +4,21 @@ import {
   ConcertCreationModel,
   ConcertModel,
 } from '../../../domains/concerts/models/concert.model'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class ConcertsPrismaRepository implements ConcertsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   *
+   * @param creationModel
+   * @returns Created Concert
+   */
   create(creationModel: ConcertCreationModel): Promise<ConcertModel> {
-    return Promise.resolve(undefined)
+    return this.prisma.concert.create({
+      data: creationModel,
+    })
   }
 
   find(): Promise<ConcertModel[]> {

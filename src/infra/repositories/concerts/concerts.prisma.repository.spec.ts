@@ -4,8 +4,10 @@ import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
 import { setUpPrismaIntegratedTest } from '../../../shared/integrated.test.setup'
 import { ConcertsPrismaRepository } from './concerts.prisma.repository'
+import { ConcertCreationModel } from '../../../domains/concerts/models/concert.model'
+import { faker } from '@faker-js/faker'
 
-describe('UsersPrismaRepository', () => {
+describe('ConcertsPrismaRepository', () => {
   let repository: ConcertsPrismaRepository
   let prisma: PrismaService
 
@@ -34,5 +36,31 @@ describe('UsersPrismaRepository', () => {
 
   it('should be defined', async () => {
     expect(repository).to.not.be.undefined
+  })
+
+  describe('.create()', () => {
+    it('should create a concert', async () => {
+      const openingAt = new Date()
+      const closingAt = faker.date.future({ refDate: openingAt })
+      const eventDate = faker.date.future({ refDate: closingAt })
+      const createdModel: ConcertCreationModel = {
+        capacity: 100,
+        price: 10000,
+        openingAt,
+        closingAt,
+        eventDate,
+      }
+      const createdConcert = await repository.create(createdModel)
+      expect(createdConcert).to.have.keys(
+        'id',
+        'capacity',
+        'price',
+        'createdAt',
+        'updatedAt',
+        'openingAt',
+        'closingAt',
+        'eventDate',
+      )
+    })
   })
 })
