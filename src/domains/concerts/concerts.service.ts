@@ -25,7 +25,7 @@ export class ConcertsService {
    *
    * @returns found ConcertModel
    */
-  find(): Promise<ConcertModel[]> {
-    return this.concertsRepository.find()
+  findManyBy(by: Partial<ConcertModel>): Promise<ConcertModel[]> {
+    return this.concertsRepository.findManyBy({})
   }
 }

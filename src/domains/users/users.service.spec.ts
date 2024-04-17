@@ -51,9 +51,9 @@ describe('UsersService', () => {
     })
   })
 
-  describe('.findOne()', () => {
+  describe('.findOneBy()', () => {
     it('should return the user with the given id', async () => {
-      mockRepository.findOne = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         id: uuidv4(),
         name: faker.person.firstName(),
         createdAt: new Date(),
@@ -61,7 +61,9 @@ describe('UsersService', () => {
       })
 
       const uuid = uuidv4()
-      const result = await service.findOne(uuid)
+      const result = await service.findOneBy({
+        id: uuid,
+      })
       expect(result).to.not.be.undefined
       expect(validateUUID(result.id)).to.be.true
       expect(result).has.property('name').and.to.be.a('string')
@@ -70,9 +72,9 @@ describe('UsersService', () => {
     })
   })
 
-  describe('.find()', () => {
+  describe('.findManyBy()', () => {
     it('should return the paginated results', async () => {
-      mockRepository.find = vi.fn().mockResolvedValue({
+      mockRepository.findManyBy = vi.fn().mockResolvedValue({
         total: 3,
         items: Array.from({ length: 3 }, () => ({
           id: uuidv4(),
@@ -82,7 +84,7 @@ describe('UsersService', () => {
         })),
       })
 
-      const result = await service.find({ page: 1, size: 10 })
+      const result = await service.findManyByOffset({ page: 1, size: 10 })
       expect(result).to.not.be.undefined
       expect(result).has.property('total').and.to.be.a('number')
       expect(result).has.property('items').and.to.be.a('array')
@@ -94,7 +96,4 @@ describe('UsersService', () => {
       }
     })
   })
-
-  describe.todo('.update()')
-  describe.todo('.remove()')
 })

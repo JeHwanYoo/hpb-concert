@@ -6,6 +6,7 @@ import {
   TransactionService,
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class SeatsService {
@@ -30,9 +31,9 @@ export class SeatsService {
     >,
   ): Promise<SeatModel> {
     return this.transactionService.tx<SeatModel>(async connectingSession => {
-      const beforeReserving = await this.seatsRepository.findOneBySeatNo(
-        reservationModel.seatNo,
-      )
+      const beforeReserving = await this.seatsRepository.findOneBy({
+        seatNo: reservationModel.seatNo,
+      })
 
       if (
         beforeReserving.reservedAt !== null &&
@@ -60,13 +61,13 @@ export class SeatsService {
 
   /**
    *
-   * @param seatId
+   * @param id
    * @param userId
    * @returns paid SeatModel
    */
-  pay(seatId: string, userId: string): Promise<SeatModel> {
+  pay(id: string, userId: string): Promise<SeatModel> {
     return this.transactionService.tx<SeatModel>(async connectingSession => {
-      const beforePaying = await this.seatsRepository.findOneBySeatId(seatId)
+      const beforePaying = await this.seatsRepository.findOneBy({ id })
 
       if (!beforePaying) {
         throw new Error('Not Reserved')
@@ -85,7 +86,7 @@ export class SeatsService {
       }
 
       return this.seatsRepository.update(
-        seatId,
+        id,
         { paidAt: new Date() },
         connectingSession,
       )
@@ -94,19 +95,19 @@ export class SeatsService {
 
   /**
    *
-   * @param concertId
-   * @returns found SeatModel
+   * @param by
+   * @returns found SeatModels
    */
-  find(concertId: string): Promise<SeatModel[]> {
-    return this.seatsRepository.find(concertId)
+  findManyBy(by: Partial<SeatModel>): Promise<SeatModel[]> {
+    return this.seatsRepository.findManyBy(by)
   }
 
   /**
    *
-   * @param seatNo
+   * @param by
    * @returns found SeatModel
    */
-  findOneBySeatNo(seatNo: number): Promise<SeatModel> {
-    return this.seatsRepository.findOneBySeatNo(seatNo)
+  findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
+    return this.seatsRepository.findOneBy(by)
   }
 }

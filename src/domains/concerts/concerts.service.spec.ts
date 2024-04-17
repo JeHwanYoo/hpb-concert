@@ -74,7 +74,7 @@ describe('ConcertsService', () => {
 
   describe('.find()', () => {
     it('should find all concerts', async () => {
-      mockRepository.find = vi.fn().mockResolvedValue(
+      mockRepository.findManyBy = vi.fn().mockResolvedValue(
         Array.from({ length: 10 }, () => {
           const openingAt = new Date()
           const closingAt = faker.date.future({ refDate: openingAt })
@@ -92,7 +92,7 @@ describe('ConcertsService', () => {
         }),
       )
 
-      const foundConcerts = await service.find()
+      const foundConcerts = await service.findManyBy({})
 
       for (const foundConcert of foundConcerts) {
         expect(foundConcert).to.have.keys(

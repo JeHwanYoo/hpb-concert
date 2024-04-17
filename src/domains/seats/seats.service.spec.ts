@@ -48,7 +48,7 @@ describe('SeatsService', () => {
         id: v4(),
       }))
 
-      mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: null,
         paidAt: null,
       })
@@ -73,7 +73,7 @@ describe('SeatsService', () => {
     })
     it('should not reserve a seat if it was already reserved', async () => {
       const now = new Date()
-      mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: now,
         deadline: addMinutes(now, 5),
       })
@@ -88,7 +88,7 @@ describe('SeatsService', () => {
     })
     it('should reserve a seat and it was already reserved but the deadline exceeds', async () => {
       const past = faker.date.past({ refDate: new Date() })
-      mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: past,
         deadline: addMinutes(past, 5),
         paidAt: null,
@@ -119,7 +119,7 @@ describe('SeatsService', () => {
       expect(reserved.reservedAt).to.be.greaterThan(past)
     })
     it('should not reserve a seat if it was already paid', async () => {
-      mockRepository.findOneBySeatNo = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         paidAt: new Date(),
       })
 
@@ -136,7 +136,7 @@ describe('SeatsService', () => {
   describe('.pay()', () => {
     it('should pay', async () => {
       const now = new Date()
-      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: null,
@@ -153,7 +153,7 @@ describe('SeatsService', () => {
     })
     it('should not pay if deadline exceeds', async () => {
       const past = faker.date.past({ refDate: new Date() })
-      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: past,
         deadline: addMinutes(past, 5),
         holderId: 'fake-id',
@@ -165,7 +165,7 @@ describe('SeatsService', () => {
     })
     it('should not pay if it was already paid', async () => {
       const now = new Date()
-      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: new Date(),
@@ -177,7 +177,7 @@ describe('SeatsService', () => {
       )
     })
     it('should not pay if wat not reserved', async () => {
-      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue(null)
+      mockRepository.findOneBy = vi.fn().mockResolvedValue(null)
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
         'Not Reserved',
@@ -185,7 +185,7 @@ describe('SeatsService', () => {
     })
     it('should not pay if the user is different with the holder', async () => {
       const now = new Date()
-      mockRepository.findOneBySeatId = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockResolvedValue({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: null,
@@ -197,8 +197,4 @@ describe('SeatsService', () => {
       )
     })
   })
-
-  describe.todo('.find()')
-
-  describe.todo('.findOneBySeatNo()')
 })

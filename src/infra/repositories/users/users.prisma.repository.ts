@@ -30,7 +30,7 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param id User's id
    * @returns The UserModel that matched
    */
-  findOne(id: string): Promise<UserModel> {
+  findOneById(id: string): Promise<UserModel> {
     return this.prisma.user.findUnique({
       where: {
         id,
@@ -46,7 +46,7 @@ export class UsersPrismaRepository implements UsersRepository {
    * Please be aware, the 'total' might not always be accurate as data may change between fetching the data and counting it.
    * This is an accepted trade-off for better performance.
    */
-  async find(
+  async findManyBy(
     query: OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {
     const { page, size } = query

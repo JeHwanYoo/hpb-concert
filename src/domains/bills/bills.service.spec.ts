@@ -57,6 +57,4 @@ describe('BillsService', () => {
       )
     })
   })
-
-  describe.todo('.findOne()')
 })

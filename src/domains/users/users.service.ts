@@ -5,6 +5,7 @@ import {
   OffsetBasedPaginationQuery,
   OffsetBasedPaginationResult,
 } from '../../shared/shared.dto'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class UsersService {
@@ -24,21 +25,21 @@ export class UsersService {
 
   /**
    *
-   * @param id
+   * @param by
    * @returns found UserModel
    */
-  findOne(id: string): Promise<UserModel> {
-    return this.usersRepository.findOne(id)
+  findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
+    return this.usersRepository.findOneBy(by)
   }
 
   /**
    *
-   * @param query
+   * @param by
    * @returns paginated UserModel
    */
-  find(
-    query: OffsetBasedPaginationQuery,
+  findManyByOffset(
+    by: Partial<UserModel> & OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {
-    return this.usersRepository.find(query)
+    return this.usersRepository.findManyBy(by)
   }
 }
