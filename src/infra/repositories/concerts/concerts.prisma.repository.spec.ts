@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
 import { setUpPrismaIntegratedTest } from '../../../shared/integrated.test.setup'
@@ -61,6 +61,34 @@ describe('ConcertsPrismaRepository', () => {
         'closingAt',
         'eventDate',
       )
+    })
+  })
+
+  describe('.find()', () => {
+    let createdConcerts: Awaited<ReturnType<typeof prisma.concert.findMany>>
+
+    beforeEach(async () => {
+      await prisma.concert.createMany({
+        data: Array.from({ length: 10 }, () => {
+          const openingAt = new Date()
+          const closingAt = faker.date.future({ refDate: openingAt })
+          const eventDate = faker.date.future({ refDate: closingAt })
+          return {
+            capacity: faker.number.int(100),
+            price: faker.number.int(30000),
+            openingAt,
+            closingAt,
+            eventDate,
+          }
+        }),
+      })
+
+      createdConcerts = await prisma.concert.findMany()
+    })
+
+    it('should find all concerts', async () => {
+      const foundConcerts = await repository.find()
+      expect(foundConcerts).to.be.deep.eq(createdConcerts)
     })
   })
 })
