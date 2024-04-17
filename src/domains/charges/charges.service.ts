@@ -5,6 +5,7 @@ import {
   TransactionService,
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class ChargesService {
@@ -17,31 +18,30 @@ export class ChargesService {
 
   /**
    *
-   * @param userId
+   * @param by
    * @returns found ChargeModel
    */
-  findOneByUserId(userId: string): Promise<ChargeModel> {
-    return this.chargesRepository.findOneBy(userId)
+  findOneByUserId(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
+    return this.chargesRepository.findOneBy(by)
   }
 
   /**
    *
-   * @param chargeId
+   * @param id
    * @param chargeModel
    * @returns charged ChargeModel
    */
-  charge(
-    chargeId: string,
-    chargeModel: ChargeOrUseModel,
-  ): Promise<ChargeModel> {
+  charge(id: string, chargeModel: ChargeOrUseModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(async connectingSession => {
-      const beforeCharging = await this.chargesRepository.findOneByChargeId(
-        chargeId,
+      const beforeCharging = await this.chargesRepository.findOneBy(
+        {
+          id,
+        },
         connectingSession,
       )
 
       return this.chargesRepository.update(
-        chargeId,
+        id,
         { balance: beforeCharging.balance + chargeModel.amount },
         connectingSession,
       )
@@ -50,15 +50,15 @@ export class ChargesService {
 
   /**
    *
-   * @param chargeId
+   * @param id
    * @param useModel
    * @returns used ChargeModel
    * @throws Error Insufficient balance
    */
-  use(chargeId: string, useModel: ChargeOrUseModel): Promise<ChargeModel> {
+  use(id: string, useModel: ChargeOrUseModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(async connectingSession => {
-      const beforeCharging = await this.chargesRepository.findOneByChargeId(
-        chargeId,
+      const beforeCharging = await this.chargesRepository.findOneBy(
+        { id },
         connectingSession,
       )
 
@@ -69,7 +69,7 @@ export class ChargesService {
       }
 
       return this.chargesRepository.update(
-        chargeId,
+        id,
         {
           balance,
         },
