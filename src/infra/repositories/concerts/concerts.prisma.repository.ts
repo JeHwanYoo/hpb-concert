@@ -21,11 +21,7 @@ export class ConcertsPrismaRepository implements ConcertsRepository {
     })
   }
 
-  /**
-   *
-   * @returns Found Concerts
-   */
-  findManyBy(): Promise<ConcertModel[]> {
-    return this.prisma.concert.findMany()
+  findManyBy(by: Partial<ConcertModel>): Promise<ConcertModel[]> {
+    return this.prisma.concert.findMany({})
   }
 }

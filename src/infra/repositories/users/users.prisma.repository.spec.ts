@@ -59,7 +59,7 @@ describe('UsersPrismaRepository', () => {
           name: 'John',
         },
       })
-      const expectedUser = await repository.findOneById(createdUser.id)
+      const expectedUser = await repository.findOneBy({ id: createdUser.id })
 
       assertUser(expectedUser, createdUser)
     })
