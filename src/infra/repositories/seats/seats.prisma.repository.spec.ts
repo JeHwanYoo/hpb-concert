@@ -33,4 +33,9 @@ describe('SeatsPrismaRepository', () => {
   it('should be defined', async () => {
     expect(repository).to.not.be.undefined
   })
+
+  describe.todo('.create()')
+  describe.todo('.findManyBy()')
+  describe.todo('.findOneBy()')
+  describe.todo('.update()')
 })
