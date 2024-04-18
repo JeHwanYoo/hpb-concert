@@ -78,22 +78,24 @@ describe('SeatsPrismaRepository', () => {
       )
     })
   })
-  describe('.findManyBy()', () => {
-    let createdSeat: SeatModel
-    beforeEach(async () => {
-      const reservedAt = new Date()
-      const deadline = addMinutes(reservedAt, 5)
-      createdSeat = await prisma.seat.create({
-        data: {
-          seatNo: 0,
-          holderId: faker.helpers.arrayElement(users).id, // pick randomly
-          concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
-          reservedAt,
-          deadline,
-        },
-      })
-    })
 
+  // Seed a seat to find and update
+  let createdSeat: SeatModel
+  beforeEach(async () => {
+    const reservedAt = new Date()
+    const deadline = addMinutes(reservedAt, 5)
+    createdSeat = await prisma.seat.create({
+      data: {
+        seatNo: 0,
+        holderId: faker.helpers.arrayElement(users).id, // pick randomly
+        concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
+        reservedAt,
+        deadline,
+      },
+    })
+  })
+
+  describe('.findManyBy()', () => {
     it('should find the seat which matched to concertId', async () => {
       const [foundSeat] = await repository.findManyBy({
         concertId: createdSeat.concertId,
@@ -101,6 +103,13 @@ describe('SeatsPrismaRepository', () => {
       expect(foundSeat).to.be.deep.eq(createdSeat)
     })
   })
-  describe.todo('.findOneBy()')
+  describe('.findOneBy()', () => {
+    it('should find the seat which matched to id', async () => {
+      const foundSeat = await repository.findOneBy({
+        id: createdSeat.id,
+      })
+      expect(foundSeat).to.be.deep.eq(createdSeat)
+    })
+  })
   describe.todo('.update()')
 })
