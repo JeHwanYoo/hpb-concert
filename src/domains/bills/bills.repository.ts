@@ -14,12 +14,12 @@ export interface BillsRepository<S = unknown> {
 
   /**
    *
-   * @param identifier
+   * @param by
    * @param session
    * @returns Found BillModel which matches the given condition
    */
   findOneBy(
-    identifier: IdentifierFrom<BillModel>,
+    by: IdentifierFrom<BillModel>,
     session?: S,
   ): Promise<BillModel | null>
 }

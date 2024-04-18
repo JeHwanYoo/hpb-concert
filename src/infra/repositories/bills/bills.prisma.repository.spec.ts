@@ -75,5 +75,21 @@ describe('BillsPrismaRepository', () => {
     })
   })
 
-  describe.todo('.findOneBy()')
+  describe('.findOneBy()', () => {
+    it('should find a bill', async () => {
+      const createdBill = await prisma.bill.create({
+        data: {
+          holderId: faker.helpers.arrayElement(users).id,
+          seatId: faker.helpers.arrayElement(seats).id,
+          amount: BigInt(10000),
+        },
+      })
+
+      const foundBill = await repository.findOneBy({
+        id: createdBill.id,
+      })
+
+      expect(foundBill).to.be.deep.eq(createdBill)
+    })
+  })
 })
