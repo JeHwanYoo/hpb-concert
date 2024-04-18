@@ -33,12 +33,20 @@ export class SeatsPrismaRepository implements SeatsRepository {
     })
   }
 
-  update(seatId: string, updatingModel: SeatUpdatingModel): Promise<SeatModel> {
-    return this.prisma.seat.update({
-      where: {
-        id: seatId,
-      },
-      data: updatingModel,
-    })
+  async update(
+    seatId: string,
+    updatingModel: SeatUpdatingModel,
+  ): Promise<SeatModel> {
+    try {
+      return this.prisma.seat.update({
+        where: {
+          id: seatId,
+        },
+        data: updatingModel,
+      })
+    } catch (e) {
+      // todo logging
+      return null
+    }
   }
 }
