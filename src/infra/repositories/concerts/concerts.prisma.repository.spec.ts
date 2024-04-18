@@ -31,7 +31,7 @@ describe('ConcertsPrismaRepository', () => {
 
   // Initialize databases to ensure test idempotency
   afterEach(async () => {
-    await prisma.user.deleteMany()
+    await prisma.concert.deleteMany()
   })
 
   it('should be defined', async () => {
