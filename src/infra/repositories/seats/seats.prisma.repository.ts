@@ -37,12 +37,14 @@ export class SeatsPrismaRepository implements SeatsRepository {
     seatId: string,
     updatingModel: SeatUpdatingModel,
   ): Promise<SeatModel> {
+    const { holderId, ...rest } = updatingModel
     try {
       return this.prisma.seat.update({
         where: {
           id: seatId,
+          holderId,
         },
-        data: updatingModel,
+        data: rest,
       })
     } catch (e) {
       // todo logging
