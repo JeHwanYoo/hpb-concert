@@ -6,6 +6,7 @@ import {
 } from '../../../domains/bills/models/bill.model'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
 import { PrismaService } from '../../prisma/prisma.service'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class BillsPrismaRepository implements BillsRepository {
@@ -17,7 +18,9 @@ export class BillsPrismaRepository implements BillsRepository {
     })
   }
 
-  findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel | null> {
-    return Promise.resolve(undefined)
+  findOneBy(by: IdentifierFrom<BillModel>): Promise<BillModel | null> {
+    return this.prisma.bill.findUnique({
+      where: by as Prisma.BillWhereUniqueInput,
+    })
   }
 }
