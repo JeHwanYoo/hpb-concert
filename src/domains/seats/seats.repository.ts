@@ -46,5 +46,5 @@ export interface SeatsRepository<S = unknown> {
     seatId: string,
     updatingModel: SeatUpdatingModel,
     session?: S,
-  ): Promise<SeatModel>
+  ): Promise<SeatModel | null>
 }

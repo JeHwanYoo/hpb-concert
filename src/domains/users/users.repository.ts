@@ -26,7 +26,10 @@ export interface UsersRepository<S = unknown> {
    * @param session
    * @returns The UserModel that matched
    */
-  findOneBy(by: IdentifierFrom<UserModel>, session?: S): Promise<UserModel>
+  findOneBy(
+    by: IdentifierFrom<UserModel>,
+    session?: S,
+  ): Promise<UserModel | null>
 
   /**
    *
@@ -50,7 +53,7 @@ export interface UsersRepository<S = unknown> {
     id: string,
     updatingModel: UserUpdatingModel,
     session?: S,
-  ): Promise<UserModel>
+  ): Promise<UserModel | null>
 
   /**
    *

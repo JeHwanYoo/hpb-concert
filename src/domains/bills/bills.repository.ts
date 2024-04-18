@@ -21,5 +21,5 @@ export interface BillsRepository<S = unknown> {
   findOneBy(
     identifier: IdentifierFrom<BillModel>,
     session?: S,
-  ): Promise<BillModel>
+  ): Promise<BillModel | null>
 }
