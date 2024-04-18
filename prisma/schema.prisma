@@ -35,7 +35,6 @@ model Concert {
   closingAt DateTime
   eventDate DateTime
   Seat      Seat[]
-  Bill      Bill[]
 }
 
 model Seat {
@@ -49,6 +48,7 @@ model Seat {
   reservedAt DateTime?
   deadline   DateTime?
   paidAt     DateTime?
+  Bill       Bill[]
 }
 
 model Charge {
@@ -65,5 +65,5 @@ model Bill {
   amount    BigInt
   createdAt DateTime @default(now())
   holder    User     @relation(fields: [holderId], references: [id])
-  seat      Concert  @relation(fields: [seatId], references: [id])
+  seat      Seat     @relation(fields: [seatId], references: [id])
 }
