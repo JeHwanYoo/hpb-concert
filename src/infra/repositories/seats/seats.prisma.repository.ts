@@ -28,7 +28,9 @@ export class SeatsPrismaRepository implements SeatsRepository {
   findOneBy(
     by: IdentifierFrom<SeatModel, 'seatNo'>,
   ): Promise<SeatModel | null> {
-    return Promise.resolve(undefined)
+    return this.prisma.seat.findUnique({
+      where: by as Prisma.SeatWhereUniqueInput,
+    })
   }
 
   update(seatId: string, updatingModel: SeatUpdatingModel): Promise<SeatModel> {
