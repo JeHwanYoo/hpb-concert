@@ -20,7 +20,7 @@ export class UsersService {
    * @returns created UserModel
    */
   create(mutationModel: UserCreationModel): Promise<UserModel> {
-    return this.usersRepository.create(mutationModel)
+    return this.usersRepository.create(mutationModel)()
   }
 
   /**
@@ -29,7 +29,7 @@ export class UsersService {
    * @returns found UserModel
    */
   findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
-    return this.usersRepository.findOneBy(by)
+    return this.usersRepository.findOneBy(by)()
   }
 
   /**
@@ -40,6 +40,6 @@ export class UsersService {
   findManyByOffset(
     by: Partial<UserModel> & OffsetBasedPaginationQuery,
   ): Promise<OffsetBasedPaginationResult<UserModel>> {
-    return this.usersRepository.findManyBy(by)
+    return this.usersRepository.findManyBy(by)()
   }
 }

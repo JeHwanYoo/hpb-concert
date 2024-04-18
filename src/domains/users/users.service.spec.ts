@@ -35,12 +35,12 @@ describe('UsersService', () => {
 
   describe('.create()', () => {
     it('should be create a user', async () => {
-      mockRepository.create = vi.fn().mockResolvedValue({
+      mockRepository.create = vi.fn().mockReturnValue(() => ({
         id: uuidv4(),
         name: 'john',
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      }))
 
       const result = await service.create({ name: faker.person.firstName() })
       expect(result).to.not.be.undefined
@@ -53,12 +53,12 @@ describe('UsersService', () => {
 
   describe('.findOneBy()', () => {
     it('should return the user with the given id', async () => {
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         id: uuidv4(),
         name: faker.person.firstName(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      }))
 
       const uuid = uuidv4()
       const result = await service.findOneBy({
@@ -74,7 +74,7 @@ describe('UsersService', () => {
 
   describe('.findManyBy()', () => {
     it('should return the paginated results', async () => {
-      mockRepository.findManyBy = vi.fn().mockResolvedValue({
+      mockRepository.findManyBy = vi.fn().mockReturnValue(() => ({
         total: 3,
         items: Array.from({ length: 3 }, () => ({
           id: uuidv4(),
@@ -82,7 +82,7 @@ describe('UsersService', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
         })),
-      })
+      }))
 
       const result = await service.findManyByOffset({ page: 1, size: 10 })
       expect(result).to.not.be.undefined
