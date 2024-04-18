@@ -15,6 +15,7 @@ import {
 import { BillsPrismaRepository } from './bills.prisma.repository'
 import { ConcertModel } from '../../../domains/concerts/models/concert.model'
 import { SeatModel } from '../../../domains/seats/models/seat.model'
+import { faker } from '@faker-js/faker'
 
 describe('BillsPrismaRepository', () => {
   let repository: BillsPrismaRepository
@@ -49,14 +50,30 @@ describe('BillsPrismaRepository', () => {
 
   // Initialize databases to ensure test idempotency
   afterEach(async () => {
-    await prisma.seat.deleteMany()
+    await prisma.bill.deleteMany()
   })
 
   it('should be defined', async () => {
     expect(repository).to.not.be.undefined
   })
 
-  describe.todo('.create()')
+  describe('.create()', () => {
+    it('should create a bill', async () => {
+      const createdBill = await repository.create({
+        holderId: faker.helpers.arrayElement(users).id,
+        seatId: faker.helpers.arrayElement(seats).id,
+        amount: BigInt(10000),
+      })
+
+      expect(createdBill).to.have.keys(
+        'amount',
+        'createdAt',
+        'holderId',
+        'id',
+        'seatId',
+      )
+    })
+  })
 
   describe.todo('.findOneBy()')
 })

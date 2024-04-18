@@ -43,7 +43,7 @@ describe('ChargesPrismaRepository', () => {
 
   // Initialize databases to ensure test idempotency
   afterEach(async () => {
-    await prisma.seat.deleteMany()
+    await prisma.charge.deleteMany()
   })
 
   it('should be defined', async () => {
