@@ -50,7 +50,7 @@ describe('ChargesService', () => {
 
       const used = await service.use('fake-id', { amount: 500 })
 
-      expect(used.balance).to.be.eq(500)
+      expect(used.amount).to.be.eq(500)
     })
 
     it('should throw an error if the balance is insufficient', async () => {

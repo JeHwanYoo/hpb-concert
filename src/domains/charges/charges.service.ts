@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ChargesRepository, ChargesRepositoryToken } from './charges.repository'
-import { ChargeModel, ChargeOrUseModel } from './models/charge.model'
+import {
+  ChargeModel,
+  ChargeCreationModel,
+  ChargeOrUseModel,
+} from './models/charge.model'
 import {
   TransactionService,
   TransactionServiceToken,
@@ -15,6 +19,10 @@ export class ChargesService {
     @Inject(TransactionServiceToken)
     private readonly transactionService: TransactionService,
   ) {}
+
+  create(creationModel: ChargeCreationModel): Promise<ChargeModel> {
+    return this.chargesRepository.create(creationModel)
+  }
 
   /**
    *
@@ -42,7 +50,7 @@ export class ChargesService {
 
       return this.chargesRepository.update(
         id,
-        { balance: beforeCharging.balance + chargeModel.amount },
+        { amount: beforeCharging.amount + chargeModel.amount },
         connectingSession,
       )
     })
@@ -62,7 +70,7 @@ export class ChargesService {
         connectingSession,
       )
 
-      const balance = beforeCharging.balance - useModel.amount
+      const balance = beforeCharging.amount - useModel.amount
 
       if (balance < 0) {
         throw new Error('Insufficient balance')
@@ -71,7 +79,7 @@ export class ChargesService {
       return this.chargesRepository.update(
         id,
         {
-          balance,
+          amount: balance,
         },
         connectingSession,
       )

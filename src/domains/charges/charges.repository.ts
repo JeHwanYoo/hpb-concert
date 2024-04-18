@@ -1,9 +1,15 @@
-import { ChargeModel, ChargeUpdatingModel } from './models/charge.model'
+import {
+  ChargeModel,
+  ChargeCreationModel,
+  ChargeUpdatingModel,
+} from './models/charge.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 export const ChargesRepositoryToken = 'ChargesRepository'
 
 export interface ChargesRepository<S = unknown> {
+  create(creationModel: ChargeCreationModel): Promise<ChargeModel>
+
   /**
    *
    * @param by
