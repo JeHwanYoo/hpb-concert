@@ -7,6 +7,7 @@ import {
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma/prisma.service'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class SeatsPrismaRepository implements SeatsRepository {
@@ -18,8 +19,10 @@ export class SeatsPrismaRepository implements SeatsRepository {
     })
   }
 
-  findManyBy(by: Partial<SeatModel>, session?: unknown): Promise<SeatModel[]> {
-    return Promise.resolve([])
+  findManyBy(by: Partial<SeatModel>): Promise<SeatModel[]> {
+    return this.prisma.seat.findMany({
+      where: by as Prisma.SeatWhereUniqueInput,
+    })
   }
 
   findOneBy(
