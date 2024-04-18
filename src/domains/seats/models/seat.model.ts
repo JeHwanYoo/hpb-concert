@@ -8,7 +8,7 @@ export interface SeatCreationModel {
 
 export type SeatUpdatingModel = Omit<
   Partial<SeatCreationModel>,
-  'concertId'
+  'concertId' | 'seatNo'
 > & { paidAt?: Date }
 
 export interface SeatModel {
