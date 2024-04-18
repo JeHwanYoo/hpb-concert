@@ -9,6 +9,7 @@ import {
 import { UserModel } from '../../../domains/users/models/user.model'
 import { seedUsers } from '../../../shared/shared.integrated.test.seed'
 import { ChargesPrismaRepository } from './charges.prisma.repository'
+import { faker } from '@faker-js/faker'
 
 describe('ChargesPrismaRepository', () => {
   let repository: ChargesPrismaRepository
@@ -48,7 +49,15 @@ describe('ChargesPrismaRepository', () => {
     expect(repository).to.not.be.undefined
   })
 
-  describe.todo('.create()')
+  describe('.create()', () => {
+    it("should create a user's charges", async () => {
+      const createdCharge = await repository.create({
+        userId: faker.helpers.arrayElement(users).id,
+        amount: BigInt(1000),
+      })
+      expect(createdCharge).to.have.keys('amount', 'id', 'userId')
+    })
+  })
   describe.todo('.findOneBy()')
   describe.todo('.update()')
 })
