@@ -137,7 +137,7 @@
 
 ## ERD
 
-![hpb tables](./assets/hpb%20tables.jpg)
+![hpb tables](./assets/hpb_tables.jpg)
 
 ## Mock API
 
