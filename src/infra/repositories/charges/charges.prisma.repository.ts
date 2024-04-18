@@ -25,17 +25,22 @@ export class ChargesPrismaRepository implements ChargesRepository {
     })
   }
 
-  update(
+  async update(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
-  ): Promise<ChargeModel> {
+  ): Promise<ChargeModel | null> {
     const { userId, ...rest } = updatingModel
-    return this.prisma.charge.update({
-      where: {
-        id: chargeId,
-        userId: updatingModel.userId,
-      },
-      data: rest,
-    })
+    try {
+      return await this.prisma.charge.update({
+        where: {
+          id: chargeId,
+          userId: updatingModel.userId,
+        },
+        data: rest,
+      })
+    } catch (e) {
+      // todo logging
+      return null
+    }
   }
 }

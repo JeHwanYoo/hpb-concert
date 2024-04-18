@@ -16,7 +16,10 @@ export interface ChargesRepository<S = unknown> {
    * @param session
    * @returns Found ChargeModel which matches the given condition
    */
-  findOneBy(by: IdentifierFrom<ChargeModel>, session?: S): Promise<ChargeModel>
+  findOneBy(
+    by: IdentifierFrom<ChargeModel>,
+    session?: S,
+  ): Promise<ChargeModel | null>
 
   /**
    *
@@ -29,5 +32,5 @@ export interface ChargesRepository<S = unknown> {
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
     session?: S,
-  ): Promise<ChargeModel>
+  ): Promise<ChargeModel | null>
 }
