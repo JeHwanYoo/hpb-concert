@@ -79,5 +79,13 @@ describe('ChargesPrismaRepository', () => {
       expect(foundCharge).to.be.deep.eq(createdCharge)
     })
   })
-  describe.todo('.update()')
+  describe('.update()', () => {
+    it("should update a user's charge", async () => {
+      const updatedCharge = await repository.update(createdCharge.id, {
+        userId: createdCharge.userId,
+        amount: BigInt(2000),
+      })
+      expect(updatedCharge.amount).to.be.deep.eq(BigInt(2000))
+    })
+  })
 })
