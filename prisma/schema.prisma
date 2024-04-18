@@ -44,7 +44,7 @@ model Seat {
   concertId  String
   holder     User      @relation(fields: [holderId], references: [id])
   concert    Concert   @relation(fields: [concertId], references: [id])
-  setNo      Int       @unique()
+  seatNo     Int       @unique()
   createdAt  DateTime  @default(now())
   reservedAt DateTime?
   deadline   DateTime?
