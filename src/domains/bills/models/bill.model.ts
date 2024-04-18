@@ -10,7 +10,7 @@ export class BillCreationModel {
   /**
    * @description The paid amount
    */
-  cost: number
+  amount: number
 }
 
 export class BillModel {
@@ -29,7 +29,7 @@ export class BillModel {
   /**
    * @description The paid amount
    */
-  cost: number
+  amount: number
   /**
    * @description CreatedAt
    */
