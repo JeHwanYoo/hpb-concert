@@ -2,6 +2,7 @@ import { UserModel } from '../domains/users/models/user.model'
 import { ConcertModel } from '../domains/concerts/models/concert.model'
 import { PrismaService } from '../infra/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
+import { SeatModel } from '../domains/seats/models/seat.model'
 
 /**
  *
@@ -48,6 +49,29 @@ export function seedConcerts(
           openingAt,
           closingAt,
           eventDate,
+        },
+      })
+    }),
+  )
+}
+
+let uniqueSeatNo = 0
+
+export function seedSeats(
+  prisma: PrismaService,
+  userPool: UserModel[],
+  concertPool: ConcertModel[],
+  n: number = 5,
+): Promise<SeatModel[]> {
+  return Promise.all(
+    Array.from({ length: n }, () => {
+      const holderId = faker.helpers.arrayElement(userPool).id
+      const concertId = faker.helpers.arrayElement(concertPool).id
+      return prisma.seat.create({
+        data: {
+          seatNo: uniqueSeatNo++,
+          holderId,
+          concertId,
         },
       })
     }),

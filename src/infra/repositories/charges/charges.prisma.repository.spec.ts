@@ -33,7 +33,7 @@ describe('ChargesPrismaRepository', () => {
           ChargesPrismaRepository,
         )
       }),
-      // 2. Seed users and concerts to resolve the constraint rule
+      // 2. Seed users to resolve the constraint rule
       async () => {
         users = await seedUsers(prisma)
       },
