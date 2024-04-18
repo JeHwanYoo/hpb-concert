@@ -3,9 +3,24 @@ export const TransactionServiceToken = 'TransactionService'
 export interface TransactionService {
   /**
    *
-   * @param cb A function defining the operation to be executed during the transaction
-   * @returns Returns the result of the operation function
+   * @param transactionLevel
+   * @param operations
+   * @returns The last result of operations
    * @description Ensures atomicity of the transaction during the session
    */
-  tx<T, S = unknown>(cb: (connectingSession: S) => Promise<T>): Promise<T>
+  tx<Return, Connection = unknown>(
+    transactionLevel: string,
+    operations: [
+      ...TransactionalOperation<unknown, Connection>[],
+      TransactionalOperation<Return, Connection>,
+    ],
+  ): Promise<Return>
 }
+
+/**
+ * @template Return The return type of the transactional operation
+ * @template Connection If the transaction connection was not provided, it does not ensure isolation
+ */
+export type TransactionalOperation<Return, Connection = unknown> = (
+  connection?: Connection,
+) => Promise<Return>
