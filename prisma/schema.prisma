@@ -36,9 +36,15 @@ model Concert {
 }
 
 model Seat {
-  id        String  @id @default(uuid())
-  holderId  String
-  concertId String
-  holder    User    @relation(fields: [holderId], references: [id])
-  concert   Concert @relation(fields: [concertId], references: [id])
+  id         String    @id @default(uuid())
+  holderId   String
+  concertId  String
+  holder     User      @relation(fields: [holderId], references: [id])
+  concert    Concert   @relation(fields: [concertId], references: [id])
+  setNo      Int       @unique()
+  price      BigInt
+  createdAt  DateTime  @default(now())
+  reservedAt DateTime?
+  deadline   DateTime?
+  paidAt     DateTime?
 }
