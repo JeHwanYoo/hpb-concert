@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
@@ -10,6 +10,7 @@ import { UserModel } from '../../../domains/users/models/user.model'
 import { seedUsers } from '../../../shared/shared.integrated.test.seed'
 import { ChargesPrismaRepository } from './charges.prisma.repository'
 import { faker } from '@faker-js/faker'
+import { ChargeModel } from '../../../domains/charges/models/charge.model'
 
 describe('ChargesPrismaRepository', () => {
   let repository: ChargesPrismaRepository
@@ -58,6 +59,25 @@ describe('ChargesPrismaRepository', () => {
       expect(createdCharge).to.have.keys('amount', 'id', 'userId')
     })
   })
-  describe.todo('.findOneBy()')
+
+  // Seed a charge to find and update
+  let createdCharge: ChargeModel
+  beforeEach(async () => {
+    createdCharge = await prisma.charge.create({
+      data: {
+        userId: faker.helpers.arrayElement(users).id,
+        amount: BigInt(1000),
+      },
+    })
+  })
+
+  describe('.findOneBy()', () => {
+    it("should find a user's charge", async () => {
+      const foundCharge = await repository.findOneBy({
+        id: createdCharge.id,
+      })
+      expect(foundCharge).to.be.deep.eq(createdCharge)
+    })
+  })
   describe.todo('.update()')
 })
