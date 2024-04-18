@@ -10,6 +10,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 import { Prisma } from '@prisma/client'
 
 @Injectable()
@@ -18,13 +19,56 @@ export class UsersPrismaRepository implements UsersRepository {
 
   /**
    *
-   * @param mutationModel to create
+   * @param createModel to create
    * @returns The UUID that was created
    */
-  async create(mutationModel: UserCreationModel): Promise<UserModel> {
-    return this.prisma.user.create({
-      data: mutationModel,
-    })
+  create(
+    createModel: UserCreationModel,
+  ): TransactionalOperation<UserModel, PrismaService> {
+    return () =>
+      this.prisma.user.create({
+        data: createModel,
+      })
+  }
+
+  /**
+   *
+   * @param by
+   * @returns The paginated result of the query
+   *
+   * Please be aware, the 'total' might not always be accurate as data may change between fetching the data and counting it.
+   * This is an accepted trade-off for better performance.
+   */
+  findManyBy(
+    by: Partial<UserModel> & OffsetBasedPaginationQuery,
+  ): TransactionalOperation<
+    OffsetBasedPaginationResult<UserModel>,
+    PrismaService
+  > {
+    return async () => {
+      const { page, size } = by
+      const skip = (page - 1) * size
+
+      const items = await this.prisma.user.findMany({
+        take: size,
+        skip,
+        orderBy: [
+          {
+            createdAt: 'desc',
+          },
+          {
+            id: 'asc',
+          },
+        ],
+      })
+
+      const total = await this.prisma.user.count()
+
+      return {
+        total,
+        items,
+      }
+    }
   }
 
   /**
@@ -32,63 +76,12 @@ export class UsersPrismaRepository implements UsersRepository {
    * @param by
    * @returns The UserModel that matched
    */
-  findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
-    return this.prisma.user.findUnique({
-      where: by as Prisma.UserWhereUniqueInput,
-    })
-  }
-
-  /**
-   *
-   * @param query
-   * @returns The paginated result of the query
-   *
-   * Please be aware, the 'total' might not always be accurate as data may change between fetching the data and counting it.
-   * This is an accepted trade-off for better performance.
-   */
-  async findManyBy(
-    query: OffsetBasedPaginationQuery,
-  ): Promise<OffsetBasedPaginationResult<UserModel>> {
-    const { page, size } = query
-    const skip = (page - 1) * size
-
-    const items = await this.prisma.user.findMany({
-      take: size,
-      skip,
-      orderBy: [
-        {
-          createdAt: 'desc',
-        },
-        {
-          id: 'asc',
-        },
-      ],
-    })
-
-    const total = await this.prisma.user.count()
-
-    return {
-      total,
-      items,
-    }
-  }
-
-  /**
-   *
-   * @param id User's id
-   * @param mutationModel to update
-   * @returns The UUID that was updated
-   */
-  update(id: string, mutationModel: UserCreationModel): Promise<UserModel> {
-    throw new Error('Method not implemented.')
-  }
-
-  /**
-   *
-   * @params User's id
-   * @returns The UUID that was removed
-   */
-  remove(id: string): Promise<string> {
-    throw new Error('Method not implemented.')
+  findOneBy(
+    by: IdentifierFrom<UserModel>,
+  ): TransactionalOperation<UserModel | null, PrismaService> {
+    return () =>
+      this.prisma.user.findUnique({
+        where: by as Prisma.UserWhereUniqueInput,
+      })
   }
 }

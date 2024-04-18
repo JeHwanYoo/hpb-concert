@@ -41,7 +41,7 @@ describe('UsersPrismaRepository', () => {
 
   describe('.create()', () => {
     it('should create a user', async () => {
-      const expectedUser = await repository.create({ name: 'John' })
+      const expectedUser = await repository.create({ name: 'John' })()
       const foundUser = await prisma.user.findUnique({
         where: {
           id: expectedUser.id,
@@ -59,7 +59,7 @@ describe('UsersPrismaRepository', () => {
           name: 'John',
         },
       })
-      const expectedUser = await repository.findOneBy({ id: createdUser.id })
+      const expectedUser = await repository.findOneBy({ id: createdUser.id })()
 
       assertUser(expectedUser, createdUser)
     })
@@ -79,7 +79,7 @@ describe('UsersPrismaRepository', () => {
       const expectedUsers = await repository.findManyBy({
         page: 1,
         size: 10,
-      })
+      })()
 
       assertAllFulfilled(settledResults)
 
