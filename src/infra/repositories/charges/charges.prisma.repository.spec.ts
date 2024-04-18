@@ -87,5 +87,13 @@ describe('ChargesPrismaRepository', () => {
       })
       expect(updatedCharge.amount).to.be.deep.eq(BigInt(2000))
     })
+    it('should fail to update charge if given userId did not match to the original userId', async () => {
+      const updatedCharge = await repository.update(createdCharge.id, {
+        userId: 'fake-user-id',
+        amount: BigInt(2000),
+      })
+
+      expect(updatedCharge).to.be.null
+    })
   })
 })
