@@ -23,38 +23,37 @@ describe('EnqueuesAPIController (e2e)', () => {
   const jwtService = new JwtService()
 
   beforeAll(
-    () =>
-      setUpPipeline(
-        setUpRedisIntegratedTest(async _redis => {
-          redis = _redis
-        }),
-        setUpPrismaIntegratedTest(async _prisma => {
-          prisma = _prisma
-        }),
-        async () => {
-          process.env.JWT_SECRET = 'test'
+    setUpPipeline(
+      setUpRedisIntegratedTest(async _redis => {
+        redis = _redis
+      }),
+      setUpPrismaIntegratedTest(async _prisma => {
+        prisma = _prisma
+      }),
+      async () => {
+        process.env.JWT_SECRET = 'test'
 
-          const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-          }).compile()
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+          imports: [AppModule],
+        }).compile()
 
-          app = moduleFixture.createNestApplication()
-          await app.init()
+        app = moduleFixture.createNestApplication()
+        await app.init()
 
-          // mock authorization
-          mockUserId = uuidV4()
-          request = agent(app.getHttpServer())
-          request.set(
-            'Authorization',
-            `Bearer ${jwtService.sign(
-              {
-                userId: mockUserId,
-              },
-              { secret: process.env.JWT_SECRET },
-            )}`,
-          )
-        },
-      ),
+        // mock authorization
+        mockUserId = uuidV4()
+        request = agent(app.getHttpServer())
+        request.set(
+          'Authorization',
+          `Bearer ${jwtService.sign(
+            {
+              userId: mockUserId,
+            },
+            { secret: process.env.JWT_SECRET },
+          )}`,
+        )
+      },
+    ),
     1000 * 60 * 3,
   )
 
