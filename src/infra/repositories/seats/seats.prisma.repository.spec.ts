@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { PrismaModule } from '../../prisma/prisma.module'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
@@ -58,16 +58,31 @@ describe('SeatsPrismaRepository', () => {
     it('should create a seat', async () => {
       const reservedAt = new Date()
       const deadline = addMinutes(reservedAt, 5)
-      await repository.create({
+      const createdSeat = await repository.create({
         seatNo: 0,
         holderId: faker.helpers.arrayElement(users).id, // pick randomly
         concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
         reservedAt,
         deadline,
       })
+      expect(createdSeat).to.have.keys(
+        'concertId',
+        'createdAt',
+        'deadline',
+        'holderId',
+        'id',
+        'paidAt',
+        'reservedAt',
+        'seatNo',
+      )
     })
   })
-  describe.todo('.findManyBy()')
+  describe('.findManyBy()', () => {
+    // beforeEach(async () => {
+    //   const reservedAt = new Date()
+    //   const deadline = addMinutes(reservedAt, 5)
+    // })
+  })
   describe.todo('.findOneBy()')
   describe.todo('.update()')
 })

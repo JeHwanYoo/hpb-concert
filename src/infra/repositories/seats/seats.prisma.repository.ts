@@ -13,7 +13,9 @@ export class SeatsPrismaRepository implements SeatsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   create(creationModel: SeatCreationModel): Promise<SeatModel> {
-    return Promise.resolve(undefined)
+    return this.prisma.seat.create({
+      data: creationModel,
+    })
   }
 
   findManyBy(by: Partial<SeatModel>, session?: unknown): Promise<SeatModel[]> {
