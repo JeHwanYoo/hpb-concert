@@ -1,16 +1,10 @@
-export interface ChargeOrUseModel {
-  /**
-   * @description The amount of charging
-   */
-  amount: bigint
-}
-
 export interface ChargeCreationModel {
   userId: string
   amount: bigint
 }
 
 export interface ChargeUpdatingModel {
+  userId: string
   amount: bigint
 }
 

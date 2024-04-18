@@ -29,6 +29,13 @@ export class ChargesPrismaRepository implements ChargesRepository {
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
-    return Promise.resolve(undefined)
+    const { userId, ...rest } = updatingModel
+    return this.prisma.charge.update({
+      where: {
+        id: chargeId,
+        userId: updatingModel.userId,
+      },
+      data: rest,
+    })
   }
 }

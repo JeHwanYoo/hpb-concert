@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
   ChargeModel,
-  ChargeOrUseModel,
+  ChargeUpdatingModel,
 } from '../../../domains/charges/models/charge.model'
 
-export class ChargesPatchRequestDto implements ChargeOrUseModel {
+export class ChargesPatchRequestDto
+  implements Omit<ChargeUpdatingModel, 'userId'>
+{
   @ApiProperty({
     type: Number,
     description: '충전 금액',
