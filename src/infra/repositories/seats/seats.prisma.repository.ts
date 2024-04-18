@@ -34,6 +34,11 @@ export class SeatsPrismaRepository implements SeatsRepository {
   }
 
   update(seatId: string, updatingModel: SeatUpdatingModel): Promise<SeatModel> {
-    return Promise.resolve(undefined)
+    return this.prisma.seat.update({
+      where: {
+        id: seatId,
+      },
+      data: updatingModel,
+    })
   }
 }
