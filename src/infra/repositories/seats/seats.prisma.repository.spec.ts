@@ -15,6 +15,7 @@ import {
   seedUsers,
 } from '../../../shared/shared.integrated.test.seed'
 import { faker } from '@faker-js/faker'
+import { SeatModel } from '../../../domains/seats/models/seat.model'
 
 describe('SeatsPrismaRepository', () => {
   let repository: SeatsPrismaRepository
@@ -78,10 +79,27 @@ describe('SeatsPrismaRepository', () => {
     })
   })
   describe('.findManyBy()', () => {
-    // beforeEach(async () => {
-    //   const reservedAt = new Date()
-    //   const deadline = addMinutes(reservedAt, 5)
-    // })
+    let createdSeat: SeatModel
+    beforeEach(async () => {
+      const reservedAt = new Date()
+      const deadline = addMinutes(reservedAt, 5)
+      createdSeat = await prisma.seat.create({
+        data: {
+          seatNo: 0,
+          holderId: faker.helpers.arrayElement(users).id, // pick randomly
+          concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
+          reservedAt,
+          deadline,
+        },
+      })
+    })
+
+    it('should find the seat which matched to concertId', async () => {
+      const [foundSeat] = await repository.findManyBy({
+        concertId: createdSeat.concertId,
+      })
+      expect(foundSeat).to.be.deep.eq(createdSeat)
+    })
   })
   describe.todo('.findOneBy()')
   describe.todo('.update()')
