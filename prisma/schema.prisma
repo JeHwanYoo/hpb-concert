@@ -19,6 +19,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   Seat      Seat[]
+  Charge    Charge?
 
   @@index([createdAt])
 }
@@ -47,4 +48,11 @@ model Seat {
   reservedAt DateTime?
   deadline   DateTime?
   paidAt     DateTime?
+}
+
+model Charge {
+  id     String @id @default(uuid())
+  userId String @unique
+  amount BigInt
+  user   User   @relation(fields: [userId], references: [id])
 }
