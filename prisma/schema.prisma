@@ -20,6 +20,7 @@ model User {
   updatedAt DateTime @default(now())
   Seat      Seat[]
   Charge    Charge?
+  Bill      Bill[]
 
   @@index([createdAt])
 }
@@ -34,6 +35,7 @@ model Concert {
   closingAt DateTime
   eventDate DateTime
   Seat      Seat[]
+  Bill      Bill[]
 }
 
 model Seat {
@@ -55,4 +57,14 @@ model Charge {
   userId String @unique
   amount BigInt
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Bill {
+  id        String   @id @default(uuid())
+  holderId  String
+  seatId    String
+  amount    BigInt
+  createdAt DateTime @default(now())
+  holder    User     @relation(fields: [holderId], references: [id])
+  seat      Concert  @relation(fields: [seatId], references: [id])
 }
