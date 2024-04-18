@@ -111,5 +111,13 @@ describe('SeatsPrismaRepository', () => {
       expect(foundSeat).to.be.deep.eq(createdSeat)
     })
   })
-  describe.todo('.update()')
+  describe('.update()', () => {
+    it('should update the seat which matched to id', async () => {
+      const paidAt = new Date()
+      const paidSeat = await repository.update(createdSeat.id, {
+        paidAt,
+      })
+      expect(paidSeat.paidAt).to.be.deep.eq(paidAt)
+    })
+  })
 })
