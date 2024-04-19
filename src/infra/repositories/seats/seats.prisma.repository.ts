@@ -14,25 +14,29 @@ import { TransactionalOperation } from '../../../shared/transaction/transaction.
 export class SeatsPrismaRepository implements SeatsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(creationModel: SeatCreationModel): TransactionalOperation<SeatModel> {
-    return () =>
-      this.prisma.seat.create({
+  create(
+    creationModel: SeatCreationModel,
+  ): TransactionalOperation<SeatModel, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).seat.create({
         data: creationModel,
       })
   }
 
-  findManyBy(by: Partial<SeatModel>): TransactionalOperation<SeatModel[]> {
-    return () =>
-      this.prisma.seat.findMany({
+  findManyBy(
+    by: Partial<SeatModel>,
+  ): TransactionalOperation<SeatModel[], PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).seat.findMany({
         where: by as Prisma.SeatWhereUniqueInput,
       })
   }
 
   findOneBy(
     by: IdentifierFrom<SeatModel, 'seatNo'>,
-  ): TransactionalOperation<SeatModel | null> {
-    return () =>
-      this.prisma.seat.findUnique({
+  ): TransactionalOperation<SeatModel | null, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).seat.findUnique({
         where: by as Prisma.SeatWhereUniqueInput,
       })
   }
@@ -40,11 +44,11 @@ export class SeatsPrismaRepository implements SeatsRepository {
   update(
     seatId: string,
     updatingModel: SeatUpdatingModel,
-  ): TransactionalOperation<SeatModel | null> {
-    return async () => {
+  ): TransactionalOperation<SeatModel | null, PrismaService> {
+    return async connection => {
       const { holderId, ...rest } = updatingModel
       try {
-        return await this.prisma.seat.update({
+        return await (connection ?? this.prisma).seat.update({
           where: {
             id: seatId,
             holderId,

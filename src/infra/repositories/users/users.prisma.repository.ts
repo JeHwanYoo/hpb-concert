@@ -25,8 +25,8 @@ export class UsersPrismaRepository implements UsersRepository {
   create(
     createModel: UserCreationModel,
   ): TransactionalOperation<UserModel, PrismaService> {
-    return () =>
-      this.prisma.user.create({
+    return connection =>
+      (connection ?? this.prisma).user.create({
         data: createModel,
       })
   }
@@ -45,11 +45,11 @@ export class UsersPrismaRepository implements UsersRepository {
     OffsetBasedPaginationResult<UserModel>,
     PrismaService
   > {
-    return async () => {
+    return async connection => {
       const { page, size } = by
       const skip = (page - 1) * size
 
-      const items = await this.prisma.user.findMany({
+      const items = await (connection ?? this.prisma).user.findMany({
         take: size,
         skip,
         orderBy: [
@@ -62,7 +62,7 @@ export class UsersPrismaRepository implements UsersRepository {
         ],
       })
 
-      const total = await this.prisma.user.count()
+      const total = await (connection ?? this.prisma).user.count()
 
       return {
         total,
@@ -79,8 +79,8 @@ export class UsersPrismaRepository implements UsersRepository {
   findOneBy(
     by: IdentifierFrom<UserModel>,
   ): TransactionalOperation<UserModel | null, PrismaService> {
-    return () =>
-      this.prisma.user.findUnique({
+    return connection =>
+      (connection ?? this.prisma).user.findUnique({
         where: by as Prisma.UserWhereUniqueInput,
       })
   }

@@ -13,18 +13,20 @@ import { TransactionalOperation } from '../../../shared/transaction/transaction.
 export class BillsPrismaRepository implements BillsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(creationModel: BillCreationModel): TransactionalOperation<BillModel> {
-    return () =>
-      this.prisma.bill.create({
+  create(
+    creationModel: BillCreationModel,
+  ): TransactionalOperation<BillModel, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).bill.create({
         data: creationModel,
       })
   }
 
   findOneBy(
     by: IdentifierFrom<BillModel>,
-  ): TransactionalOperation<BillModel | null> {
-    return () =>
-      this.prisma.bill.findUnique({
+  ): TransactionalOperation<BillModel | null, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).bill.findUnique({
         where: by as Prisma.BillWhereUniqueInput,
       })
   }

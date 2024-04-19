@@ -16,18 +16,18 @@ export class ChargesPrismaRepository implements ChargesRepository {
 
   create(
     creationModel: ChargeCreationModel,
-  ): TransactionalOperation<ChargeModel> {
-    return () =>
-      this.prisma.charge.create({
+  ): TransactionalOperation<ChargeModel, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).charge.create({
         data: creationModel,
       })
   }
 
   findOneBy(
     by: IdentifierFrom<ChargeModel>,
-  ): TransactionalOperation<ChargeModel> {
-    return () =>
-      this.prisma.charge.findUnique({
+  ): TransactionalOperation<ChargeModel, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).charge.findUnique({
         where: by as Prisma.ChargeWhereUniqueInput,
       })
   }
@@ -35,11 +35,11 @@ export class ChargesPrismaRepository implements ChargesRepository {
   update(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
-  ): TransactionalOperation<ChargeModel | null> {
-    return async () => {
+  ): TransactionalOperation<ChargeModel | null, PrismaService> {
+    return async connection => {
       const { userId, ...rest } = updatingModel
       try {
-        return await this.prisma.charge.update({
+        return await (connection ?? this.prisma).charge.update({
           where: {
             id: chargeId,
             userId: updatingModel.userId,
