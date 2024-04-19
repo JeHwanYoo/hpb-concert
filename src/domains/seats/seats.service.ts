@@ -8,6 +8,10 @@ import {
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import {
+  DomainException,
+  NotFoundDomainException,
+} from '../../shared/shared.exception'
 
 @Injectable()
 export class SeatsService {
@@ -22,8 +26,8 @@ export class SeatsService {
    *
    * @param reservationModel
    * @returns reserved SeatModel
-   * @throws Error Already reserved
-   * @throws Error Already paid
+   * @throws DomainException Already reserved
+   * @throws DomainException Already paid
    * @description
    * create the seat when user reserve it
    */
@@ -46,11 +50,11 @@ export class SeatsService {
           beforeReserving.reservedAt !== null &&
           differenceInMinutes(new Date(), beforeReserving.deadline) < 5
         ) {
-          throw new Error('Already reserved')
+          throw new DomainException('Already reserved')
         }
 
         if (beforeReserving.paidAt !== null) {
-          throw new Error('Already paid')
+          throw new DomainException('Already paid')
         }
       },
       this.seatsRepository.create({
@@ -66,10 +70,10 @@ export class SeatsService {
    * @param id
    * @param userId
    * @returns paid SeatModel
-   * @throws Error Not Reserved
-   * @throws Error Not Authorized
-   * @throws Error Deadline Exceeds
-   * @throws Error Already paid
+   * @throws DomainException Not Reserved
+   * @throws DomainException Not Authorized
+   * @throws DomainException Deadline Exceeds
+   * @throws DomainException Already paid
    */
   pay(id: string, userId: string): Promise<SeatModel> {
     return this.transactionService.tx<SeatModel>(
@@ -81,19 +85,19 @@ export class SeatsService {
           )
 
           if (!beforePaying) {
-            throw new Error('Not Reserved')
+            throw new DomainException('Not Reserved')
           }
 
           if (beforePaying.holderId !== userId) {
-            throw new Error('Not Authorized')
+            throw new DomainException('Not Authorized')
           }
 
           if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-            throw new Error('Deadline Exceeds')
+            throw new DomainException('Deadline Exceeds')
           }
 
           if (beforePaying.paidAt !== null) {
-            throw new Error('Already paid')
+            throw new DomainException('Already paid')
           }
         },
         this.seatsRepository.update(id, { paidAt: new Date() }),
@@ -114,13 +118,13 @@ export class SeatsService {
    *
    * @param by
    * @returns found SeatModel
-   * @throws Error Not Found
+   * @throws NotFoundDomainException
    */
   async findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
     const foundSeatModel = await this.seatsRepository.findOneBy(by)()
 
     if (foundSeatModel === null) {
-      throw new Error('Not Found')
+      throw new NotFoundDomainException()
     }
 
     return foundSeatModel

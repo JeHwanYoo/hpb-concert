@@ -11,6 +11,10 @@ import {
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import {
+  DomainException,
+  NotFoundDomainException,
+} from '../../shared/shared.exception'
 
 @Injectable()
 export class ChargesService {
@@ -46,7 +50,7 @@ export class ChargesService {
    * @param id
    * @param chargeModel
    * @returns charged ChargeModel
-   * @throws Error Not Found
+   * @throws NotFoundDomainException
    */
   charge(id: string, chargeModel: ChargeUpdatingModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
@@ -58,7 +62,7 @@ export class ChargesService {
           })(conn)
 
           if (!beforeCharging) {
-            throw new Error('Not Found')
+            throw new NotFoundDomainException()
           }
 
           return this.chargesRepository.update(id, {
@@ -75,8 +79,8 @@ export class ChargesService {
    * @param id
    * @param useModel
    * @returns used ChargeModel
-   * @throws Error Insufficient balance
-   * @throws Error Not Found
+   * @throws DomainException Insufficient balance
+   * @throws NotFoundDomainException
    */
   use(id: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
@@ -88,13 +92,13 @@ export class ChargesService {
           )
 
           if (!beforeCharging) {
-            throw new Error('Not Found')
+            throw new NotFoundDomainException()
           }
 
           const balance = beforeCharging.amount - useModel.amount
 
           if (balance < 0) {
-            throw new Error('Insufficient balance')
+            throw new DomainException('Insufficient balance')
           }
 
           return this.chargesRepository.update(id, {

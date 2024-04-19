@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { BillsRepository, BillsRepositoryToken } from './bills.repository'
 import { BillCreationModel, BillModel } from './models/bill.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import { NotFoundDomainException } from '../../shared/shared.exception'
 
 @Injectable()
 export class BillsService {
@@ -23,13 +24,13 @@ export class BillsService {
    *
    * @param identifier
    * @returns found bill
-   * @throws Error Not Found
+   * @throws NotFoundDomainException
    */
   async findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel> {
     const foundBillModel = await this.billsRepository.findOneBy(identifier)()
 
     if (!foundBillModel) {
-      throw new Error('Not Found')
+      throw new NotFoundDomainException()
     }
 
     return foundBillModel
