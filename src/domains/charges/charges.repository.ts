@@ -9,7 +9,9 @@ import { TransactionalOperation } from '../../shared/transaction/transaction.ser
 export const ChargesRepositoryToken = 'ChargesRepository'
 
 export interface ChargesRepository<Connection = unknown> {
-  create(creationModel: ChargeCreationModel): Promise<ChargeModel>
+  create(
+    creationModel: ChargeCreationModel,
+  ): TransactionalOperation<ChargeModel>
 
   /**
    *

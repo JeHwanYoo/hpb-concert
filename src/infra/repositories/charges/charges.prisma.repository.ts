@@ -8,39 +8,48 @@ import {
 import { PrismaService } from '../../prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 
 @Injectable()
 export class ChargesPrismaRepository implements ChargesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(creationModel: ChargeCreationModel): Promise<ChargeModel> {
-    return this.prisma.charge.create({
-      data: creationModel,
-    })
+  create(
+    creationModel: ChargeCreationModel,
+  ): TransactionalOperation<ChargeModel> {
+    return () =>
+      this.prisma.charge.create({
+        data: creationModel,
+      })
   }
 
-  findOneBy(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
-    return this.prisma.charge.findUnique({
-      where: by as Prisma.ChargeWhereUniqueInput,
-    })
+  findOneBy(
+    by: IdentifierFrom<ChargeModel>,
+  ): TransactionalOperation<ChargeModel> {
+    return () =>
+      this.prisma.charge.findUnique({
+        where: by as Prisma.ChargeWhereUniqueInput,
+      })
   }
 
-  async update(
+  update(
     chargeId: string,
     updatingModel: ChargeUpdatingModel,
-  ): Promise<ChargeModel | null> {
-    const { userId, ...rest } = updatingModel
-    try {
-      return await this.prisma.charge.update({
-        where: {
-          id: chargeId,
-          userId: updatingModel.userId,
-        },
-        data: rest,
-      })
-    } catch (e) {
-      // todo logging
-      return null
+  ): TransactionalOperation<ChargeModel | null> {
+    return async () => {
+      const { userId, ...rest } = updatingModel
+      try {
+        return await this.prisma.charge.update({
+          where: {
+            id: chargeId,
+            userId: updatingModel.userId,
+          },
+          data: rest,
+        })
+      } catch (e) {
+        // todo logging
+        return null
+      }
     }
   }
 }
