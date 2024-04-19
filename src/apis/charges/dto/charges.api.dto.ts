@@ -19,7 +19,7 @@ export class ChargesPatchRequestDto
     description: '충전 금액',
     minimum: 0,
   })
-  amount: bigint
+  amount: number
 }
 
 export class ChargesResponseDto implements ChargeModel {
@@ -42,5 +42,5 @@ export class ChargesResponseDto implements ChargeModel {
     description: '유저 잔액',
     minimum: 0,
   })
-  amount: bigint
+  amount: number
 }

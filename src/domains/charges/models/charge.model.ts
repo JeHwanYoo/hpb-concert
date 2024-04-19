@@ -1,10 +1,10 @@
 export interface ChargeCreationModel {
   userId: string
-  amount: bigint
+  amount: number
 }
 
 export interface ChargeUpdatingModel {
-  amount: bigint
+  amount: number
 }
 
 export interface ChargeModel {
@@ -19,5 +19,5 @@ export interface ChargeModel {
   /**
    * @description balance
    */
-  amount: bigint
+  amount: number
 }

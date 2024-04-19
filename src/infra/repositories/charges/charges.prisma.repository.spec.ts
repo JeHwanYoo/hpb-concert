@@ -54,7 +54,7 @@ describe('ChargesPrismaRepository', () => {
     it("should create a user's charges", async () => {
       const createdCharge = await repository.create({
         userId: faker.helpers.arrayElement(users).id,
-        amount: BigInt(1000),
+        amount: 1000,
       })()
       expect(createdCharge).to.have.keys('amount', 'id', 'userId')
     })
@@ -67,7 +67,7 @@ describe('ChargesPrismaRepository', () => {
       createdCharge = await prisma.charge.create({
         data: {
           userId: faker.helpers.arrayElement(users).id,
-          amount: BigInt(1000),
+          amount: 1000,
         },
       })
     })
@@ -86,20 +86,20 @@ describe('ChargesPrismaRepository', () => {
       createdCharge = await prisma.charge.create({
         data: {
           userId: faker.helpers.arrayElement(users).id,
-          amount: BigInt(1000),
+          amount: 1000,
         },
       })
     })
 
     it("should update a user's charge", async () => {
       const updatedCharge = await repository.update(createdCharge.userId, {
-        amount: BigInt(2000),
+        amount: 2000,
       })()
-      expect(updatedCharge.amount).to.be.deep.eq(BigInt(2000))
+      expect(updatedCharge.amount).to.be.deep.eq(2000)
     })
     it('should fail to update charge if given userId did not match to the original userId', async () => {
       const updatedCharge = await repository.update('fake-id', {
-        amount: BigInt(2000),
+        amount: 2000,
       })()
 
       expect(updatedCharge).to.be.null
