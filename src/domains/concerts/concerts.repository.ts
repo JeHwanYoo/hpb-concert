@@ -1,24 +1,24 @@
 import { ConcertCreationModel, ConcertModel } from './models/concert.model'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
 export const ConcertsRepositoryToken = 'ConcertsRepository'
 
-export interface ConcertsRepository<S = unknown> {
+export interface ConcertsRepository<Connection = unknown> {
   /**
    *
    * @param creationModel
-   * @param session
    * @returns Created ConcertModel
    */
   create(
     creationModel: ConcertCreationModel,
-    session?: S,
-  ): Promise<ConcertModel>
+  ): TransactionalOperation<ConcertModel, Connection>
 
   /**
    *
    * @param by
-   * @param session
    * @returns Found ConcertModels
    */
-  findManyBy(by: Partial<ConcertModel>, session?: S): Promise<ConcertModel[]>
+  findManyBy(
+    by: Partial<ConcertModel>,
+  ): TransactionalOperation<ConcertModel[], Connection>
 }
