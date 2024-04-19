@@ -18,16 +18,19 @@ export class ConcertsPrismaRepository implements ConcertsRepository {
    */
   create(
     creationModel: ConcertCreationModel,
-  ): TransactionalOperation<ConcertModel> {
-    return () =>
-      this.prisma.concert.create({
+  ): TransactionalOperation<ConcertModel, PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).concert.create({
         data: creationModel,
       })
   }
 
   findManyBy(
     by: Partial<ConcertModel>,
-  ): TransactionalOperation<ConcertModel[]> {
-    return () => this.prisma.concert.findMany({})
+  ): TransactionalOperation<ConcertModel[], PrismaService> {
+    return connection =>
+      (connection ?? this.prisma).concert.findMany({
+        where: by,
+      })
   }
 }
