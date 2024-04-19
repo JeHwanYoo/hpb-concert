@@ -14,16 +14,16 @@ export class ChargesApiUseCase {
   }
 
   charge(
-    id: string,
+    userId: string,
     chargeModel: ChargeUpdatingModel,
   ): Promise<ChargesResponseDto> {
-    return this.chargeService.charge(id, chargeModel)
+    return this.chargeService.charge(userId, chargeModel)
   }
 
   use(
-    id: string,
+    userId: string,
     chargeModel: ChargeUpdatingModel,
   ): Promise<ChargesResponseDto> {
-    return this.chargeService.use(id, chargeModel)
+    return this.chargeService.use(userId, chargeModel)
   }
 }

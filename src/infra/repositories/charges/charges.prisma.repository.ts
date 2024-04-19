@@ -33,18 +33,16 @@ export class ChargesPrismaRepository implements ChargesRepository {
   }
 
   update(
-    chargeId: string,
+    userId: string,
     updatingModel: ChargeUpdatingModel,
   ): TransactionalOperation<ChargeModel | null, PrismaService> {
     return async connection => {
-      const { userId, ...rest } = updatingModel
       try {
         return await (connection ?? this.prisma).charge.update({
           where: {
-            id: chargeId,
-            userId: updatingModel.userId,
+            userId,
           },
-          data: rest,
+          data: updatingModel,
         })
       } catch (e) {
         // todo logging

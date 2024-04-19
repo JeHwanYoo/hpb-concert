@@ -4,7 +4,6 @@ export interface ChargeCreationModel {
 }
 
 export interface ChargeUpdatingModel {
-  userId: string
   amount: bigint
 }
 

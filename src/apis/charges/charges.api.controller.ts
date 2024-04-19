@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common'
 import {
   ApiBody,
   ApiHeader,
@@ -13,13 +13,16 @@ import {
 } from './dto/charges.api.dto'
 import { UserTokenExampleValue } from '../../shared/shared.openapi'
 import { ChargesApiUseCase } from './charges.api.usecase'
+import { UserTokensGuard } from '../../domains/tokens/tokens.guard'
+import { DecodedToken } from '../../domains/tokens/tokens.decorator'
+import { UserTokenModel } from '../../domains/tokens/models/enqueueTokenModel'
 
 @Controller('v1/charges')
 @ApiTags('Charges')
 export class ChargesApiController {
   constructor(private readonly chargesApiUseCase: ChargesApiUseCase) {}
 
-  @Get(':user_id')
+  @Get()
   @ApiOperation({
     description: '잔액 확인 API',
   })
@@ -36,13 +39,14 @@ export class ChargesApiController {
     type: ChargesResponseDto,
   })
   @ApiUnauthorizedResponse()
+  @UseGuards(UserTokensGuard)
   getChargeByUserId(
-    @Param('user_id') userId: string,
+    @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
   ): Promise<ChargesResponseDto> {
-    return this.chargesApiUseCase.getChargeByUserId(userId)
+    return this.chargesApiUseCase.getChargeByUserId(decodedUserToken.userId)
   }
 
-  @Patch(':charge_id')
+  @Patch()
   @ApiOperation({
     description: '잔액 충전 / 사용 API',
   })
@@ -62,17 +66,16 @@ export class ChargesApiController {
     type: ChargesResponseDto,
   })
   @ApiUnauthorizedResponse()
+  @UseGuards(UserTokensGuard)
   patchCharge(
-    @Param('charge_id') id: string,
+    @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
     @Body() body: ChargesPatchRequestDto,
   ): Promise<ChargesResponseDto> {
     return body.action === 'charge'
-      ? this.chargesApiUseCase.charge(id, {
-          userId: '',
+      ? this.chargesApiUseCase.charge(decodedUserToken.userId, {
           amount: body.amount,
         })
-      : this.chargesApiUseCase.use(id, {
-          userId: '',
+      : this.chargesApiUseCase.use(decodedUserToken.userId, {
           amount: body.amount,
         })
   }

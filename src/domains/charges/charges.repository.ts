@@ -24,12 +24,12 @@ export interface ChargesRepository<Connection = unknown> {
 
   /**
    *
-   * @param chargeId
+   * @param userId
    * @param updatingModel
    * @retruns Updated ChargeModel
    */
   update(
-    chargeId: string,
+    userId: string,
     updatingModel: ChargeUpdatingModel,
   ): TransactionalOperation<ChargeModel | null, Connection>
 }
