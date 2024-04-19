@@ -63,7 +63,7 @@ describe('BillsPrismaRepository', () => {
         holderId: faker.helpers.arrayElement(users).id,
         seatId: faker.helpers.arrayElement(seats).id,
         amount: BigInt(10000),
-      })
+      })()
 
       expect(createdBill).to.have.keys(
         'amount',
@@ -87,7 +87,7 @@ describe('BillsPrismaRepository', () => {
 
       const foundBill = await repository.findOneBy({
         id: createdBill.id,
-      })
+      })()
 
       expect(foundBill).to.be.deep.eq(createdBill)
     })
