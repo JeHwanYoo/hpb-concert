@@ -34,25 +34,25 @@ describe('BillsService', () => {
 
   describe('.create()', () => {
     it('should create a bill', async () => {
-      mockRepository.create = vi.fn().mockResolvedValue({
+      mockRepository.create = vi.fn().mockReturnValue(() => ({
         id: v4(),
         seatId: v4(),
         holderId: v4(),
-        cost: 5000,
+        amount: BigInt(5000),
         createdAt: new Date(),
-      })
+      }))
 
       const createdBill = await service.create({
         seatId: 'fake-id',
         holderId: 'fake-id',
-        cost: 5000,
+        amount: BigInt(5000),
       })
 
       expect(createdBill).to.have.keys(
         'id',
         'seatId',
         'holderId',
-        'cost',
+        'amount',
         'createdAt',
       )
     })
