@@ -47,26 +47,28 @@ export class ChargesService {
 
   /**
    *
-   * @param id
+   * @param userId
    * @param chargeModel
    * @returns charged ChargeModel
    * @throws NotFoundDomainException
    */
-  charge(id: string, chargeModel: ChargeUpdatingModel): Promise<ChargeModel> {
+  charge(
+    userId: string,
+    chargeModel: ChargeUpdatingModel,
+  ): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
       TransactionLevel.ReadCommitted,
       [
         async conn => {
           const beforeCharging = await this.chargesRepository.findOneBy({
-            id,
+            userId,
           })(conn)
 
           if (!beforeCharging) {
             throw new NotFoundDomainException()
           }
 
-          return this.chargesRepository.update(id, {
-            userId: chargeModel.userId,
+          return this.chargesRepository.update(userId, {
             amount: beforeCharging.amount + chargeModel.amount,
           })(conn)
         },
@@ -76,20 +78,20 @@ export class ChargesService {
 
   /**
    *
-   * @param id
+   * @param userId
    * @param useModel
    * @returns used ChargeModel
    * @throws DomainException Insufficient balance
    * @throws NotFoundDomainException
    */
-  use(id: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
+  use(userId: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
       TransactionLevel.ReadCommitted,
       [
         async conn => {
-          const beforeCharging = await this.chargesRepository.findOneBy({ id })(
-            conn,
-          )
+          const beforeCharging = await this.chargesRepository.findOneBy({
+            userId,
+          })(conn)
 
           if (!beforeCharging) {
             throw new NotFoundDomainException()
@@ -101,8 +103,7 @@ export class ChargesService {
             throw new DomainException('Insufficient balance')
           }
 
-          return this.chargesRepository.update(id, {
-            userId: useModel.userId,
+          return this.chargesRepository.update(userId, {
             amount: balance,
           })(conn)
         },
