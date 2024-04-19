@@ -28,8 +28,14 @@ export class UsersService {
    * @param by
    * @returns found UserModel
    */
-  findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
-    return this.usersRepository.findOneBy(by)()
+  async findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
+    const foundUserModel = this.usersRepository.findOneBy(by)()
+
+    if (!foundUserModel) {
+      throw new Error('Not Found')
+    }
+
+    return foundUserModel
   }
 
   /**
