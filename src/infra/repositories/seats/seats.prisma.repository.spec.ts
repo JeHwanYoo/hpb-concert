@@ -55,17 +55,19 @@ describe('SeatsPrismaRepository', () => {
     expect(repository).to.not.be.undefined
   })
 
+  let uniqueSeatNo = 0
+
   describe('.create()', () => {
     it('should create a seat', async () => {
       const reservedAt = new Date()
       const deadline = addMinutes(reservedAt, 5)
       const createdSeat = await repository.create({
-        seatNo: 0,
+        seatNo: uniqueSeatNo++,
         holderId: faker.helpers.arrayElement(users).id, // pick randomly
         concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
         reservedAt,
         deadline,
-      })
+      })()
       expect(createdSeat).to.have.keys(
         'concertId',
         'createdAt',
@@ -86,7 +88,7 @@ describe('SeatsPrismaRepository', () => {
     const deadline = addMinutes(reservedAt, 5)
     createdSeat = await prisma.seat.create({
       data: {
-        seatNo: 0,
+        seatNo: uniqueSeatNo++,
         holderId: faker.helpers.arrayElement(users).id, // pick randomly
         concertId: faker.helpers.arrayElement(concerts).id, // pick randomly
         reservedAt,
@@ -99,7 +101,7 @@ describe('SeatsPrismaRepository', () => {
     it('should find the seat which matched to concertId', async () => {
       const [foundSeat] = await repository.findManyBy({
         concertId: createdSeat.concertId,
-      })
+      })()
       expect(foundSeat).to.be.deep.eq(createdSeat)
     })
   })
@@ -107,7 +109,7 @@ describe('SeatsPrismaRepository', () => {
     it('should find the seat which matched to id', async () => {
       const foundSeat = await repository.findOneBy({
         id: createdSeat.id,
-      })
+      })()
       expect(foundSeat).to.be.deep.eq(createdSeat)
     })
   })
@@ -116,8 +118,15 @@ describe('SeatsPrismaRepository', () => {
       const paidAt = new Date()
       const paidSeat = await repository.update(createdSeat.id, {
         paidAt,
-      })
+      })()
       expect(paidSeat.paidAt).to.be.deep.eq(paidAt)
+    })
+    it('should fail to update the seat which does not match to id', async () => {
+      const paidAt = new Date()
+      const noPaidSeat = await repository.update('fake-id', {
+        paidAt,
+      })()
+      expect(noPaidSeat).to.be.null
     })
   })
 })

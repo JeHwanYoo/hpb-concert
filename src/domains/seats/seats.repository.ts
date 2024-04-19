@@ -8,20 +8,24 @@ import { TransactionalOperation } from '../../shared/transaction/transaction.ser
 
 export const SeatsRepositoryToken = 'SeatRepository'
 
-export interface SeatsRepository {
+export interface SeatsRepository<Connection = unknown> {
   /**
    *
    * @param creationModel
    * @returns Created SeatModel
    */
-  create(creationModel: SeatCreationModel): TransactionalOperation<SeatModel>
+  create(
+    creationModel: SeatCreationModel,
+  ): TransactionalOperation<SeatModel, Connection>
 
   /**
    *
    * @param by
    * @retruns Found SeatModels
    */
-  findManyBy(by: Partial<SeatModel>): TransactionalOperation<SeatModel[]>
+  findManyBy(
+    by: Partial<SeatModel>,
+  ): TransactionalOperation<SeatModel[], Connection>
 
   /**
    *
@@ -30,7 +34,7 @@ export interface SeatsRepository {
    */
   findOneBy(
     by: IdentifierFrom<SeatModel, 'seatNo'>,
-  ): TransactionalOperation<SeatModel | null>
+  ): TransactionalOperation<SeatModel | null, Connection>
 
   /**
    *
@@ -41,5 +45,5 @@ export interface SeatsRepository {
   update(
     seatId: string,
     updatingModel: SeatUpdatingModel,
-  ): TransactionalOperation<SeatModel | null>
+  ): TransactionalOperation<SeatModel | null, Connection>
 }
