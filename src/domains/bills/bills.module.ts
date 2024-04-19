@@ -5,9 +5,10 @@ import {
 } from '../../shared/transaction/transaction.service'
 import { BillsRepository, BillsRepositoryToken } from './bills.repository'
 import { BillsService } from './bills.service'
+import { PrismaModule } from '../../infra/prisma/prisma.module'
 
 export interface BillModuleProps {
-  SeatsRepository: new (...args: unknown[]) => BillsRepository
+  BillsRepository: new (...args: unknown[]) => BillsRepository
   TransactionService: new (...args: unknown[]) => TransactionService
 }
 
@@ -16,7 +17,7 @@ export class BillsModule {
   static forFeature(props: BillModuleProps): DynamicModule {
     const dynamicRepositoryProvider: Provider = {
       provide: BillsRepositoryToken,
-      useClass: props.SeatsRepository,
+      useClass: props.BillsRepository,
     }
 
     const dynamicTransactionService: Provider = {
@@ -26,6 +27,7 @@ export class BillsModule {
 
     return {
       module: BillsModule,
+      imports: [PrismaModule],
       providers: [
         BillsService,
         dynamicRepositoryProvider,

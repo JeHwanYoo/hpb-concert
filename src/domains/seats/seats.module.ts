@@ -5,6 +5,7 @@ import {
   TransactionService,
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
+import { PrismaModule } from '../../infra/prisma/prisma.module'
 
 export interface ConcertsModuleProps {
   SeatsRepository: new (...args: unknown[]) => SeatsRepository
@@ -26,6 +27,7 @@ export class SeatsModule {
 
     return {
       module: SeatsModule,
+      imports: [PrismaModule],
       providers: [
         SeatsService,
         dynamicRepositoryProvider,
