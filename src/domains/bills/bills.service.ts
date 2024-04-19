@@ -23,8 +23,15 @@ export class BillsService {
    *
    * @param identifier
    * @returns found bill
+   * @throws Error Not Found
    */
-  findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel> {
-    return this.billsRepository.findOneBy(identifier)()
+  async findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel> {
+    const foundBillModel = await this.billsRepository.findOneBy(identifier)()
+
+    if (!foundBillModel) {
+      throw new Error('Not Found')
+    }
+
+    return foundBillModel
   }
 }
