@@ -66,6 +66,10 @@ export class SeatsService {
    * @param id
    * @param userId
    * @returns paid SeatModel
+   * @throws Error Not Reserved
+   * @throws Error Not Authorized
+   * @throws Error Deadline Exceeds
+   * @throws Error Already paid
    */
   pay(id: string, userId: string): Promise<SeatModel> {
     return this.transactionService.tx<SeatModel>(
