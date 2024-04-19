@@ -4,47 +4,42 @@ import {
   SeatUpdatingModel,
 } from './models/seat.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
 export const SeatsRepositoryToken = 'SeatRepository'
 
-export interface SeatsRepository<S = unknown> {
+export interface SeatsRepository {
   /**
    *
    * @param creationModel
-   * @param session
    * @returns Created SeatModel
    */
-  create(creationModel: SeatCreationModel, session?: S): Promise<SeatModel>
+  create(creationModel: SeatCreationModel): TransactionalOperation<SeatModel>
 
   /**
    *
    * @param by
-   * @param session
    * @retruns Found SeatModels
    */
-  findManyBy(by: Partial<SeatModel>, session?: S): Promise<SeatModel[]>
+  findManyBy(by: Partial<SeatModel>): TransactionalOperation<SeatModel[]>
 
   /**
    *
    * @param by
-   * @param session
    * @returns Found SeatModel or null
    */
   findOneBy(
     by: IdentifierFrom<SeatModel, 'seatNo'>,
-    session?: S,
-  ): Promise<SeatModel | null>
+  ): TransactionalOperation<SeatModel | null>
 
   /**
    *
    * @param seatId
    * @param updatingModel
-   * @param session
    * @returns Updated SeatModel
    */
   update(
     seatId: string,
     updatingModel: SeatUpdatingModel,
-    session?: S,
-  ): Promise<SeatModel | null>
+  ): TransactionalOperation<SeatModel | null>
 }

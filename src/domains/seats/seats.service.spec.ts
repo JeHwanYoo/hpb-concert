@@ -24,7 +24,16 @@ describe('SeatsService', () => {
         {
           provide: TransactionServiceToken,
           useValue: {
-            tx: vi.fn().mockImplementation(cb => cb()),
+            tx: vi
+              .fn()
+              .mockImplementation(
+                async (_, operations: ReturnType<typeof vi.fn>[]) => {
+                  for (const op of operations.slice(0, -1)) {
+                    await op()
+                  }
+                  return operations.at(-1)()
+                },
+              ),
           },
         },
       ],
@@ -42,17 +51,20 @@ describe('SeatsService', () => {
   })
 
   describe('.reserve()', () => {
-    it('should reserve a seat and deadline is 5 minutes', async () => {
-      mockRepository.create = vi.fn().mockImplementation(param => ({
+    beforeEach(() => {
+      mockRepository.create = vi.fn().mockImplementation(param => () => ({
         ...param,
         id: v4(),
       }))
-
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: null,
         paidAt: null,
-      })
-
+      }))
+      mockRepository.update = vi
+        .fn()
+        .mockImplementation((_, { paidAt }) => () => ({ paidAt }))
+    })
+    it('should reserve a seat and deadline is 5 minutes', async () => {
       const reserved = await service.reserve({
         holderId: 'fake-id',
         concertId: 'fake-id',
@@ -73,10 +85,10 @@ describe('SeatsService', () => {
     })
     it('should not reserve a seat if it was already reserved', async () => {
       const now = new Date()
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: now,
         deadline: addMinutes(now, 5),
-      })
+      }))
 
       await expect(
         service.reserve({
@@ -88,15 +100,10 @@ describe('SeatsService', () => {
     })
     it('should reserve a seat and it was already reserved but the deadline exceeds', async () => {
       const past = faker.date.past({ refDate: new Date() })
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: past,
         deadline: addMinutes(past, 5),
         paidAt: null,
-      })
-
-      mockRepository.create = vi.fn().mockImplementation(param => ({
-        ...param,
-        id: v4(),
       }))
 
       const reserved = await service.reserve({
@@ -119,9 +126,9 @@ describe('SeatsService', () => {
       expect(reserved.reservedAt).to.be.greaterThan(past)
     })
     it('should not reserve a seat if it was already paid', async () => {
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         paidAt: new Date(),
-      })
+      }))
 
       await expect(
         service.reserve({
@@ -134,30 +141,33 @@ describe('SeatsService', () => {
   })
 
   describe('.pay()', () => {
-    it('should pay', async () => {
+    beforeEach(() => {
+      mockRepository.create = vi.fn().mockImplementation(param => () => ({
+        ...param,
+        id: v4(),
+      }))
       const now = new Date()
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: null,
         holderId: 'fake-id',
-      })
-
+      }))
       mockRepository.update = vi
         .fn()
-        .mockImplementation((_, { paidAt }) => ({ paidAt }))
-
+        .mockImplementation((_, { paidAt }) => () => ({ paidAt }))
+    })
+    it('should pay', async () => {
       const paid = await service.pay('fake-id', 'fake-id')
-
       expect(paid.paidAt).to.be.instanceof(Date)
     })
     it('should not pay if deadline exceeds', async () => {
       const past = faker.date.past({ refDate: new Date() })
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: past,
         deadline: addMinutes(past, 5),
         holderId: 'fake-id',
-      })
+      }))
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
         'Deadline Exceeds',
@@ -165,19 +175,19 @@ describe('SeatsService', () => {
     })
     it('should not pay if it was already paid', async () => {
       const now = new Date()
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: new Date(),
         holderId: 'fake-id',
-      })
+      }))
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
         'Already paid',
       )
     })
     it('should not pay if wat not reserved', async () => {
-      mockRepository.findOneBy = vi.fn().mockResolvedValue(null)
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => null)
 
       await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
         'Not Reserved',
@@ -185,12 +195,12 @@ describe('SeatsService', () => {
     })
     it('should not pay if the user is different with the holder', async () => {
       const now = new Date()
-      mockRepository.findOneBy = vi.fn().mockResolvedValue({
+      mockRepository.findOneBy = vi.fn().mockReturnValue(() => ({
         reservedAt: now,
         deadline: addMinutes(now, 5),
         paidAt: null,
         holderId: v4(),
-      })
+      }))
 
       await expect(service.pay('fake-id', v4())).rejects.toThrow(
         'Not Authorized',
