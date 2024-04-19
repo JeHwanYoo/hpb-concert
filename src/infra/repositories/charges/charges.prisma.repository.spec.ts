@@ -55,43 +55,54 @@ describe('ChargesPrismaRepository', () => {
       const createdCharge = await repository.create({
         userId: faker.helpers.arrayElement(users).id,
         amount: BigInt(1000),
-      })
+      })()
       expect(createdCharge).to.have.keys('amount', 'id', 'userId')
     })
   })
 
-  // Seed a charge to find and update
-  let createdCharge: ChargeModel
-  beforeEach(async () => {
-    createdCharge = await prisma.charge.create({
-      data: {
-        userId: faker.helpers.arrayElement(users).id,
-        amount: BigInt(1000),
-      },
-    })
-  })
-
   describe('.findOneBy()', () => {
+    // Seed a charge to find
+    let createdCharge: ChargeModel
+    beforeEach(async () => {
+      createdCharge = await prisma.charge.create({
+        data: {
+          userId: faker.helpers.arrayElement(users).id,
+          amount: BigInt(1000),
+        },
+      })
+    })
+
     it("should find a user's charge", async () => {
       const foundCharge = await repository.findOneBy({
         id: createdCharge.id,
-      })
+      })()
       expect(foundCharge).to.be.deep.eq(createdCharge)
     })
   })
   describe('.update()', () => {
+    // Seed a charge to update
+    let createdCharge: ChargeModel
+    beforeEach(async () => {
+      createdCharge = await prisma.charge.create({
+        data: {
+          userId: faker.helpers.arrayElement(users).id,
+          amount: BigInt(1000),
+        },
+      })
+    })
+
     it("should update a user's charge", async () => {
       const updatedCharge = await repository.update(createdCharge.id, {
         userId: createdCharge.userId,
         amount: BigInt(2000),
-      })
+      })()
       expect(updatedCharge.amount).to.be.deep.eq(BigInt(2000))
     })
     it('should fail to update charge if given userId did not match to the original userId', async () => {
       const updatedCharge = await repository.update(createdCharge.id, {
         userId: 'fake-user-id',
         amount: BigInt(2000),
-      })
+      })()
 
       expect(updatedCharge).to.be.null
     })
