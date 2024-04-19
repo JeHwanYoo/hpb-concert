@@ -21,7 +21,16 @@ describe('ChargesService', () => {
         {
           provide: TransactionServiceToken,
           useValue: {
-            tx: vi.fn().mockImplementation(cb => cb()),
+            tx: vi
+              .fn()
+              .mockImplementation(
+                async (_, operations: ReturnType<typeof vi.fn>[]) => {
+                  for (const op of operations.slice(0, -1)) {
+                    await op()
+                  }
+                  return operations.at(-1)()
+                },
+              ),
           },
         },
       ],
@@ -40,27 +49,32 @@ describe('ChargesService', () => {
 
   describe('.use()', () => {
     it('should use the balance', async () => {
-      mockRepository.findOneByChargeId = vi
+      mockRepository.findOneBy = vi
         .fn()
-        .mockResolvedValue({ balance: 1000 })
+        .mockReturnValue(() => ({ amount: BigInt(1000) }))
 
-      mockRepository.update = vi.fn().mockImplementation((_, { balance }) => ({
-        balance,
-      }))
+      mockRepository.update = vi
+        .fn()
+        .mockImplementation((_, { amount }) => () => ({
+          amount,
+        }))
 
-      const used = await service.use('fake-id', { amount: 500 })
+      const used = await service.use('fake-id', {
+        userId: 'fake-id',
+        amount: BigInt(500),
+      })
 
-      expect(used.amount).to.be.eq(500)
+      expect(used.amount).to.be.eq(BigInt(500))
     })
 
     it('should throw an error if the balance is insufficient', async () => {
       mockRepository.findOneByChargeId = vi
         .fn()
-        .mockResolvedValue({ balance: 1000 })
+        .mockResolvedValue(() => ({ balance: 1000 }))
 
-      await expect(service.use('fake-id', { amount: 3000 })).rejects.toThrow(
-        Error,
-      )
+      await expect(
+        service.use('fake-id', { userId: 'fake-id', amount: BigInt(3000) }),
+      ).rejects.toThrow(Error)
     })
   })
 })

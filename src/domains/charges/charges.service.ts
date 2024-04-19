@@ -6,6 +6,7 @@ import {
   ChargeUpdatingModel,
 } from './models/charge.model'
 import {
+  TransactionLevel,
   TransactionService,
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
@@ -30,7 +31,7 @@ export class ChargesService {
    * @returns found ChargeModel
    */
   findOneByUserId(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
-    return this.chargesRepository.findOneBy(by)
+    return this.chargesRepository.findOneBy(by)()
   }
 
   /**
@@ -40,23 +41,21 @@ export class ChargesService {
    * @returns charged ChargeModel
    */
   charge(id: string, chargeModel: ChargeUpdatingModel): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(async connectingSession => {
-      const beforeCharging = await this.chargesRepository.findOneBy(
-        {
-          id,
-        },
-        connectingSession,
-      )
+    return this.transactionService.tx<ChargeModel>(
+      TransactionLevel.ReadCommitted,
+      [
+        async conn => {
+          const beforeCharging = await this.chargesRepository.findOneBy({
+            id,
+          })(conn)
 
-      return this.chargesRepository.update(
-        id,
-        {
-          userId: chargeModel.userId,
-          amount: beforeCharging.amount + chargeModel.amount,
+          return this.chargesRepository.update(id, {
+            userId: chargeModel.userId,
+            amount: beforeCharging.amount + chargeModel.amount,
+          })(conn)
         },
-        connectingSession,
-      )
-    })
+      ],
+    )
   }
 
   /**
@@ -67,26 +66,26 @@ export class ChargesService {
    * @throws Error Insufficient balance
    */
   use(id: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(async connectingSession => {
-      const beforeCharging = await this.chargesRepository.findOneBy(
-        { id },
-        connectingSession,
-      )
+    return this.transactionService.tx<ChargeModel>(
+      TransactionLevel.ReadCommitted,
+      [
+        async conn => {
+          const beforeCharging = await this.chargesRepository.findOneBy({ id })(
+            conn,
+          )
 
-      const balance = beforeCharging.amount - useModel.amount
+          const balance = beforeCharging.amount - useModel.amount
 
-      if (balance < 0) {
-        throw new Error('Insufficient balance')
-      }
+          if (balance < 0) {
+            throw new Error('Insufficient balance')
+          }
 
-      return this.chargesRepository.update(
-        id,
-        {
-          userId: useModel.userId,
-          amount: balance,
+          return this.chargesRepository.update(id, {
+            userId: useModel.userId,
+            amount: balance,
+          })(conn)
         },
-        connectingSession,
-      )
-    })
+      ],
+    )
   }
 }
