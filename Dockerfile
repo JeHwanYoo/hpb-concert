@@ -8,8 +8,6 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 COPY . .
 
-RUN pnpm build
-
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD sh -c "npx prisma generate && npx prisma migrate deploy && pnpm build && node dist/main"
