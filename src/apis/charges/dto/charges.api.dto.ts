@@ -8,6 +8,13 @@ export class ChargesPatchRequestDto
   implements Omit<ChargeUpdatingModel, 'userId'>
 {
   @ApiProperty({
+    type: String,
+    enum: ['charge', 'use'],
+    description: '충전 / 사용',
+  })
+  action: 'charge' | 'use'
+
+  @ApiProperty({
     type: Number,
     description: '충전 금액',
     minimum: 0,

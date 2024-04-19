@@ -68,7 +68,7 @@ describe('ChargesService', () => {
     })
 
     it('should throw an error if the balance is insufficient', async () => {
-      mockRepository.findOneByChargeId = vi
+      mockRepository.findOneBy = vi
         .fn()
         .mockResolvedValue(() => ({ balance: 1000 }))
 
