@@ -62,7 +62,7 @@ describe('BillsPrismaRepository', () => {
       const createdBill = await repository.create({
         holderId: faker.helpers.arrayElement(users).id,
         seatId: faker.helpers.arrayElement(seats).id,
-        amount: BigInt(10000),
+        amount: 10000,
       })()
 
       expect(createdBill).to.have.keys(
@@ -81,7 +81,7 @@ describe('BillsPrismaRepository', () => {
         data: {
           holderId: faker.helpers.arrayElement(users).id,
           seatId: faker.helpers.arrayElement(seats).id,
-          amount: BigInt(10000),
+          amount: 10000,
         },
       })
 

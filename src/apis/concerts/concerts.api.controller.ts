@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBody,
   ApiHeader,
@@ -17,10 +17,14 @@ import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
 } from '../../shared/shared.openapi'
+import { UserTokensGuard } from '../../domains/tokens/tokens.guard'
+import { ConcertsApiUseCase } from './concerts.api.usecase'
 
 @Controller('v1/concerts')
 @ApiTags('Concerts')
 export class ConcertsApiController {
+  constructor(private readonly concertApiUseCase: ConcertsApiUseCase) {}
+
   @Get()
   @ApiOperation({
     description: '콘서트 목록 출력',
@@ -90,8 +94,15 @@ export class ConcertsApiController {
   @ApiOkResponse({
     type: ConcertsResponseDto,
   })
-  createConcert(): Promise<ConcertsResponseDto> {
-    return
+  @UseGuards(UserTokensGuard)
+  async createConcert(
+    @Body() body: ConcertsPostRequestDto,
+  ): Promise<ConcertsResponseDto> {
+    try {
+      return await this.concertApiUseCase.createConcert(body)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   @Post(':concert_id/seats/:seat_no/reservations')

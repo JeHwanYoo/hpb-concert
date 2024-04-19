@@ -63,7 +63,7 @@ export class ConcertsResponseDto implements ConcertModel {
     description: '좌석 가격 (모두 동일하다고 가정)',
     minimum: 0,
   })
-  price: bigint
+  price: number
 
   @ApiProperty({
     type: String,
@@ -184,7 +184,7 @@ export class BillsResponseDto implements BillModel {
     description: '좌석 가격 (모두 동일하다고 가정)',
     minimum: 0,
   })
-  amount: bigint
+  amount: number
 
   @ApiProperty({
     type: String,

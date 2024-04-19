@@ -51,7 +51,7 @@ describe('ChargesService', () => {
     it('should use the balance', async () => {
       mockRepository.findOneBy = vi
         .fn()
-        .mockReturnValue(() => ({ amount: BigInt(1000) }))
+        .mockReturnValue(() => ({ amount: 1000 }))
 
       mockRepository.update = vi
         .fn()
@@ -60,11 +60,10 @@ describe('ChargesService', () => {
         }))
 
       const used = await service.use('fake-id', {
-        userId: 'fake-id',
-        amount: BigInt(500),
+        amount: 500,
       })
 
-      expect(used.amount).to.be.eq(BigInt(500))
+      expect(used.amount).to.be.eq(500)
     })
 
     it('should throw an error if the balance is insufficient', async () => {
@@ -72,9 +71,9 @@ describe('ChargesService', () => {
         .fn()
         .mockResolvedValue(() => ({ balance: 1000 }))
 
-      await expect(
-        service.use('fake-id', { userId: 'fake-id', amount: BigInt(3000) }),
-      ).rejects.toThrow(Error)
+      await expect(service.use('fake-id', { amount: 3000 })).rejects.toThrow(
+        Error,
+      )
     })
   })
 })

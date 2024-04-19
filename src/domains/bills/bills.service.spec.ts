@@ -38,14 +38,14 @@ describe('BillsService', () => {
         id: v4(),
         seatId: v4(),
         holderId: v4(),
-        amount: BigInt(5000),
+        amount: 5000,
         createdAt: new Date(),
       }))
 
       const createdBill = await service.create({
         seatId: 'fake-id',
         holderId: 'fake-id',
-        amount: BigInt(5000),
+        amount: 5000,
       })
 
       expect(createdBill).to.have.keys(

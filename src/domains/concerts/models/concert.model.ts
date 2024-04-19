@@ -20,7 +20,7 @@ export interface ConcertModel {
   /**
    * @description The seat's price
    */
-  price: bigint
+  price: number
   /**
    * @description createdAt
    */
