@@ -3,6 +3,7 @@ import { SeatsRepository, SeatsRepositoryToken } from './seats.repository'
 import { SeatCreationModel, SeatModel } from './models/seat.model'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import {
+  TransactionLevel,
   TransactionService,
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
@@ -21,6 +22,8 @@ export class SeatsService {
    *
    * @param reservationModel
    * @returns reserved SeatModel
+   * @throws Error Already reserved
+   * @throws Error Already paid
    * @description
    * create the seat when user reserve it
    */
@@ -30,33 +33,32 @@ export class SeatsService {
       'reservedAt' | 'deadline' | 'paidAt'
     >,
   ): Promise<SeatModel> {
-    return this.transactionService.tx<SeatModel>(async connectingSession => {
-      const beforeReserving = await this.seatsRepository.findOneBy({
-        seatNo: reservationModel.seatNo,
-      })
+    const reservedAt = new Date()
+    const deadline = addMinutes(reservedAt, 5)
 
-      if (
-        beforeReserving.reservedAt !== null &&
-        differenceInMinutes(new Date(), beforeReserving.deadline) < 5
-      ) {
-        throw new Error('Already reserved')
-      }
+    return this.transactionService.tx(TransactionLevel.ReadCommitted, [
+      async conn => {
+        const beforeReserving = await this.seatsRepository.findOneBy({
+          seatNo: reservationModel.seatNo,
+        })(conn)
 
-      if (beforeReserving.paidAt !== null) {
-        throw new Error('Already paid')
-      }
+        if (
+          beforeReserving.reservedAt !== null &&
+          differenceInMinutes(new Date(), beforeReserving.deadline) < 5
+        ) {
+          throw new Error('Already reserved')
+        }
 
-      const reservedAt = new Date()
-      const deadline = addMinutes(reservedAt, 5)
-      return this.seatsRepository.create(
-        {
-          ...reservationModel,
-          reservedAt,
-          deadline,
-        },
-        connectingSession,
-      )
-    })
+        if (beforeReserving.paidAt !== null) {
+          throw new Error('Already paid')
+        }
+      },
+      this.seatsRepository.create({
+        ...reservationModel,
+        reservedAt,
+        deadline,
+      }),
+    ])
   }
 
   /**
@@ -66,31 +68,33 @@ export class SeatsService {
    * @returns paid SeatModel
    */
   pay(id: string, userId: string): Promise<SeatModel> {
-    return this.transactionService.tx<SeatModel>(async connectingSession => {
-      const beforePaying = await this.seatsRepository.findOneBy({ id })
+    return this.transactionService.tx<SeatModel>(
+      TransactionLevel.ReadCommitted,
+      [
+        async conn => {
+          const beforePaying = await this.seatsRepository.findOneBy({ id })(
+            conn,
+          )
 
-      if (!beforePaying) {
-        throw new Error('Not Reserved')
-      }
+          if (!beforePaying) {
+            throw new Error('Not Reserved')
+          }
 
-      if (beforePaying.holderId !== userId) {
-        throw new Error('Not Authorized')
-      }
+          if (beforePaying.holderId !== userId) {
+            throw new Error('Not Authorized')
+          }
 
-      if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-        throw new Error('Deadline Exceeds')
-      }
+          if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
+            throw new Error('Deadline Exceeds')
+          }
 
-      if (beforePaying.paidAt !== null) {
-        throw new Error('Already paid')
-      }
-
-      return this.seatsRepository.update(
-        id,
-        { paidAt: new Date() },
-        connectingSession,
-      )
-    })
+          if (beforePaying.paidAt !== null) {
+            throw new Error('Already paid')
+          }
+        },
+        this.seatsRepository.update(id, { paidAt: new Date() }),
+      ],
+    )
   }
 
   /**
@@ -99,7 +103,7 @@ export class SeatsService {
    * @returns found SeatModels
    */
   findManyBy(by: Partial<SeatModel>): Promise<SeatModel[]> {
-    return this.seatsRepository.findManyBy(by)
+    return this.seatsRepository.findManyBy(by)()
   }
 
   /**
@@ -108,6 +112,6 @@ export class SeatsService {
    * @returns found SeatModel
    */
   findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
-    return this.seatsRepository.findOneBy(by)
+    return this.seatsRepository.findOneBy(by)()
   }
 }
