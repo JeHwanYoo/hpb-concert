@@ -29,9 +29,16 @@ export class ChargesService {
    *
    * @param by
    * @returns found ChargeModel
+   * @throws Error Not Found
    */
   findOneByUserId(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
-    return this.chargesRepository.findOneBy(by)()
+    const foundChargeModel = this.chargesRepository.findOneBy(by)()
+
+    if (!foundChargeModel) {
+      throw new Error('Not Found')
+    }
+
+    return foundChargeModel
   }
 
   /**
@@ -39,6 +46,7 @@ export class ChargesService {
    * @param id
    * @param chargeModel
    * @returns charged ChargeModel
+   * @throws Error Not Found
    */
   charge(id: string, chargeModel: ChargeUpdatingModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
@@ -48,6 +56,10 @@ export class ChargesService {
           const beforeCharging = await this.chargesRepository.findOneBy({
             id,
           })(conn)
+
+          if (!beforeCharging) {
+            throw new Error('Not Found')
+          }
 
           return this.chargesRepository.update(id, {
             userId: chargeModel.userId,
@@ -64,6 +76,7 @@ export class ChargesService {
    * @param useModel
    * @returns used ChargeModel
    * @throws Error Insufficient balance
+   * @throws Error Not Found
    */
   use(id: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
@@ -73,6 +86,10 @@ export class ChargesService {
           const beforeCharging = await this.chargesRepository.findOneBy({ id })(
             conn,
           )
+
+          if (!beforeCharging) {
+            throw new Error('Not Found')
+          }
 
           const balance = beforeCharging.amount - useModel.amount
 
