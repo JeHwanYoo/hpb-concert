@@ -6,6 +6,7 @@ import {
   OffsetBasedPaginationResult,
 } from '../../shared/shared.dto'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import { NotFoundDomainException } from '../../shared/shared.exception'
 
 @Injectable()
 export class UsersService {
@@ -27,12 +28,13 @@ export class UsersService {
    *
    * @param by
    * @returns found UserModel
+   * @throws NotFoundDomainException
    */
   async findOneBy(by: IdentifierFrom<UserModel>): Promise<UserModel> {
     const foundUserModel = this.usersRepository.findOneBy(by)()
 
     if (!foundUserModel) {
-      throw new Error('Not Found')
+      throw new NotFoundDomainException()
     }
 
     return foundUserModel
