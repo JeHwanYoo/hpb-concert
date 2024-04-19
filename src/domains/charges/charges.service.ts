@@ -22,7 +22,7 @@ export class ChargesService {
   ) {}
 
   create(creationModel: ChargeCreationModel): Promise<ChargeModel> {
-    return this.chargesRepository.create(creationModel)
+    return this.chargesRepository.create(creationModel)()
   }
 
   /**
