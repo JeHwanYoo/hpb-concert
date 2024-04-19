@@ -5,6 +5,7 @@ import {
   ConcertModel,
 } from '../../../domains/concerts/models/concert.model'
 import { Injectable } from '@nestjs/common'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 
 @Injectable()
 export class ConcertsPrismaRepository implements ConcertsRepository {
@@ -15,13 +16,18 @@ export class ConcertsPrismaRepository implements ConcertsRepository {
    * @param creationModel
    * @returns Created Concert
    */
-  create(creationModel: ConcertCreationModel): Promise<ConcertModel> {
-    return this.prisma.concert.create({
-      data: creationModel,
-    })
+  create(
+    creationModel: ConcertCreationModel,
+  ): TransactionalOperation<ConcertModel> {
+    return () =>
+      this.prisma.concert.create({
+        data: creationModel,
+      })
   }
 
-  findManyBy(by: Partial<ConcertModel>): Promise<ConcertModel[]> {
-    return this.prisma.concert.findMany({})
+  findManyBy(
+    by: Partial<ConcertModel>,
+  ): TransactionalOperation<ConcertModel[]> {
+    return () => this.prisma.concert.findMany({})
   }
 }
