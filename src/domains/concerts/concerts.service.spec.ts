@@ -45,12 +45,12 @@ describe('ConcertsService', () => {
         closingAt,
         eventDate,
       }
-      mockRepository.create = vi.fn().mockResolvedValue({
+      mockRepository.create = vi.fn().mockReturnValue(() => ({
         ...creationModel,
         id: v4(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      }))
 
       const createdConcert = await service.create(creationModel)
 
@@ -74,7 +74,7 @@ describe('ConcertsService', () => {
 
   describe('.find()', () => {
     it('should find all concerts', async () => {
-      mockRepository.findManyBy = vi.fn().mockResolvedValue(
+      mockRepository.findManyBy = vi.fn().mockReturnValue(() =>
         Array.from({ length: 10 }, () => {
           const openingAt = new Date()
           const closingAt = faker.date.future({ refDate: openingAt })

@@ -18,7 +18,7 @@ export class ConcertsService {
    * @returns created ConcertModel
    */
   create(creationModel: ConcertCreationModel): Promise<ConcertModel> {
-    return this.concertsRepository.create(creationModel)
+    return this.concertsRepository.create(creationModel)()
   }
 
   /**
@@ -26,6 +26,6 @@ export class ConcertsService {
    * @returns found ConcertModel
    */
   findManyBy(by: Partial<ConcertModel>): Promise<ConcertModel[]> {
-    return this.concertsRepository.findManyBy({})
+    return this.concertsRepository.findManyBy({})()
   }
 }
