@@ -1,25 +1,25 @@
 import { BillCreationModel, BillModel } from './models/bill.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
 export const BillsRepositoryToken = 'BillsRepository'
 
-export interface BillsRepository<S = unknown> {
+export interface BillsRepository<Connection = unknown> {
   /**
    *
    * @param creationModel
-   * @param session
    * @returns Created BillModel
    */
-  create(creationModel: BillCreationModel, session?: S): Promise<BillModel>
+  create(
+    creationModel: BillCreationModel,
+  ): TransactionalOperation<BillModel, Connection>
 
   /**
    *
    * @param by
-   * @param session
    * @returns Found BillModel which matches the given condition
    */
   findOneBy(
     by: IdentifierFrom<BillModel>,
-    session?: S,
-  ): Promise<BillModel | null>
+  ): TransactionalOperation<BillModel | null, Connection>
 }

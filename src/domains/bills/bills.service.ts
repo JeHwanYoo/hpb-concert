@@ -16,7 +16,7 @@ export class BillsService {
    * @returns created bill
    */
   create(createModel: BillCreationModel): Promise<BillModel> {
-    return this.billsRepository.create(createModel)
+    return this.billsRepository.create(createModel)()
   }
 
   /**
@@ -25,6 +25,6 @@ export class BillsService {
    * @returns found bill
    */
   findOneBy(identifier: IdentifierFrom<BillModel>): Promise<BillModel> {
-    return this.billsRepository.findOneBy(identifier)
+    return this.billsRepository.findOneBy(identifier)()
   }
 }
