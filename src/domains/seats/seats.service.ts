@@ -114,8 +114,15 @@ export class SeatsService {
    *
    * @param by
    * @returns found SeatModel
+   * @throws Error Not Found
    */
-  findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
-    return this.seatsRepository.findOneBy(by)()
+  async findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
+    const foundSeatModel = await this.seatsRepository.findOneBy(by)()
+
+    if (foundSeatModel === null) {
+      throw new Error('Not Found')
+    }
+
+    return foundSeatModel
   }
 }
