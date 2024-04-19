@@ -50,7 +50,7 @@ describe('ConcertsPrismaRepository', () => {
         closingAt,
         eventDate,
       }
-      const createdConcert = await repository.create(createdModel)
+      const createdConcert = await repository.create(createdModel)()
       expect(createdConcert).to.have.keys(
         'id',
         'capacity',
@@ -87,7 +87,7 @@ describe('ConcertsPrismaRepository', () => {
     })
 
     it('should find all concerts', async () => {
-      const foundConcerts = await repository.findManyBy({})
+      const foundConcerts = await repository.findManyBy({})()
       expect(foundConcerts).to.be.deep.eq(createdConcerts)
     })
   })
