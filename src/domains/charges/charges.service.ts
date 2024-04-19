@@ -35,7 +35,7 @@ export class ChargesService {
    * @returns found ChargeModel
    * @throws Error Not Found
    */
-  findOneByUserId(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
+  findOneBy(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
     const foundChargeModel = this.chargesRepository.findOneBy(by)()
 
     if (!foundChargeModel) {
