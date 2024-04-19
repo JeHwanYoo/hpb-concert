@@ -4,6 +4,7 @@ import {
   ConcertsRepositoryToken,
 } from './concerts.repository'
 import { ConcertsService } from './concerts.service'
+import { PrismaModule } from '../../infra/prisma/prisma.module'
 
 export interface ConcertsModuleProps {
   ConcertsRepository: new (...args: unknown[]) => ConcertsRepository
@@ -19,6 +20,7 @@ export class ConcertsModule {
 
     return {
       module: ConcertsModule,
+      imports: [PrismaModule],
       providers: [ConcertsService, dynamicRepositoryProvider],
       exports: [ConcertsService],
     }
