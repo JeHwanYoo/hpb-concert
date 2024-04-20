@@ -6,12 +6,17 @@ import { SeatsService } from '../../domains/seats/seats.service'
 import { SeatModel } from '../../domains/seats/models/seat.model'
 import { isFuture, isPast } from 'date-fns'
 import { DomainException } from '../../shared/shared.exception'
+import { ChargesService } from '../../domains/charges/charges.service'
+import { BillModel } from '../../domains/bills/models/bill.model'
+import { BillsService } from '../../domains/bills/bills.service'
 
 @Injectable()
 export class ConcertsApiUseCase {
   constructor(
     private readonly concertsService: ConcertsService,
     private readonly seatsService: SeatsService,
+    private readonly chargesService: ChargesService,
+    private readonly billsService: BillsService,
   ) {}
 
   createConcert(model: ConcertCreationModel): Promise<ConcertsResponseDto> {
@@ -63,5 +68,32 @@ export class ConcertsApiUseCase {
 
       throw e
     }
+  }
+
+  // todo rollback
+  async paySeat(
+    holderId: string,
+    concertId: string,
+    seatId: string,
+  ): Promise<BillModel> {
+    const concert = await this.concertsService.findOneBy({ id: concertId })
+
+    try {
+      await this.chargesService.use(holderId, {
+        amount: concert.price,
+      })
+      await this.seatsService.pay(seatId, holderId)
+    } catch (e) {
+      if (e instanceof DomainException) {
+        throw new BadRequestException(e.message, { cause: e })
+      }
+      throw e
+    }
+
+    return this.billsService.create({
+      holderId,
+      seatId,
+      amount: concert.price,
+    })
   }
 }

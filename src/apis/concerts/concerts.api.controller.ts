@@ -31,10 +31,7 @@ import {
 } from '../../domains/tokens/tokens.guard'
 import { ConcertsApiUseCase } from './concerts.api.usecase'
 import { DecodedToken } from '../../domains/tokens/tokens.decorator'
-import {
-  EnqueueTokenModel,
-  UserTokenModel,
-} from '../../domains/tokens/models/enqueueTokenModel'
+import { EnqueueTokenModel } from '../../domains/tokens/models/enqueueTokenModel'
 
 @Controller('v1/concerts')
 @ApiTags('Concerts')
@@ -151,7 +148,7 @@ export class ConcertsApiController {
     )
   }
 
-  @Post(':concert_id/seats/:seat_no/payments')
+  @Post(':concert_id/seats/:seat_id/payments')
   @ApiOperation({
     description: '결제',
   })
@@ -168,10 +165,16 @@ export class ConcertsApiController {
     type: BillsResponseDto,
   })
   @ApiUnauthorizedResponse()
+  @UseGuards(EnqueueTokensGuard)
   createPayment(
     @Param('concert_id') concertId: string,
-    @Param('seat_no') seatId: string,
+    @Param('seat_id') seatId: string,
+    @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<BillsResponseDto> {
-    return
+    return this.concertApiUseCase.paySeat(
+      decodedEnqueueToken.userId,
+      concertId,
+      seatId,
+    )
   }
 }

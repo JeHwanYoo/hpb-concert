@@ -7,6 +7,10 @@ import { ConcertsPrismaRepository } from '../../infra/repositories/concerts/conc
 import { SeatsModule } from '../../domains/seats/seats.module'
 import { SeatsPrismaRepository } from '../../infra/repositories/seats/seats.prisma.repository'
 import { PrismaTransactionService } from '../../infra/prisma/prisma.transaction.service'
+import { ChargesModule } from '../../domains/charges/charges.module'
+import { ChargesPrismaRepository } from '../../infra/repositories/charges/charges.prisma.repository'
+import { BillsModule } from '../../domains/bills/bills.module'
+import { BillsPrismaRepository } from '../../infra/repositories/bills/bills.prisma.repository'
 
 @Module({
   imports: [
@@ -16,6 +20,14 @@ import { PrismaTransactionService } from '../../infra/prisma/prisma.transaction.
     }),
     SeatsModule.forFeature({
       SeatsRepository: SeatsPrismaRepository,
+      TransactionService: PrismaTransactionService,
+    }),
+    ChargesModule.forFeature({
+      ChargesRepository: ChargesPrismaRepository,
+      TransactionService: PrismaTransactionService,
+    }),
+    BillsModule.forFeature({
+      BillsRepository: BillsPrismaRepository,
       TransactionService: PrismaTransactionService,
     }),
   ],
