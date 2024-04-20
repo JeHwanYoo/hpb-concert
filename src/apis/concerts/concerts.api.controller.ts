@@ -44,7 +44,7 @@ export class ConcertsApiController {
   })
   @ApiUnauthorizedResponse()
   getConcerts(): Promise<ConcertsResponseDto[]> {
-    return
+    return this.concertApiUseCase.getConcerts()
   }
 
   @Get(':concert_id/seats')
