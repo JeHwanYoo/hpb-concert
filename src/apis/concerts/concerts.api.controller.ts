@@ -144,16 +144,11 @@ export class ConcertsApiController {
     @Param('seat_no', ParseIntPipe) seatNo: number,
     @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<SeatsResponseDto> {
-    try {
-      return await this.concertApiUseCase.reserveSeat(
-        decodedEnqueueToken.userId,
-        concertId,
-        seatNo,
-      )
-    } catch (e) {
-      console.error(e)
-      throw e
-    }
+    return this.concertApiUseCase.reserveSeat(
+      decodedEnqueueToken.userId,
+      concertId,
+      seatNo,
+    )
   }
 
   @Post(':concert_id/seats/:seat_no/payments')
