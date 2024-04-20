@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt'
 import { ConcertsPostRequestDto } from '../../../src/apis/concerts/dto/concerts.api.dto'
 import { faker } from '@faker-js/faker'
 import { ConcertModel } from '../../../src/domains/concerts/models/concert.model'
+import { SeatModel } from '../../../src/domains/seats/models/seat.model'
 
 describe('ConcertsAPIController (e2e)', () => {
   let app: INestApplication
@@ -170,6 +171,79 @@ describe('ConcertsAPIController (e2e)', () => {
       )
 
       expect(reservationResponse.status).to.be.eq(400)
+    })
+  })
+
+  describe('POST /concerts/:concert_id/seats/:seat_id/payments', () => {
+    let concert: ConcertModel
+    let seat: SeatModel
+
+    beforeEach(async () => {
+      /**
+       * E2E Scenarios
+       *
+       * 1. A user gets EnqueueToken from server
+       * 2. A user sets EnqueueToken to Authorization
+       * 3. A user charges some money
+       * 4. A user sends the request for paying
+       */
+      const response = await request.post('/v1/enqueues')
+      setAuthorization(request, response.text)
+
+      await prisma.charge.create({
+        data: {
+          userId: mockUserId,
+          amount: 100000,
+        },
+      })
+
+      /**
+       * E2E Prebuild
+       * some concert should be created
+       * the seat should be reserved
+       */
+      const concertResponse = await request.post('/v1/concerts').send(
+        seedConcertPostRequestDto({
+          openingAt: faker.date.recent({ refDate: new Date(), days: 1 }),
+        }),
+      )
+
+      concert = concertResponse.body
+
+      const seatResponse = await request.post(
+        `/v1/concerts/${concert.id}/seats/0/reservations`,
+      )
+
+      seat = seatResponse.body
+    })
+
+    it('should create a payment', async () => {
+      const paidBillResponse = await request.post(
+        `/v1/concerts/${concert.id}/seats/${seat.id}/payments`,
+      )
+
+      expect(paidBillResponse.status).to.be.eq(201)
+      expect(paidBillResponse.body).to.have.keys(
+        'amount',
+        'createdAt',
+        'holderId',
+        'id',
+        'seatId',
+      )
+
+      const paidSeat = await prisma.seat.findUnique({
+        where: {
+          id: paidBillResponse.body.seatId,
+        },
+      })
+      expect(new Date(paidSeat.paidAt)).to.be.instanceof(Date)
+
+      const charge = await prisma.charge.findUnique({
+        where: {
+          userId: paidBillResponse.body.holderId,
+        },
+      })
+      expect(charge.amount).to.be.eq(100000 - concert.price)
     })
   })
 })
