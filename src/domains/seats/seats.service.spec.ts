@@ -60,9 +60,10 @@ describe('SeatsService', () => {
         reservedAt: null,
         paidAt: null,
       }))
-      mockRepository.update = vi
-        .fn()
-        .mockImplementation((_, { paidAt }) => () => ({ paidAt }))
+      mockRepository.update = vi.fn().mockImplementation((_, param) => () => ({
+        ...param,
+        id: v4(),
+      }))
     })
     it('should reserve a seat and deadline is 5 minutes', async () => {
       const reserved = await service.reserve({

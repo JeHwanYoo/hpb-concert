@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import {
   setUpPipeline,
   setUpPrismaIntegratedTest,
@@ -11,10 +11,8 @@ import { PrismaService } from '../../../src/infra/prisma/prisma.service'
 import { AppModule } from '../../../src/app.module'
 import { agent } from 'supertest'
 import { JwtService } from '@nestjs/jwt'
-import { v4 as uuidV4 } from 'uuid'
 import { ConcertsPostRequestDto } from '../../../src/apis/concerts/dto/concerts.api.dto'
 import { faker } from '@faker-js/faker'
-import { ConcertModel } from '../../../src/domains/concerts/models/concert.model'
 
 describe('ConcertsAPIController (e2e)', () => {
   let app: INestApplication
@@ -42,22 +40,26 @@ describe('ConcertsAPIController (e2e)', () => {
         app = moduleFixture.createNestApplication()
         await app.init()
 
-        // mock authorization
-        mockUserId = uuidV4()
         request = agent(app.getHttpServer())
-        request.set(
-          'Authorization',
-          `Bearer ${jwtService.sign(
-            {
-              userId: mockUserId,
-            },
-            { secret: process.env.JWT_SECRET },
-          )}`,
-        )
       },
     ),
     1000 * 60 * 3,
   )
+
+  beforeEach(async () => {
+    // mock authorization
+    const user = await prisma.user.create({ data: { name: 'John Doe' } })
+    mockUserId = user.id
+    setAuthorization(
+      request,
+      jwtService.sign(
+        {
+          userId: mockUserId,
+        },
+        { secret: process.env.JWT_SECRET },
+      ),
+    )
+  })
 
   // Initialize redis to ensure test idempotency
   afterEach(async () => {
@@ -105,6 +107,49 @@ describe('ConcertsAPIController (e2e)', () => {
     expect(concertsResponse.body).to.be.instanceof(Array)
     expect(concertsResponse.body.length).to.be.eq(5)
   })
+
+  describe(':concert_id/seats/:seat_no/reservations', () => {
+    beforeEach(async () => {
+      /**
+       * E2E Scenarios
+       *
+       * 1. A user gets EnqueueToken from server
+       * 2. A user sets EnqueueToken to Authorization
+       * 3. A user send the request for reserving
+       */
+      const response = await request.post('/v1/enqueues')
+      setAuthorization(request, response.text)
+    })
+
+    it('should create a reservation', async () => {
+      /**
+       * E2E Prebuild
+       * some concert should be created
+       */
+      const concert = await prisma.concert.create({
+        data: seedConcertPostRequestDto({
+          openingAt: faker.date.recent({ refDate: new Date(), days: 1 }),
+        }),
+      })
+
+      const reservationResponse = await request.post(
+        `/v1/concerts/${concert.id}/seats/0/reservations`,
+      )
+
+      expect(reservationResponse.status).to.be.eq(201)
+      expect(reservationResponse.body).to.be.a('object')
+      expect(reservationResponse.body).to.have.keys(
+        'concertId',
+        'createdAt',
+        'deadline',
+        'holderId',
+        'id',
+        'paidAt',
+        'reservedAt',
+        'seatNo',
+      )
+    })
+  })
 })
 
 interface ConcertPostRequestDtoSeeder {
@@ -138,4 +183,8 @@ function seedConcertPostRequestDto(
     closingAt,
     eventDate,
   }
+}
+
+function setAuthorization(request: ReturnType<typeof agent>, token: string) {
+  request.set('Authorization', `Bearer ${token}`)
 }
