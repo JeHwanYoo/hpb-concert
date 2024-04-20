@@ -4,6 +4,7 @@ import {
   ConcertsRepository,
   ConcertsRepositoryToken,
 } from './concerts.repository'
+import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class ConcertsService {
@@ -28,5 +29,14 @@ export class ConcertsService {
    */
   findManyBy(by: Partial<ConcertModel>): Promise<ConcertModel[]> {
     return this.concertsRepository.findManyBy(by)()
+  }
+
+  /**
+   *
+   * @param by
+   * @returns found Concert
+   */
+  findOneBy(by: IdentifierFrom<ConcertModel>): Promise<ConcertModel> {
+    return this.concertsRepository.findOneBy(by)()
   }
 }

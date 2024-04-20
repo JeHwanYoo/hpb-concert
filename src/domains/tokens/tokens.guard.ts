@@ -52,14 +52,22 @@ export class EnqueueTokensGuard implements CanActivate {
     try {
       verified = await this.jwtService.verifyAsync<EnqueueTokenModel>(token)
     } catch (e) {
+      // 토큰 문제, 만료 등...
       throw new UnauthorizedException(e.message)
     }
 
     const now = new Date()
     const availableDate = new Date(verified.availableTime * 1000)
+
+    /**
+     * 아직 입장시간이 되지 않았을 때
+     */
     if (differenceInSeconds(now, availableDate) < 0) {
       throw new BadRequestException('Insufficient Entry Time.')
     }
+    /**
+     * 이미 예약된 토큰인 경우
+     */
     if (verified.completed) {
       throw new BadRequestException('Session Completed')
     }

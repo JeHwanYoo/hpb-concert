@@ -153,7 +153,6 @@
 - Main Framework: NestJS (Fastify + SWC)
 - Test Framework: Vitest & testcontainer (integrated, e2e...)
 - DBMS: Postgres + Prisma
-- Queue Service: Redis + @nestjs/bull
 
 ## OpenAPI
 

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBody,
   ApiHeader,
@@ -17,8 +25,16 @@ import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
 } from '../../shared/shared.openapi'
-import { UserTokensGuard } from '../../domains/tokens/tokens.guard'
+import {
+  EnqueueTokensGuard,
+  UserTokensGuard,
+} from '../../domains/tokens/tokens.guard'
 import { ConcertsApiUseCase } from './concerts.api.usecase'
+import { DecodedToken } from '../../domains/tokens/tokens.decorator'
+import {
+  EnqueueTokenModel,
+  UserTokenModel,
+} from '../../domains/tokens/models/enqueueTokenModel'
 
 @Controller('v1/concerts')
 @ApiTags('Concerts')
@@ -122,11 +138,22 @@ export class ConcertsApiController {
     type: SeatsResponseDto,
   })
   @ApiUnauthorizedResponse()
-  createReservation(
+  @UseGuards(EnqueueTokensGuard)
+  async createReservation(
     @Param('concert_id') concertId: string,
-    @Param('seat_no') seatId: string,
+    @Param('seat_no', ParseIntPipe) seatNo: number,
+    @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<SeatsResponseDto> {
-    return
+    try {
+      return await this.concertApiUseCase.reserveSeat(
+        decodedEnqueueToken.userId,
+        concertId,
+        seatNo,
+      )
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }
 
   @Post(':concert_id/seats/:seat_no/payments')

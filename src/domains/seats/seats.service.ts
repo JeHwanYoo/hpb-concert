@@ -47,21 +47,30 @@ export class SeatsService {
         })(conn)
 
         if (
-          beforeReserving.reservedAt !== null &&
+          beforeReserving?.reservedAt &&
           differenceInMinutes(new Date(), beforeReserving.deadline) < 5
         ) {
           throw new DomainException('Already reserved')
         }
 
-        if (beforeReserving.paidAt !== null) {
+        if (beforeReserving?.paidAt) {
           throw new DomainException('Already paid')
         }
+
+        if (beforeReserving?.deadline) {
+          return this.seatsRepository.update(beforeReserving.id, {
+            ...reservationModel,
+            reservedAt,
+            deadline,
+          })(conn)
+        }
+
+        return this.seatsRepository.create({
+          ...reservationModel,
+          reservedAt,
+          deadline,
+        })(conn)
       },
-      this.seatsRepository.create({
-        ...reservationModel,
-        reservedAt,
-        deadline,
-      }),
     ])
   }
 
