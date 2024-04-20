@@ -109,7 +109,7 @@ describe('ConcertsAPIController (e2e)', () => {
     expect(concertsResponse.body.length).to.be.eq(5)
   })
 
-  describe(':concert_id/seats/:seat_no/reservations', () => {
+  describe('POST /concerts/:concert_id/seats/:seat_no/reservations', () => {
     let concert: ConcertModel
 
     beforeEach(async () => {
@@ -161,6 +161,15 @@ describe('ConcertsAPIController (e2e)', () => {
       )
 
       expect(reservationResponse.status).to.be.eq(401)
+    })
+
+    it('should reject a reservation if the user request the reserved seat', async () => {
+      await request.post(`/v1/concerts/${concert.id}/seats/0/reservations`)
+      const reservationResponse = await request.post(
+        `/v1/concerts/${concert.id}/seats/0/reservations`,
+      )
+
+      expect(reservationResponse.status).to.be.eq(400)
     })
   })
 })

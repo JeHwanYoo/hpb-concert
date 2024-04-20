@@ -5,6 +5,7 @@ import { ConcertCreationModel } from '../../domains/concerts/models/concert.mode
 import { SeatsService } from '../../domains/seats/seats.service'
 import { SeatModel } from '../../domains/seats/models/seat.model'
 import { isFuture, isPast } from 'date-fns'
+import { DomainException } from '../../shared/shared.exception'
 
 @Injectable()
 export class ConcertsApiUseCase {
@@ -49,10 +50,18 @@ export class ConcertsApiUseCase {
       throw new BadRequestException('Closed')
     }
 
-    return this.seatsService.reserve({
-      holderId,
-      concertId,
-      seatNo,
-    })
+    try {
+      return await this.seatsService.reserve({
+        holderId,
+        concertId,
+        seatNo,
+      })
+    } catch (e) {
+      if (e instanceof DomainException) {
+        throw new BadRequestException(e.message, { cause: e })
+      }
+
+      throw e
+    }
   }
 }
