@@ -13,6 +13,7 @@ import { agent } from 'supertest'
 import { JwtService } from '@nestjs/jwt'
 import { ConcertsPostRequestDto } from '../../../src/apis/concerts/dto/concerts.api.dto'
 import { faker } from '@faker-js/faker'
+import { ConcertModel } from '../../../src/domains/concerts/models/concert.model'
 
 describe('ConcertsAPIController (e2e)', () => {
   let app: INestApplication
@@ -109,6 +110,8 @@ describe('ConcertsAPIController (e2e)', () => {
   })
 
   describe(':concert_id/seats/:seat_no/reservations', () => {
+    let concert: ConcertModel
+
     beforeEach(async () => {
       /**
        * E2E Scenarios
@@ -119,19 +122,19 @@ describe('ConcertsAPIController (e2e)', () => {
        */
       const response = await request.post('/v1/enqueues')
       setAuthorization(request, response.text)
-    })
 
-    it('should create a reservation', async () => {
       /**
        * E2E Prebuild
        * some concert should be created
        */
-      const concert = await prisma.concert.create({
+      concert = await prisma.concert.create({
         data: seedConcertPostRequestDto({
           openingAt: faker.date.recent({ refDate: new Date(), days: 1 }),
         }),
       })
+    })
 
+    it('should create a reservation', async () => {
       const reservationResponse = await request.post(
         `/v1/concerts/${concert.id}/seats/0/reservations`,
       )
@@ -148,6 +151,16 @@ describe('ConcertsAPIController (e2e)', () => {
         'reservedAt',
         'seatNo',
       )
+    })
+
+    it('should reject a reservation if the user has no token', async () => {
+      setAuthorization(request, '')
+
+      const reservationResponse = await request.post(
+        `/v1/concerts/${concert.id}/seats/0/reservations`,
+      )
+
+      expect(reservationResponse.status).to.be.eq(401)
     })
   })
 })
