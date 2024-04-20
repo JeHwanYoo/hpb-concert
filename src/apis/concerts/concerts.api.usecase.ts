@@ -10,4 +10,8 @@ export class ConcertsApiUseCase {
   createConcert(model: ConcertCreationModel): Promise<ConcertsResponseDto> {
     return this.concertsService.create(model)
   }
+
+  getConcerts(): Promise<ConcertsResponseDto[]> {
+    return this.concertsService.findManyBy({})
+  }
 }

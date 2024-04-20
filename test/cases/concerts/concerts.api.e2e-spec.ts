@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt'
 import { v4 as uuidV4 } from 'uuid'
 import { ConcertsPostRequestDto } from '../../../src/apis/concerts/dto/concerts.api.dto'
 import { faker } from '@faker-js/faker'
+import { ConcertModel } from '../../../src/domains/concerts/models/concert.model'
 
 describe('ConcertsAPIController (e2e)', () => {
   let app: INestApplication
@@ -86,6 +87,23 @@ describe('ConcertsAPIController (e2e)', () => {
       expect(result.status).to.be.eq(201)
       expect(result.body.id).to.be.a('string')
     })
+  })
+
+  describe('GET /concerts', () => {
+    // seed concerts
+    beforeAll(async () => {
+      await prisma.concert.createMany({
+        data: Array.from({ length: 5 }, () => seedConcertPostRequestDto()),
+      })
+    })
+  })
+
+  it('should get 5 concerts', async () => {
+    const concertsResponse = await request.get('/v1/concerts')
+
+    expect(concertsResponse.status).to.be.eq(200)
+    expect(concertsResponse.body).to.be.instanceof(Array)
+    expect(concertsResponse.body.length).to.be.eq(5)
   })
 })
 
