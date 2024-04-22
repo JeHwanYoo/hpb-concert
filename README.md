@@ -139,13 +139,6 @@
 
 ![hpb tables](./assets/hpb_tables.jpg)
 
-## Mock API
-
-<del>MockAPI 를 NestJS 로 구현</del>
-
-- <del>mocks/mocks.module.ts</del>
-- <del>http/mocks.http</del>
-
 > Todo: Swagger Mock API 로 제공 예정
 
 ## 기술 스택
@@ -178,22 +171,3 @@
 ```yaml
 docker compose up --build -d
 ```
-
-## 진행도
-
-- 프로젝트 세팅 [🟢]
-- API Swagger 작성 [🟢]
-- 단위 테스트 코드 작성 [🟢]
-- 통합 테스트 코드 작성 [🟢]
-- 비지니스 로직 코드 작성 [🟢]
-- 유즈케이스 코드 작성 [🟡]
-- 컨트롤러 E2E 코드 작성 [🟡]
-- 회고록 작성 [🔴]
-- 심화과제 진행 [🔴]
-
-## Trouble Shooting
-
-### Do not know how to serialize a BigInt
-
-문제: body, JSON.stringify / parse 과정에서 bigint 해석이 되지 않음
-해결: 금액인점을 고려하여 bigint로 하였으나, 사실 억원대 티켓은 말이 안되서 bigint 삭제 (처리하면 오히려 오버헤드가 있을것으로 예상)
