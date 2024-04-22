@@ -80,7 +80,7 @@ export class ConcertsApiController {
   getSeats(
     @Param('concert_id') concertId: string,
   ): Promise<SeatsResponseDto[]> {
-    return
+    return this.concertApiUseCase.getSeatsByConcertId(concertId)
   }
 
   /**

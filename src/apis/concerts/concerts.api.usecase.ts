@@ -96,4 +96,10 @@ export class ConcertsApiUseCase {
       amount: concert.price,
     })
   }
+
+  async getSeatsByConcertId(concertId: string): Promise<SeatModel[]> {
+    return this.seatsService.findManyBy({
+      concertId,
+    })
+  }
 }
