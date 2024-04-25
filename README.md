@@ -198,5 +198,15 @@ Dockerfile 참조.
 
 <img width="762" alt="Screenshot 2024-04-25 at 21 45 58" src="https://github.com/JeHwanYoo/hpb-concert/assets/13535954/335e6261-952b-4162-b202-e9742a91fca4">
 
+## CI Workflows
 
+.github/workflows 참고
 
+### 워크플로우 동작 확인
+
+![](assets/ci_running.png)
+![](assets/ci_done.png)
+
+### 커버리지 리포트
+
+![](assets/coverage_report.png)
