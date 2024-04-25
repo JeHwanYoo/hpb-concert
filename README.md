@@ -189,3 +189,14 @@ Dockerfile 참조.
 - main:
     - 실제로 프로덕션에서 사용할 소스코드가 포함되어 있는 브랜치
     - (hotfix/*) 프로덕션 긴급 패치가 필요한 경우, main 에서 바로 브랜치를 따고 패치 후, 천천히 dev 에 반영
+
+## 브랜치 프로텍션 룰 설정
+
+브랜치 프로텍션을 설정하여 강제 푸시를 방지하고, PR이 항상 필요하도록 설정
+
+<img width="727" alt="Screenshot 2024-04-25 at 21 45 36" src="https://github.com/JeHwanYoo/hpb-concert/assets/13535954/e0f665f7-e23d-4a96-88d0-0ce20e4249fe">
+
+<img width="762" alt="Screenshot 2024-04-25 at 21 45 58" src="https://github.com/JeHwanYoo/hpb-concert/assets/13535954/335e6261-952b-4162-b202-e9742a91fca4">
+
+
+
