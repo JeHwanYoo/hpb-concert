@@ -210,3 +210,11 @@ Dockerfile 참조.
 ### 커버리지 리포트
 
 ![](assets/coverage_report.png)
+
+## 클라우드 구축
+
+![aws](assets/aws.png)
+
+- [참고 자료](https://docs.aws.amazon.com/ko_kr/vpc/latest/userguide/vpc-example-private-subnets-nat.html)
+
+- S3 Gateway 나 NAT Gateway 가 필요한지는 검토 필요.
