@@ -19,8 +19,8 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install -- --frozen-lockfile
       - name: Run Unit & Integrated Tests
-        run: pnpm test
+        run: pnpm test -- --pool=forks
       - name: Run End-to-End Tests
-        run: pnpm test:e2e
+        run: pnpm test:e2e -- --pool=forks
