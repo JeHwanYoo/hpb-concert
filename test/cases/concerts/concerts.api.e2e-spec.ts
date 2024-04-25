@@ -100,14 +100,14 @@ describe('ConcertsAPIController (e2e)', () => {
         data: Array.from({ length: 5 }, () => seedConcertPostRequestDto()),
       })
     })
-  })
 
-  it('should get 5 concerts', async () => {
-    const concertsResponse = await request.get('/v1/concerts')
+    it('should get 5 concerts', async () => {
+      const concertsResponse = await request.get('/v1/concerts')
 
-    expect(concertsResponse.status).to.be.eq(200)
-    expect(concertsResponse.body).to.be.instanceof(Array)
-    expect(concertsResponse.body.length).to.be.eq(5)
+      expect(concertsResponse.status).to.be.eq(200)
+      expect(concertsResponse.body).to.be.instanceof(Array)
+      expect(concertsResponse.body.length).to.be.eq(5)
+    })
   })
 
   describe('POST /concerts/:concert_id/seats/:seat_no/reservations', () => {
