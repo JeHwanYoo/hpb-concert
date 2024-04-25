@@ -24,5 +24,3 @@ jobs:
         run: pnpm test
       - name: Run End-to-End Tests
         run: pnpm test:e2e
-      - name: Generate Coverage Report
-        run: pnpm test:cov
