@@ -1,0 +1,46 @@
+name: Unit Test CI
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
+    env:
+      DATABASE_URL: "postgresql://user:password@localhost:5432/test?schema=public"
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      THROUGHPUT_PER_MINUTE: 100
+      JWT_SECRET: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Unit & Integrated Tests
+        run: pnpm test
+      - name: Run End-to-End Tests
+        run: pnpm test:e2e
+      - name: Generate Coverage Report
+        run: pnpm test:cov
