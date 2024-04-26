@@ -6,10 +6,12 @@ import {
   TransactionServiceToken,
 } from '../../shared/transaction/transaction.service'
 import { PrismaModule } from '../../infra/prisma/prisma.module'
+import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
 
 export interface ConcertsModuleProps {
   SeatsRepository: new (...args: unknown[]) => SeatsRepository
   TransactionService: new (...args: unknown[]) => TransactionService
+  LockService: new (...args: unknown[]) => LockService
 }
 
 @Module({})
@@ -25,6 +27,11 @@ export class SeatsModule {
       useClass: props.TransactionService,
     }
 
+    const dynamicLockService: Provider = {
+      provide: LockServiceToken,
+      useClass: props.LockService,
+    }
+
     return {
       module: SeatsModule,
       imports: [PrismaModule],
@@ -32,6 +39,7 @@ export class SeatsModule {
         SeatsService,
         dynamicRepositoryProvider,
         dynamicTransactionService,
+        dynamicLockService,
       ],
       exports: [SeatsService],
     }

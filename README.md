@@ -223,3 +223,4 @@ Dockerfile 참조.
 
 ![hpb arch](https://github.com/JeHwanYoo/hpb-concert/assets/13535954/69727af6-8d13-416f-bad4-bd6b519810d7)
 
+[현재 인프라 작업 진행도](https://velog.io/@formail0001/%ED%95%AD%ED%95%B499-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%B0%B1%EC%97%94%EB%93%9C-4%EA%B8%B0-6%EC%A3%BC%EC%B0%A8-%EB%A6%AC%EB%B7%B0-CICD-%EA%B5%AC%EC%B6%95)

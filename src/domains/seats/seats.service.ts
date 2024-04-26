@@ -12,6 +12,10 @@ import {
   DomainException,
   NotFoundDomainException,
 } from '../../shared/shared.exception'
+import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
+import { v4 } from 'uuid'
+
+const lockKey = 'lock_key'
 
 @Injectable()
 export class SeatsService {
@@ -20,6 +24,8 @@ export class SeatsService {
     private readonly seatsRepository: SeatsRepository,
     @Inject(TransactionServiceToken)
     private readonly transactionService: TransactionService,
+    @Inject(LockServiceToken)
+    private readonly lockService: LockService,
   ) {}
 
   /**
@@ -31,7 +37,7 @@ export class SeatsService {
    * @description
    * create the seat when user reserve it
    */
-  reserve(
+  async reserve(
     reservationModel: Omit<
       SeatCreationModel,
       'reservedAt' | 'deadline' | 'paidAt'
@@ -40,36 +46,46 @@ export class SeatsService {
     const reservedAt = new Date()
     const deadline = addMinutes(reservedAt, 5)
 
+    const lockValue = v4()
+
+    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
+      throw new DomainException('AcquireLockError')
+    }
+
     return this.transactionService.tx(TransactionLevel.ReadCommitted, [
       async conn => {
-        const beforeReserving = await this.seatsRepository.findOneBy({
-          seatNo: reservationModel.seatNo,
-        })(conn)
+        try {
+          const beforeReserving = await this.seatsRepository.findOneBy({
+            seatNo: reservationModel.seatNo,
+          })(conn)
 
-        if (
-          beforeReserving?.reservedAt &&
-          differenceInMinutes(new Date(), beforeReserving.deadline) < 5
-        ) {
-          throw new DomainException('Already reserved')
-        }
+          if (
+            beforeReserving?.reservedAt &&
+            differenceInMinutes(new Date(), beforeReserving.deadline) < 5
+          ) {
+            throw new DomainException('Already reserved')
+          }
 
-        if (beforeReserving?.paidAt) {
-          throw new DomainException('Already paid')
-        }
+          if (beforeReserving?.paidAt) {
+            throw new DomainException('Already paid')
+          }
 
-        if (beforeReserving?.deadline) {
-          return this.seatsRepository.update(beforeReserving.id, {
+          if (beforeReserving?.deadline) {
+            return this.seatsRepository.update(beforeReserving.id, {
+              ...reservationModel,
+              reservedAt,
+              deadline,
+            })(conn)
+          }
+
+          return await this.seatsRepository.create({
             ...reservationModel,
             reservedAt,
             deadline,
           })(conn)
+        } finally {
+          await this.lockService.releaseLock(lockKey, lockValue)
         }
-
-        return this.seatsRepository.create({
-          ...reservationModel,
-          reservedAt,
-          deadline,
-        })(conn)
       },
     ])
   }
@@ -84,32 +100,44 @@ export class SeatsService {
    * @throws DomainException Deadline Exceeds
    * @throws DomainException Already paid
    */
-  pay(id: string, userId: string): Promise<SeatModel> {
+  async pay(id: string, userId: string): Promise<SeatModel> {
+    const lockValue = v4()
+    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
+      throw new DomainException('AcquireLockError')
+    }
+
     return this.transactionService.tx<SeatModel>(
       TransactionLevel.ReadCommitted,
       [
         async conn => {
-          const beforePaying = await this.seatsRepository.findOneBy({ id })(
-            conn,
-          )
+          try {
+            const beforePaying = await this.seatsRepository.findOneBy({ id })(
+              conn,
+            )
 
-          if (!beforePaying) {
-            throw new DomainException('Not Reserved')
-          }
+            if (!beforePaying) {
+              throw new DomainException('Not Reserved')
+            }
 
-          if (beforePaying.holderId !== userId) {
-            throw new DomainException('Not Authorized')
-          }
+            if (beforePaying.holderId !== userId) {
+              throw new DomainException('Not Authorized')
+            }
 
-          if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-            throw new DomainException('Deadline Exceeds')
-          }
+            if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
+              throw new DomainException('Deadline Exceeds')
+            }
 
-          if (beforePaying.paidAt !== null) {
-            throw new DomainException('Already paid')
+            if (beforePaying.paidAt !== null) {
+              throw new DomainException('Already paid')
+            }
+
+            return await this.seatsRepository.update(id, {
+              paidAt: new Date(),
+            })(conn)
+          } finally {
+            await this.lockService.releaseLock(lockKey, lockValue)
           }
         },
-        this.seatsRepository.update(id, { paidAt: new Date() }),
       ],
     )
   }

@@ -6,6 +6,7 @@ import { v4 } from 'uuid'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import { faker } from '@faker-js/faker'
 import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
+import { LockServiceToken } from '../../shared/lock/lock.service'
 
 describe('SeatsService', () => {
   let service: SeatsService
@@ -34,6 +35,13 @@ describe('SeatsService', () => {
                   return operations.at(-1)()
                 },
               ),
+          },
+        },
+        {
+          provide: LockServiceToken,
+          useValue: {
+            acquireLock: vi.fn().mockReturnValue(true),
+            releaseLock: vi.fn(),
           },
         },
       ],

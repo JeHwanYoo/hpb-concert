@@ -11,6 +11,7 @@ import { ChargesModule } from '../../domains/charges/charges.module'
 import { ChargesPrismaRepository } from '../../infra/repositories/charges/charges.prisma.repository'
 import { BillsModule } from '../../domains/bills/bills.module'
 import { BillsPrismaRepository } from '../../infra/repositories/bills/bills.prisma.repository'
+import { RedisDistributedLockService } from '../../infra/redis/redis.lock.service'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { BillsPrismaRepository } from '../../infra/repositories/bills/bills.pris
     SeatsModule.forFeature({
       SeatsRepository: SeatsPrismaRepository,
       TransactionService: PrismaTransactionService,
+      LockService: RedisDistributedLockService,
     }),
     ChargesModule.forFeature({
       ChargesRepository: ChargesPrismaRepository,
