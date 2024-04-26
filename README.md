@@ -217,4 +217,9 @@ Dockerfile 참조.
 
 - [참고 자료](https://docs.aws.amazon.com/ko_kr/vpc/latest/userguide/vpc-example-private-subnets-nat.html)
 
-- S3 Gateway 나 NAT Gateway 가 필요한지는 검토 필요.
+- NAT Gateway 가 필요한지는 검토 필요.
+
+### 클라우드 아키텍처
+
+![hpb arch](https://github.com/JeHwanYoo/hpb-concert/assets/13535954/69727af6-8d13-416f-bad4-bd6b519810d7)
+
