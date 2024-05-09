@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { SeatRepository, SeatsRepositoryToken } from './seat.repository'
-import { SeatCreationModel, SeatModel } from './model/seat.model'
+import { SeatModel, SeatReservationModel } from './model/seat.model'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import {
   TransactionLevel,
   TransactionService,
   TransactionServiceToken,
-} from '../../shared/transaction/transaction.service'
+} from '../../service/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import {
   DomainException,
   NotFoundDomainException,
 } from '../../shared/shared.exception'
-import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
+import { LockService, LockServiceToken } from '../../service/lock/lock.service'
 import { v4 } from 'uuid'
 
 const lockKey = 'lock_key'
@@ -28,21 +28,7 @@ export class SeatService {
     private readonly lockService: LockService,
   ) {}
 
-  /**
-   *
-   * @param reservationModel
-   * @returns reserved SeatModel
-   * @throws DomainException Already reserved
-   * @throws DomainException Already paid
-   * @description
-   * create the seat when user reserve it
-   */
-  async reserve(
-    reservationModel: Omit<
-      SeatCreationModel,
-      'reservedAt' | 'deadline' | 'paidAt'
-    >,
-  ): Promise<SeatModel> {
+  async reserve(reservationModel: SeatReservationModel): Promise<SeatModel> {
     const reservedAt = new Date()
     const deadline = addMinutes(reservedAt, 5)
 
@@ -59,10 +45,7 @@ export class SeatService {
             seatNo: reservationModel.seatNo,
           })(conn)
 
-          if (
-            beforeReserving?.reservedAt &&
-            differenceInMinutes(new Date(), beforeReserving.deadline) < 5
-          ) {
+          if (differenceInMinutes(new Date(), beforeReserving?.deadline) < 5) {
             throw new DomainException('Already reserved')
           }
 
@@ -90,17 +73,7 @@ export class SeatService {
     ])
   }
 
-  /**
-   *
-   * @param id
-   * @param userId
-   * @returns paid SeatModel
-   * @throws DomainException Not Reserved
-   * @throws DomainException Not Authorized
-   * @throws DomainException Deadline Exceeds
-   * @throws DomainException Already paid
-   */
-  async pay(id: string, userId: string): Promise<SeatModel> {
+  async pay(seatId: string, holderId: string): Promise<SeatModel> {
     const lockValue = v4()
     if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
       throw new DomainException('AcquireLockError')
@@ -111,15 +84,15 @@ export class SeatService {
       [
         async conn => {
           try {
-            const beforePaying = await this.seatsRepository.findOneBy({ id })(
-              conn,
-            )
+            const beforePaying = await this.seatsRepository.findOneBy({
+              id: seatId,
+            })(conn)
 
             if (!beforePaying) {
               throw new DomainException('Not Reserved')
             }
 
-            if (beforePaying.holderId !== userId) {
+            if (beforePaying.holderId !== holderId) {
               throw new DomainException('Not Authorized')
             }
 
@@ -127,11 +100,11 @@ export class SeatService {
               throw new DomainException('Deadline Exceeds')
             }
 
-            if (beforePaying.paidAt !== null) {
+            if (beforePaying.paidAt) {
               throw new DomainException('Already paid')
             }
 
-            return await this.seatsRepository.update(id, {
+            return await this.seatsRepository.update(seatId, {
               paidAt: new Date(),
             })(conn)
           } finally {
@@ -142,21 +115,10 @@ export class SeatService {
     )
   }
 
-  /**
-   *
-   * @param by
-   * @returns found SeatModels
-   */
   findManyBy(by: Partial<SeatModel>): Promise<SeatModel[]> {
     return this.seatsRepository.findManyBy(by)()
   }
 
-  /**
-   *
-   * @param by
-   * @returns found SeatModel
-   * @throws NotFoundDomainException
-   */
   async findOneBy(by: IdentifierFrom<SeatModel, 'seatNo'>): Promise<SeatModel> {
     const foundSeatModel = await this.seatsRepository.findOneBy(by)()
 

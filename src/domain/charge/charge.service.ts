@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ChargeRepository, ChargesRepositoryToken } from './charge.repository'
+import { ChargeRepository, ChargeRepositoryToken } from './charge.repository'
 import {
   ChargeCreationModel,
   ChargeModel,
@@ -9,7 +9,7 @@ import {
   TransactionLevel,
   TransactionService,
   TransactionServiceToken,
-} from '../../shared/transaction/transaction.service'
+} from '../../service/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import {
   DomainException,
@@ -19,48 +19,35 @@ import {
 @Injectable()
 export class ChargeService {
   constructor(
-    @Inject(ChargesRepositoryToken)
-    private chargesRepository: ChargeRepository,
+    @Inject(ChargeRepositoryToken)
+    private chargeRepository: ChargeRepository,
     @Inject(TransactionServiceToken)
     private readonly transactionService: TransactionService,
   ) {}
 
   create(creationModel: ChargeCreationModel): Promise<ChargeModel> {
-    return this.chargesRepository.create(creationModel)()
+    return this.chargeRepository.create(creationModel)()
   }
 
-  /**
-   *
-   * @param by
-   * @returns found ChargeModel
-   * @throws Error Not Found
-   */
   findOneBy(by: IdentifierFrom<ChargeModel>): Promise<ChargeModel> {
-    const foundChargeModel = this.chargesRepository.findOneBy(by)()
+    const foundChargeModel = this.chargeRepository.findOneBy(by)()
 
     if (!foundChargeModel) {
-      throw new Error('Not Found')
+      throw new NotFoundDomainException()
     }
 
     return foundChargeModel
   }
 
-  /**
-   *
-   * @param userId
-   * @param chargeModel
-   * @returns charged ChargeModel
-   * @throws NotFoundDomainException
-   */
   charge(
     userId: string,
-    chargeModel: ChargeUpdatingModel,
+    updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
       TransactionLevel.ReadCommitted,
       [
         async conn => {
-          const beforeCharging = await this.chargesRepository.findOneBy({
+          const beforeCharging = await this.chargeRepository.findOneBy({
             userId,
           })(conn)
 
@@ -68,28 +55,23 @@ export class ChargeService {
             throw new NotFoundDomainException()
           }
 
-          return this.chargesRepository.update(userId, {
-            amount: beforeCharging.amount + chargeModel.amount,
+          return this.chargeRepository.update(userId, {
+            amount: beforeCharging.amount + updatingModel.amount,
           })(conn)
         },
       ],
     )
   }
 
-  /**
-   *
-   * @param userId
-   * @param useModel
-   * @returns used ChargeModel
-   * @throws DomainException Insufficient balance
-   * @throws NotFoundDomainException
-   */
-  use(userId: string, useModel: ChargeUpdatingModel): Promise<ChargeModel> {
+  use(
+    userId: string,
+    updatingModel: ChargeUpdatingModel,
+  ): Promise<ChargeModel> {
     return this.transactionService.tx<ChargeModel>(
       TransactionLevel.ReadCommitted,
       [
         async conn => {
-          const beforeCharging = await this.chargesRepository.findOneBy({
+          const beforeCharging = await this.chargeRepository.findOneBy({
             userId,
           })(conn)
 
@@ -97,13 +79,13 @@ export class ChargeService {
             throw new NotFoundDomainException()
           }
 
-          const balance = beforeCharging.amount - useModel.amount
+          const balance = beforeCharging.amount - updatingModel.amount
 
           if (balance < 0) {
             throw new DomainException('Insufficient balance')
           }
 
-          return this.chargesRepository.update(userId, {
+          return this.chargeRepository.update(userId, {
             amount: balance,
           })(conn)
         },

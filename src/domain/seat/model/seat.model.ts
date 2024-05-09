@@ -1,22 +1,4 @@
-export interface SeatCreationModel {
-  holderId: string
-  concertId: string
-  seatNo: number
-  reservedAt: Date
-  deadline: Date
-}
-
-export type SeatUpdatingModel = Omit<
-  Partial<SeatCreationModel>,
-  'concertId' | 'seatNo'
-> & { paidAt?: Date }
-
 export interface SeatModel {
-  /**
-   * @description UUID
-   *
-   * if id === null, not reserved yet
-   */
   id: string | null
   holderId: string | null
   concertId: string
@@ -25,3 +7,17 @@ export interface SeatModel {
   deadline: Date | null
   paidAt: Date | null
 }
+
+export type SeatCreationModel = Pick<
+  SeatModel,
+  'holderId' | 'concertId' | 'seatNo' | 'reservedAt' | 'deadline'
+>
+
+export type SeatReservationModel = Omit<
+  SeatCreationModel,
+  'reservedAt' | 'deadline'
+>
+
+export type SeatUpdatingModel = Partial<
+  Pick<SeatModel, 'holderId' | 'reservedAt' | 'deadline' | 'paidAt'>
+>

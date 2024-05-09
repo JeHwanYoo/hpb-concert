@@ -4,8 +4,8 @@ import { TokenService } from './token.service'
 import Redis from 'ioredis'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule, JwtService } from '@nestjs/jwt'
-import { RedisService } from '@liaoliaots/nestjs-redis'
-import { EnqueueTokenModel } from './model/enqueueTokenModel'
+import { EnqueueTokenModel } from './model/token.model'
+import { getRedisConnectionToken } from '@nestjs-modules/ioredis'
 
 describe('TokensService', () => {
   let service: TokenService
@@ -19,12 +19,8 @@ describe('TokensService', () => {
       providers: [
         TokenService,
         {
-          provide: RedisService,
-          useValue: {
-            getClient() {
-              return mockRedis
-            },
-          },
+          provide: getRedisConnectionToken(),
+          useValue: mockRedis,
         },
       ],
     }).compile()

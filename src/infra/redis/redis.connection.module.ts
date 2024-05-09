@@ -1,18 +1,15 @@
 import { Module } from '@nestjs/common'
-import { RedisModule } from '@liaoliaots/nestjs-redis'
 import { ConfigService } from '@nestjs/config'
 import { RedisDistributedLockService } from './redis.lock.service'
+import { RedisModule } from '@nestjs-modules/ioredis'
 
 @Module({
   imports: [
     RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        readyLog: true,
-        config: {
-          host: configService.get('REDIS_HOST'),
-          port: Number(configService.get('REDIS_PORT')),
-        },
+        type: 'single',
+        url: `${configService.get('REDIS_HOST')}:${configService.get('REDIS_PORT')}`,
       }),
     }),
   ],

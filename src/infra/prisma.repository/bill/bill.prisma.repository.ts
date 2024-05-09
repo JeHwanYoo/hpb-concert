@@ -5,9 +5,9 @@ import {
   BillModel,
 } from '../../../domain/bills/model/bill.model'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
-import { PrismaService } from '../../prisma/prisma.service'
+import { PrismaService } from '../../prisma.connection/prisma.service'
 import { Prisma } from '@prisma/client'
-import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
+import { TransactionalOperation } from '../../../service/transaction/transaction.service'
 
 @Injectable()
 export class BillPrismaRepository implements BillsRepository {

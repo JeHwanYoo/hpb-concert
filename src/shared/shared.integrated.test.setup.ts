@@ -1,6 +1,6 @@
 import { GenericContainer } from 'testcontainers'
 import { execSync } from 'child_process'
-import { PrismaService } from '../infra/prisma/prisma.service'
+import { PrismaService } from '../infra/prisma.connection/prisma.service'
 import Redis from 'ioredis'
 import * as process from 'process'
 
@@ -29,7 +29,7 @@ export function setUpPrismaIntegratedTest(
     process.env.DATABASE_URL = `postgresql://user:password@localhost:${mappedPort}/test?schema=public`
 
     // Migrate TestContainer and PostgreSQL image
-    execSync('npx prisma migrate dev')
+    execSync('npx prisma.connection migrate dev')
 
     const prisma = new PrismaService()
 

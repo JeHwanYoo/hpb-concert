@@ -4,10 +4,13 @@ import {
   ConcertsRepositoryToken,
 } from './concert.repository'
 import { ConcertService } from './concert.service'
-import { PrismaModule } from '../../infra/prisma/prisma.module'
+import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
+import { RedisConnectionModule } from '../../infra/redis/redis.connection.module'
 
 export interface ConcertsModuleProps {
-  ConcertsRepository: new (...args: unknown[]) => ConcertRepository
+  ConcertRepository: new (...args: unknown[]) => ConcertRepository
+  DBModule: PrismaModule
+  CacheModule: RedisConnectionModule
 }
 
 @Module({})
@@ -15,7 +18,7 @@ export class ConcertModule {
   static forFeature(props: ConcertsModuleProps): DynamicModule {
     const dynamicRepositoryProvider: Provider = {
       provide: ConcertsRepositoryToken,
-      useClass: props.ConcertsRepository,
+      useClass: props.ConcertRepository,
     }
 
     return {

@@ -1,6 +1,6 @@
 import { UserModel } from '../domain/user/model/user.model'
 import { ConcertModel } from '../domain/concert/model/concert.model'
-import { PrismaService } from '../infra/prisma/prisma.service'
+import { PrismaService } from '../infra/prisma.connection/prisma.service'
 import { faker } from '@faker-js/faker'
 import { SeatModel } from '../domain/seat/model/seat.model'
 

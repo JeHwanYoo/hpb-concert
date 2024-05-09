@@ -7,7 +7,7 @@ import {
   setUpRedisIntegratedTest,
 } from '../../../src/shared/shared.integrated.test.setup'
 import Redis from 'ioredis'
-import { PrismaService } from '../../../src/infra/prisma/prisma.service'
+import { PrismaService } from '../../../src/infra/prisma.connection/prisma.service'
 import { AppModule } from '../../../src/app.module'
 import { agent } from 'supertest'
 import { JwtService } from '@nestjs/jwt'

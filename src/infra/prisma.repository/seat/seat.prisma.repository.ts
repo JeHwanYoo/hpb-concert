@@ -5,10 +5,10 @@ import {
   SeatUpdatingModel,
 } from '../../../domain/seat/model/seat.model'
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
+import { PrismaService } from '../../prisma.connection/prisma.service'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
 import { Prisma } from '@prisma/client'
-import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
+import { TransactionalOperation } from '../../../service/transaction/transaction.service'
 
 @Injectable()
 export class SeatPrismaRepository implements SeatRepository {

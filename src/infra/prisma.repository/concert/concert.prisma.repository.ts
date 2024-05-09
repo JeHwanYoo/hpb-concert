@@ -1,16 +1,16 @@
-import { PrismaService } from '../../prisma/prisma.service'
-import { ConcertsRepository } from '../../../domain/concert/concert.repository'
+import { PrismaService } from '../../prisma.connection/prisma.service'
 import {
   ConcertCreationModel,
   ConcertModel,
 } from '../../../domain/concert/model/concert.model'
 import { Injectable } from '@nestjs/common'
-import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
+import { TransactionalOperation } from '../../../service/transaction/transaction.service'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
 import { Prisma } from '@prisma/client'
+import { ConcertRepository } from '../../../domain/concert/concert.repository'
 
 @Injectable()
-export class ConcertPrismaRepository implements ConcertsRepository {
+export class ConcertPrismaRepository implements ConcertRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**

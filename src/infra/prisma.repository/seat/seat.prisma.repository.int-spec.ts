@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { PrismaModule } from '../../prisma/prisma.module'
-import { PrismaService } from '../../prisma/prisma.service'
+import { PrismaModule } from '../../prisma.connection/prisma.module'
+import { PrismaService } from '../../prisma.connection/prisma.service'
 import {
   setUpPipeline,
   setUpPrismaIntegratedTest,

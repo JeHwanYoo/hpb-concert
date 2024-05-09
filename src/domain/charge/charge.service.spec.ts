@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ChargeService } from './charge.service'
-import { ChargesRepositoryToken } from './charge.repository'
-import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
+import { ChargeRepositoryToken } from './charge.repository'
+import { TransactionServiceToken } from '../../service/transaction/transaction.service'
 
 describe('ChargesService', () => {
   let service: ChargeService
@@ -15,7 +15,7 @@ describe('ChargesService', () => {
       providers: [
         ChargeService,
         {
-          provide: ChargesRepositoryToken,
+          provide: ChargeRepositoryToken,
           useValue: mockRepository,
         },
         {

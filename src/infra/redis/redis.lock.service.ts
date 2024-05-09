@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
-import { LockService } from '../../shared/lock/lock.service'
+import { LockService } from '../../service/lock/lock.service'
 
 @Injectable()
 export class RedisDistributedLockService implements LockService {

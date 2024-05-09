@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { RedisService } from '@liaoliaots/nestjs-redis'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { EnqueueTokenModel } from './model/enqueueTokenModel'
 import Redis from 'ioredis'
+import { EnqueueTokenModel } from '../../../dist/src/domains/tokens/models/enqueueTokenModel'
+import { InjectRedis } from '@nestjs-modules/ioredis'
 
 export const redisKeys = {
   waitingCount: 'waitingCount',
@@ -12,29 +12,21 @@ export const redisKeys = {
 @Injectable()
 export class TokenService {
   private readonly throughputPerMinute: number
-  private readonly redis: Redis
 
   constructor(
-    private readonly redisService: RedisService,
+    @InjectRedis() private readonly redis: Redis,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {
     this.throughputPerMinute = parseInt(
       this.configService.get('THROUGHPUT_PER_MINUTE', '100'),
     )
-    this.redis = redisService.getClient()
   }
 
-  /**
-   *
-   * @param userId
-   * @returns created token (JWT)
-   */
   async createToken(userId: string): Promise<string> {
     const availableTime = Math.floor(
       (await this.getAvailableTime()).getTime() / 1000,
     )
-    // expire after 5 minutes
     const expirationTime = availableTime + 5 * 60
 
     await this.incrWaitingCount()
@@ -46,11 +38,6 @@ export class TokenService {
     })
   }
 
-  /**
-   *
-   * @param token
-   * @returns completed token (JWT)
-   */
   async completeToken(token: string): Promise<string> {
     const decoded = this.jwtService.decode<EnqueueTokenModel>(token)
 
@@ -61,11 +48,6 @@ export class TokenService {
     })
   }
 
-  /**
-   *
-   * @private
-   * @returns availableTime
-   */
   private async getAvailableTime(): Promise<Date> {
     const waitingCount = parseInt(
       (await this.redis.get(redisKeys.waitingCount)) ?? '0',
@@ -80,20 +62,10 @@ export class TokenService {
     )
   }
 
-  /**
-   *
-   * @private
-   * @returns increased count
-   */
   private async incrWaitingCount(): Promise<number> {
     return this.redis.incr(redisKeys.waitingCount)
   }
 
-  /**
-   *
-   * @private
-   * @returns decreased count
-   */
   private async decrWaitingCount(): Promise<number> {
     return this.redis.decr(redisKeys.waitingCount)
   }

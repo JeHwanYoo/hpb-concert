@@ -4,9 +4,9 @@ import {
   ChargeUpdatingModel,
 } from './model/charge.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
-import { TransactionalOperation } from '../../shared/transaction/transaction.service'
+import { TransactionalOperation } from '../../service/transaction/transaction.service'
 
-export const ChargesRepositoryToken = 'ChargesRepository'
+export const ChargeRepositoryToken = 'ChargesRepository'
 
 export interface ChargeRepository<Connection = unknown> {
   create(
