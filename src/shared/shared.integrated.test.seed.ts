@@ -1,14 +1,14 @@
-import { UserModel } from '../domains/users/models/user.model'
-import { ConcertModel } from '../domains/concerts/models/concert.model'
+import { UserModel } from '../domain/user/model/user.model'
+import { ConcertModel } from '../domain/concert/model/concert.model'
 import { PrismaService } from '../infra/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
-import { SeatModel } from '../domains/seats/models/seat.model'
+import { SeatModel } from '../domain/seat/model/seat.model'
 
 /**
  *
  * @param prisma
  * @param n
- * @description seed users using integrated test
+ * @description seed user using integrated test
  */
 export function seedUsers(
   prisma: PrismaService,
@@ -29,7 +29,7 @@ export function seedUsers(
  *
  * @param prisma
  * @param n
- * @description seed concerts using integrated test
+ * @description seed concert using integrated test
  */
 export function seedConcerts(
   prisma: PrismaService,

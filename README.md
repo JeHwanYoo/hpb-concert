@@ -154,7 +154,7 @@
 ## 디렉토리 구조
 
 - `src/apis/*`: API Controller, UseCase Layers
-- `src/domains/*`: Business(Service) Layers
+- `src/domain*`: Business(Service) Layers
 - `src/infra/*`: Infrastructure Layers
     - `prisma`: Prisma Connection
     - `redis`: Redis Connection

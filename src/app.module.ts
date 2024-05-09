@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { RedisConnectionModule } from './infra/redis/redis.connection.module'
 import { ConfigModule } from '@nestjs/config'
-import { EnqueuesApiModule } from './apis/enqueues/enqueues.api.module'
-import { ChargesApiModule } from './apis/charges/charges.api.module'
-import { ConcertsApiModule } from './apis/concerts/concerts.api.module'
+import { EnqueueApiModule } from './api/enqueue/enqueue.api.module'
+import { ChargeApiModule } from './api/charge/charge.api.module'
+import { ConcertApiModule } from './api/concert/concert.api.module'
 
 @Module({
   imports: [
@@ -11,9 +11,9 @@ import { ConcertsApiModule } from './apis/concerts/concerts.api.module'
       isGlobal: true,
     }),
     RedisConnectionModule,
-    EnqueuesApiModule,
-    ChargesApiModule,
-    ConcertsApiModule,
+    EnqueueApiModule,
+    ChargeApiModule,
+    ConcertApiModule,
   ],
   controllers: [],
   providers: [],
