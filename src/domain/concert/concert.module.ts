@@ -5,12 +5,12 @@ import {
 } from './concert.repository'
 import { ConcertService } from './concert.service'
 import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
-import { RedisConnectionModule } from '../../infra/redis/redis.connection.module'
+import { RedisCacheModule } from '../../infra/redis/redis.cache.module'
 
 export interface ConcertsModuleProps {
   ConcertRepository: new (...args: unknown[]) => ConcertRepository
   DBModule: PrismaModule
-  CacheModule: RedisConnectionModule
+  CacheModule: RedisCacheModule
 }
 
 @Module({})

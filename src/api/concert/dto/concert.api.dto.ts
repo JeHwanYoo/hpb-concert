@@ -4,7 +4,7 @@ import {
   ConcertModel,
 } from '../../../domain/concert/model/concert.model'
 import { SeatModel } from '../../../domain/seat/model/seat.model'
-import { BillModel } from '../../../domain/bills/model/bill.model'
+import { BillModel } from '../../../domain/bill/model/bill.model'
 
 export class ConcertPostRequestDto implements ConcertCreationModel {
   @ApiProperty({

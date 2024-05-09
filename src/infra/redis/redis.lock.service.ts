@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { RedisService } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
 import { LockService } from '../../service/lock/lock.service'
+import { InjectRedis } from '@nestjs-modules/ioredis'
 
 @Injectable()
 export class RedisDistributedLockService implements LockService {
-  private readonly redis: Redis
-
-  constructor(private readonly redisService: RedisService) {
-    this.redis = redisService.getClient()
-  }
+  constructor(@InjectRedis() private readonly redis: Redis) {}
 
   async acquireLock(
     lockKey: string,

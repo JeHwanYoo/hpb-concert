@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { differenceInSeconds } from 'date-fns'
-import { EnqueueTokenModel } from '../../../dist/src/domains/tokens/models/enqueueTokenModel'
+import { EnqueueTokenModel } from './model/token.model'
 
 @Injectable()
 export class UserTokenGuard implements CanActivate {

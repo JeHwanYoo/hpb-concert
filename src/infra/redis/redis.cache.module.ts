@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { RedisDistributedLockService } from './redis.lock.service'
 import { RedisModule } from '@nestjs-modules/ioredis'
+import { LockServiceToken } from '../../service/lock/lock.service'
 
 @Module({
   imports: [
@@ -13,7 +14,17 @@ import { RedisModule } from '@nestjs-modules/ioredis'
       }),
     }),
   ],
-  providers: [RedisDistributedLockService],
-  exports: [RedisDistributedLockService],
+  providers: [
+    {
+      provide: LockServiceToken,
+      useClass: RedisDistributedLockService,
+    },
+  ],
+  exports: [
+    {
+      provide: LockServiceToken,
+      useClass: RedisDistributedLockService,
+    },
+  ],
 })
-export class RedisConnectionModule {}
+export class RedisCacheModule {}

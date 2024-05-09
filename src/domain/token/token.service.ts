@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import Redis from 'ioredis'
-import { EnqueueTokenModel } from '../../../dist/src/domains/tokens/models/enqueueTokenModel'
 import { InjectRedis } from '@nestjs-modules/ioredis'
+import { EnqueueTokenModel } from './model/token.model'
 
 export const redisKeys = {
   waitingCount: 'waitingCount',

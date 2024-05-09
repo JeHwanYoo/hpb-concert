@@ -31,7 +31,7 @@ import {
 } from '../../domain/token/token.guard'
 import { ConcertApiUseCase } from './concert.api.use-case'
 import { DecodedToken } from '../../domain/token/token.decorator'
-import { EnqueueTokenModel } from '../../../dist/src/domains/tokens/models/enqueueTokenModel'
+import { EnqueueTokenModel } from '../../domain/token/model/token.model'
 
 @Controller('v1/concert')
 @ApiTags('Concerts')

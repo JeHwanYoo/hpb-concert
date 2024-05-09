@@ -3,9 +3,9 @@ import { BillRepository, BillRepositoryToken } from './bill.repository'
 import { BillService } from './bill.service'
 
 export interface BillModuleProps {
-  BillsRepository: new (...args: unknown[]) => BillRepository
-  DBModule: Type
-  CacheModule: Type
+  BillRepository: new (...args: unknown[]) => BillRepository
+  DBModule: Type | DynamicModule
+  CacheModule: Type | DynamicModule
 }
 
 @Module({})
@@ -13,7 +13,7 @@ export class BillModule {
   static forFeature(props: BillModuleProps): DynamicModule {
     const dynamicRepositoryProvider: Provider = {
       provide: BillRepositoryToken,
-      useClass: props.BillsRepository,
+      useClass: props.BillRepository,
     }
 
     return {

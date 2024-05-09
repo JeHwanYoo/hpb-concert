@@ -4,8 +4,8 @@ import { SeatService } from './seat.service'
 
 export interface SeatsModuleProps {
   SeatsRepository: new (...args: unknown[]) => SeatRepository
-  DBModule: Type
-  CacheModule: Type
+  DBModule: Type | DynamicModule
+  CacheModule: Type | DynamicModule
 }
 
 @Module({})

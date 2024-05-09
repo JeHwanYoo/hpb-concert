@@ -5,8 +5,8 @@ import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
 
 export interface ChargesModuleProps {
   ChargeRepository: new (...args: unknown[]) => ChargeRepository
-  DBModule: Type
-  CacheModule: Type
+  DBModule: Type | DynamicModule
+  CacheModule: Type | DynamicModule
 }
 
 @Module({})

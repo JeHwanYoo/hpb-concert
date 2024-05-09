@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger'
 import { ChargePatchRequestDto, ChargeResponseDto } from './dto/charge.api.dto'
 import { UserTokenExampleValue } from '../../shared/shared.openapi'
-import { ChargeApiUseCase } from './charge-api-use-case.service'
+import { ChargeApiUseCase } from './charge-api-use-case'
 import { UserTokenGuard } from '../../domain/token/token.guard'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { UserTokenModel } from '../../domain/token/model/token.model'

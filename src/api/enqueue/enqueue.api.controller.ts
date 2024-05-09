@@ -11,9 +11,9 @@ import {
   UserTokenExampleValue,
 } from '../../shared/shared.openapi'
 import { EnqueueApiUseCase } from './enqueue.api.use-case'
-import { UserTokensGuard } from '../../domain/tokens/tokens.guard'
-import { DecodedToken } from '../../domain/tokens/tokens.decorator'
-import { UserTokenModel } from '../../domain/tokens/model/enqueueTokenModel'
+import { DecodedToken } from '../../domain/token/token.decorator'
+import { UserTokenModel } from '../../domain/token/model/token.model'
+import { UserTokenGuard } from '../../domain/token/token.guard'
 
 @Controller('v1/enqueue')
 @ApiTags('Enqueues')
@@ -42,7 +42,7 @@ export class EnqueueApiController {
     },
   })
   @ApiUnauthorizedResponse()
-  @UseGuards(UserTokensGuard)
+  @UseGuards(UserTokenGuard)
   enqueues(
     @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
   ): Promise<string> {
