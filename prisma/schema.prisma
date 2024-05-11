@@ -49,6 +49,8 @@ model Seat {
   deadline   DateTime?
   paidAt     DateTime?
   Bill       Bill[]
+
+  @@index([seatNo], type: Hash)
 }
 
 model Charge {
