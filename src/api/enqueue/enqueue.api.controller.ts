@@ -10,15 +10,15 @@ import {
   EnqueueTokenExampleValue,
   UserTokenExampleValue,
 } from '../../shared/shared.openapi'
-import { EnqueueApiUseCase } from './enqueue.api.use-case'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { UserTokenModel } from '../../domain/token/model/token.model'
 import { UserTokenGuard } from '../../domain/token/token.guard'
+import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
 
 @Controller('v1/enqueue')
 @ApiTags('Enqueues')
 export class EnqueueApiController {
-  constructor(private readonly enqueuesApiUseCase: EnqueueApiUseCase) {}
+  constructor(private readonly enqueueApiCreateToken: EnqueueApiCreateToken) {}
 
   @Post()
   @ApiOperation({
@@ -46,6 +46,6 @@ export class EnqueueApiController {
   enqueues(
     @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
   ): Promise<string> {
-    return this.enqueuesApiUseCase.createToken(decodedUserToken.userId)
+    return this.enqueueApiCreateToken.execute(decodedUserToken.userId)
   }
 }

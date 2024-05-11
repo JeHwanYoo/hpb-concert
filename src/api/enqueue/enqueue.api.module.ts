@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 import { EnqueueApiController } from './enqueue.api.controller'
-import { EnqueueApiUseCase } from './enqueue.api.use-case'
 import { TokenModule } from '../../domain/token/token.module'
 import { RedisCacheModule } from '../../infra/redis/redis.cache.module'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
+import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
 
 @Module({
   imports: [
@@ -19,6 +19,6 @@ import { ConfigService } from '@nestjs/config'
     }),
   ],
   controllers: [EnqueueApiController],
-  providers: [EnqueueApiUseCase],
+  providers: [EnqueueApiCreateToken],
 })
 export class EnqueueApiModule {}
