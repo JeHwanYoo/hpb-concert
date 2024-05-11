@@ -9,7 +9,7 @@ import {
   TransactionLevel,
   TransactionService,
   TransactionServiceToken,
-} from '../../service/transaction/transaction.service'
+} from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import {
   DomainException,

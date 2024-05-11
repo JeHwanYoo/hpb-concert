@@ -5,8 +5,8 @@ import { SeatsRepositoryToken } from './seat.repository'
 import { v4 } from 'uuid'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import { faker } from '@faker-js/faker'
-import { TransactionServiceToken } from '../../service/transaction/transaction.service'
-import { LockServiceToken } from '../../service/lock/lock.service'
+import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
+import { LockServiceToken } from '../../shared/lock/lock.service'
 
 describe('SeatsService', () => {
   let service: SeatService

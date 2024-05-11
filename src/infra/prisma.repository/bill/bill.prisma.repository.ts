@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
 import { PrismaService } from '../../prisma.connection/prisma.service'
 import { Prisma } from '@prisma/client'
-import { TransactionalOperation } from '../../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 import { BillRepository } from '../../../domain/bill/bill.repository'
 import {
   BillCreationModel,

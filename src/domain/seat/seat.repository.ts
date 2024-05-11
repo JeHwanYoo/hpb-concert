@@ -4,7 +4,7 @@ import {
   SeatUpdatingModel,
 } from './model/seat.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
-import { TransactionalOperation } from '../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
 export const SeatsRepositoryToken = 'SeatRepository'
 

@@ -1,6 +1,6 @@
 import { BillCreationModel, BillModel } from './model/bill.model'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
-import { TransactionalOperation } from '../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
 export const BillRepositoryToken = 'BillRepository'
 

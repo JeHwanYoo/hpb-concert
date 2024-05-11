@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { PrismaService } from './prisma.service'
 import { PrismaTransactionService } from './prisma.transaction.service'
-import { TransactionServiceToken } from '../../service/transaction/transaction.service'
+import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
 
 @Module({
   providers: [

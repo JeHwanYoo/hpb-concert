@@ -3,7 +3,7 @@ import {
   TransactionalOperation,
   TransactionLevel,
   TransactionService,
-} from '../../service/transaction/transaction.service'
+} from '../../shared/transaction/transaction.service'
 import { PrismaService } from './prisma.service'
 import { Prisma } from '@prisma/client'
 

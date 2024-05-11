@@ -8,7 +8,7 @@ import {
 import { PrismaService } from '../../prisma.connection/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { TransactionalOperation } from '../../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 
 @Injectable()
 export class ChargePrismaRepository implements ChargeRepository {

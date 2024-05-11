@@ -4,7 +4,7 @@ import {
   ConcertModel,
 } from '../../../domain/concert/model/concert.model'
 import { Injectable } from '@nestjs/common'
-import { TransactionalOperation } from '../../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../../shared/shared.type.helper'
 import { Prisma } from '@prisma/client'
 import { ConcertRepository } from '../../../domain/concert/concert.repository'

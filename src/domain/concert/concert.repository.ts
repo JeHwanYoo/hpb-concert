@@ -1,5 +1,5 @@
 import { ConcertCreationModel, ConcertModel } from './model/concert.model'
-import { TransactionalOperation } from '../../service/transaction/transaction.service'
+import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 export const ConcertsRepositoryToken = 'ConcertsRepository'

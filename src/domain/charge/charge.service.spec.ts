@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ChargeService } from './charge.service'
 import { ChargeRepositoryToken } from './charge.repository'
-import { TransactionServiceToken } from '../../service/transaction/transaction.service'
+import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
 
 describe('ChargesService', () => {
   let service: ChargeService

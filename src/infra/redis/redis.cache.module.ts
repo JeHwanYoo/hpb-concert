@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { RedisDistributedLockService } from './redis.lock.service'
 import { RedisModule } from '@nestjs-modules/ioredis'
-import { LockServiceToken } from '../../service/lock/lock.service'
+import { LockServiceToken } from '../../shared/lock/lock.service'
 
 @Module({
   imports: [

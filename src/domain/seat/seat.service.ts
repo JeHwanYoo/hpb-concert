@@ -6,13 +6,13 @@ import {
   TransactionLevel,
   TransactionService,
   TransactionServiceToken,
-} from '../../service/transaction/transaction.service'
+} from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import {
   DomainException,
   NotFoundDomainException,
 } from '../../shared/shared.exception'
-import { LockService, LockServiceToken } from '../../service/lock/lock.service'
+import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
 import { v4 } from 'uuid'
 
 const lockKey = 'lock_key'
