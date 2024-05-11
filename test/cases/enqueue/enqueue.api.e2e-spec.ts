@@ -12,9 +12,9 @@ import { AppModule } from '../../../src/app.module'
 import { agent } from 'supertest'
 import { JwtService } from '@nestjs/jwt'
 import { v4 as uuidV4 } from 'uuid'
-import { EnqueueTokenModel } from '../../../dist/src/domains/tokens/models/enqueueTokenModel'
+import { EnqueueTokenModel } from '../../../src/domain/token/model/token.model'
 
-describe('EnqueuesAPIController (e2e)', () => {
+describe('EnqueueApiController (e2e)', () => {
   let app: INestApplication
   let redis: Redis
   let prisma: PrismaService
@@ -69,7 +69,7 @@ describe('EnqueuesAPIController (e2e)', () => {
   })
 
   describe('POST /enqueue', () => {
-    it('should return an enqueue token', async () => {
+    it('Use case - EnqueueApiCreateToken (201)', async () => {
       const response = await request.post('/v1/enqueues')
 
       expect(response.status).to.be.eq(201)

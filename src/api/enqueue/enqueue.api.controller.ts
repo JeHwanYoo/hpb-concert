@@ -15,7 +15,7 @@ import { UserTokenModel } from '../../domain/token/model/token.model'
 import { UserTokenGuard } from '../../domain/token/token.guard'
 import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
 
-@Controller('v1/enqueue')
+@Controller('v1/enqueues')
 @ApiTags('Enqueues')
 export class EnqueueApiController {
   constructor(private readonly enqueueApiCreateToken: EnqueueApiCreateToken) {}
@@ -43,9 +43,14 @@ export class EnqueueApiController {
   })
   @ApiUnauthorizedResponse()
   @UseGuards(UserTokenGuard)
-  enqueues(
+  async enqueue(
     @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
   ): Promise<string> {
-    return this.enqueueApiCreateToken.execute(decodedUserToken.userId)
+    try {
+      return await this.enqueueApiCreateToken.execute(decodedUserToken.userId)
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }
 }
