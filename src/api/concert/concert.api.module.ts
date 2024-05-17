@@ -7,13 +7,17 @@ import { ChargeModule } from '../../domain/charge/charge.module'
 import { ChargePrismaRepository } from '../../infra/prisma.repository/charge/charge.prisma.repository'
 import { BillPrismaRepository } from '../../infra/prisma.repository/bill/bill.prisma.repository'
 import { ConcertApiController } from './concert.api.controller'
-import { ConcertApiUseCase } from './concert.api.use-case'
 import { ConcertModule } from '../../domain/concert/concert.module'
 import { ConcertPrismaRepository } from '../../infra/prisma.repository/concert/concert.prisma.repository'
 import { SeatPrismaRepository } from '../../infra/prisma.repository/seat/seat.prisma.repository'
 import { BillModule } from '../../domain/bill/bill.module'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
+import { ConcertUsecaseCreateConcert } from './usecase/concert.usecase.create-concert'
+import { ConcertUsecaseGetConcerts } from './usecase/concert.usecase.get-concerts'
+import { ConcertUsecaseGetSeats } from './usecase/concert.usecase.get-seats'
+import { ConcertUsecasePaySeat } from './usecase/concert.usecase.pay-seat'
+import { ConcertUsecaseReserveSeat } from './usecase/concert.usecase.reserve-seat'
 
 @Module({
   imports: [
@@ -48,6 +52,12 @@ import { ConfigService } from '@nestjs/config'
     }),
   ],
   controllers: [ConcertApiController],
-  providers: [ConcertApiUseCase],
+  providers: [
+    ConcertUsecaseCreateConcert,
+    ConcertUsecaseGetConcerts,
+    ConcertUsecaseGetSeats,
+    ConcertUsecasePaySeat,
+    ConcertUsecaseReserveSeat,
+  ],
 })
 export class ConcertApiModule {}

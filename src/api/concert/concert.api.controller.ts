@@ -29,9 +29,13 @@ import {
   EnqueueTokenGuard,
   UserTokenGuard,
 } from '../../domain/token/token.guard'
-import { ConcertApiUseCase } from './concert.api.use-case'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { EnqueueTokenModel } from '../../domain/token/model/token.model'
+import { ConcertUsecaseCreateConcert } from './usecase/concert.usecase.create-concert'
+import { ConcertUsecasePaySeat } from './usecase/concert.usecase.pay-seat'
+import { ConcertUsecaseGetConcerts } from './usecase/concert.usecase.get-concerts'
+import { ConcertUsecaseReserveSeat } from './usecase/concert.usecase.reserve-seat'
+import { ConcertUsecaseGetSeats } from './usecase/concert.usecase.get-seats'
 
 @Controller({
   path: 'concerts',
@@ -39,7 +43,13 @@ import { EnqueueTokenModel } from '../../domain/token/model/token.model'
 })
 @ApiTags('Concerts')
 export class ConcertApiController {
-  constructor(private readonly concertApiUseCase: ConcertApiUseCase) {}
+  constructor(
+    private readonly concertUsecaseCreateConcert: ConcertUsecaseCreateConcert,
+    private readonly concertUsecaseGetConcerts: ConcertUsecaseGetConcerts,
+    private readonly concertUsecaseReserveSeat: ConcertUsecaseReserveSeat,
+    private readonly concertUsecasePaySeat: ConcertUsecasePaySeat,
+    private readonly concertUsecaseGetSeats: ConcertUsecaseGetSeats,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -60,7 +70,7 @@ export class ConcertApiController {
   })
   @ApiUnauthorizedResponse()
   getConcerts(): Promise<ConcertResponseDto[]> {
-    return this.concertApiUseCase.getConcerts()
+    return this.concertUsecaseGetConcerts.execute()
   }
 
   @Get(':concert_id/seats')
@@ -81,16 +91,11 @@ export class ConcertApiController {
   })
   @ApiUnauthorizedResponse()
   getSeats(@Param('concert_id') concertId: string): Promise<SeatResponseDto[]> {
-    return this.concertApiUseCase.getSeatsByConcertId(concertId)
+    return this.concertUsecaseGetSeats.execute(concertId)
   }
 
-  /**
-   * @description
-   * 콘서트 생성은 운영자만 가능하겠지만,
-   * Role 자체를 구현하지 않을 것이기 때문에, 유저라면 bypass
-   */
   @Post()
-  @ApiOkResponse({
+  @ApiOperation({
     description: '콘서트 생성',
   })
   @ApiHeader({
@@ -112,11 +117,7 @@ export class ConcertApiController {
   async createConcert(
     @Body() body: ConcertPostRequestDto,
   ): Promise<ConcertResponseDto> {
-    try {
-      return await this.concertApiUseCase.createConcert(body)
-    } catch (e) {
-      console.error(e)
-    }
+    return this.concertUsecaseCreateConcert.execute(body)
   }
 
   @Post(':concert_id/seats/:seat_no/reservations')
@@ -142,7 +143,7 @@ export class ConcertApiController {
     @Param('seat_no', ParseIntPipe) seatNo: number,
     @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<SeatResponseDto> {
-    return this.concertApiUseCase.reserveSeat(
+    return this.concertUsecaseReserveSeat.execute(
       decodedEnqueueToken.userId,
       concertId,
       seatNo,
@@ -172,7 +173,7 @@ export class ConcertApiController {
     @Param('seat_id') seatId: string,
     @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<BillResponseDto> {
-    return this.concertApiUseCase.paySeat(
+    return this.concertUsecasePaySeat.execute(
       decodedEnqueueToken.userId,
       concertId,
       seatId,
