@@ -22,6 +22,7 @@ export class ConcertUsecasePaySeat {
   ): Promise<BillModel> {
     const concert = await this.concertService.findOneBy({ id: concertId })
 
+    // @todo Saga Pattern 도입
     try {
       await this.chargeService.use(holderId, {
         amount: concert.price,
