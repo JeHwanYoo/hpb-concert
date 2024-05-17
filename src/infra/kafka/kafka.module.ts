@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common'
 import { ClientsModule, Transport } from '@nestjs/microservices'
-import { kafkaName, kafkaOptions } from './kafka.config'
+import { KAFKA_NAME, KAFKA_OPTIONS } from './kafka.config'
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: kafkaName,
+        name: KAFKA_NAME,
         transport: Transport.KAFKA,
-        options: kafkaOptions,
+        options: KAFKA_OPTIONS,
       },
     ]),
   ],

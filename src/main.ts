@@ -7,7 +7,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { VersioningType } from '@nestjs/common'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
-import { kafkaOptions } from './infra/kafka/kafka.config'
+import { KAFKA_OPTIONS } from './infra/kafka/kafka.config'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,7 +20,7 @@ async function bootstrap() {
   // Kafka 설정
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
-    options: kafkaOptions,
+    options: KAFKA_OPTIONS,
   })
 
   // Versioning 설정

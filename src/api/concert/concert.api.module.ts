@@ -18,6 +18,7 @@ import { ConcertUsecaseGetConcerts } from './usecase/concert.usecase.get-concert
 import { ConcertUsecaseGetSeats } from './usecase/concert.usecase.get-seats'
 import { ConcertUsecasePaySeat } from './usecase/concert.usecase.pay-seat'
 import { ConcertUsecaseReserveSeat } from './usecase/concert.usecase.reserve-seat'
+import { KafkaModule } from '../../infra/kafka/kafka.module'
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ConcertUsecaseReserveSeat } from './usecase/concert.usecase.reserve-sea
       DBModule: PrismaModule,
       CacheModule: RedisCacheModule,
     }),
+    KafkaModule,
   ],
   controllers: [ConcertApiController],
   providers: [

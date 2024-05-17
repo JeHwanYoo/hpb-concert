@@ -1,6 +1,6 @@
 import { KafkaOptions } from '@nestjs/microservices'
 
-export const kafkaOptions: KafkaOptions['options'] = {
+export const KAFKA_OPTIONS: KafkaOptions['options'] = {
   client: {
     clientId: 'nestjs',
     brokers: [process.env.KAFKA_CONNECTION_STRING],
@@ -10,4 +10,4 @@ export const kafkaOptions: KafkaOptions['options'] = {
   },
 }
 
-export const kafkaName = 'KAFKA_CLIENT'
+export const KAFKA_NAME = 'KAFKA_CLIENT'
