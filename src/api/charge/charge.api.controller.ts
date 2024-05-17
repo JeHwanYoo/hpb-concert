@@ -14,7 +14,10 @@ import { UserTokenGuard } from '../../domain/token/token.guard'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { UserTokenModel } from '../../domain/token/model/token.model'
 
-@Controller('v1/charge')
+@Controller({
+  path: 'charges',
+  version: '1',
+})
 @ApiTags('Charges')
 export class ChargeApiController {
   constructor(private readonly chargesApiUseCase: ChargeApiUseCase) {}

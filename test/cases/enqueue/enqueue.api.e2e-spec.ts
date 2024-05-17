@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, VersioningType } from '@nestjs/common'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import {
   setUpPipeline,
@@ -38,6 +38,11 @@ describe('EnqueueApiController (e2e)', () => {
         }).compile()
 
         app = moduleFixture.createNestApplication()
+        app.enableVersioning({
+          type: VersioningType.URI,
+          prefix: 'v',
+        })
+
         await app.init()
 
         // mock authorization

@@ -33,7 +33,10 @@ import { ConcertApiUseCase } from './concert.api.use-case'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { EnqueueTokenModel } from '../../domain/token/model/token.model'
 
-@Controller('v1/concert')
+@Controller({
+  path: 'concerts',
+  version: '1',
+})
 @ApiTags('Concerts')
 export class ConcertApiController {
   constructor(private readonly concertApiUseCase: ConcertApiUseCase) {}
@@ -60,7 +63,7 @@ export class ConcertApiController {
     return this.concertApiUseCase.getConcerts()
   }
 
-  @Get(':concert_id/seat')
+  @Get(':concert_id/seats')
   @ApiOperation({
     description: '좌석 목록 출력',
   })
@@ -116,7 +119,7 @@ export class ConcertApiController {
     }
   }
 
-  @Post(':concert_id/seat/:seat_no/reservations')
+  @Post(':concert_id/seats/:seat_no/reservations')
   @ApiOperation({
     description: '좌석 예약',
   })
@@ -146,7 +149,7 @@ export class ConcertApiController {
     )
   }
 
-  @Post(':concert_id/seat/:seat_id/payments')
+  @Post(':concert_id/seats/:seat_id/payments')
   @ApiOperation({
     description: '결제',
   })

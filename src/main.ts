@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { VersioningType } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -13,6 +14,12 @@ async function bootstrap() {
       logger: true,
     }),
   )
+
+  // Versioning 설정
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: 'v',
+  })
 
   const config = new DocumentBuilder()
     .setTitle('콘서트 예약')

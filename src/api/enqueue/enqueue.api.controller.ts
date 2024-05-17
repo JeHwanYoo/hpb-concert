@@ -15,7 +15,10 @@ import { UserTokenModel } from '../../domain/token/model/token.model'
 import { UserTokenGuard } from '../../domain/token/token.guard'
 import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
 
-@Controller('v1/enqueues')
+@Controller({
+  path: 'enqueues',
+  version: '1',
+})
 @ApiTags('Enqueues')
 export class EnqueueApiController {
   constructor(private readonly enqueueApiCreateToken: EnqueueApiCreateToken) {}
