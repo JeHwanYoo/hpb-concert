@@ -9,10 +9,12 @@ import {
 } from '@nestjs/swagger'
 import { ChargePatchRequestDto, ChargeResponseDto } from './dto/charge.api.dto'
 import { UserTokenExampleValue } from '../../shared/shared.openapi'
-import { ChargeApiUseCase } from './charge-api-use-case'
 import { UserTokenGuard } from '../../domain/token/token.guard'
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { UserTokenModel } from '../../domain/token/model/token.model'
+import { ChargeUsecaseGetCharge } from './usecase/charge.usecase.get-charge'
+import { ChargeUsecaseCharge } from './usecase/charge.usecase.charge'
+import { ChargeUsecaseUse } from './usecase/charge.usecase.use'
 
 @Controller({
   path: 'charges',
@@ -20,7 +22,11 @@ import { UserTokenModel } from '../../domain/token/model/token.model'
 })
 @ApiTags('Charges')
 export class ChargeApiController {
-  constructor(private readonly chargesApiUseCase: ChargeApiUseCase) {}
+  constructor(
+    private readonly chargeUsecaseGetCharge: ChargeUsecaseGetCharge,
+    private readonly chargeUsecaseCharge: ChargeUsecaseCharge,
+    private readonly chargeUsecaseUse: ChargeUsecaseUse,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -43,7 +49,7 @@ export class ChargeApiController {
   getChargeByUserId(
     @DecodedToken<UserTokenModel>() decodedUserToken: UserTokenModel,
   ): Promise<ChargeResponseDto> {
-    return this.chargesApiUseCase.getChargeByUserId(decodedUserToken.userId)
+    return this.chargeUsecaseGetCharge.execute(decodedUserToken.userId)
   }
 
   @Patch()
@@ -72,10 +78,10 @@ export class ChargeApiController {
     @Body() body: ChargePatchRequestDto,
   ): Promise<ChargeResponseDto> {
     return body.action === 'charge'
-      ? this.chargesApiUseCase.charge(decodedUserToken.userId, {
+      ? this.chargeUsecaseCharge.execute(decodedUserToken.userId, {
           amount: body.amount,
         })
-      : this.chargesApiUseCase.use(decodedUserToken.userId, {
+      : this.chargeUsecaseUse.execute(decodedUserToken.userId, {
           amount: body.amount,
         })
   }
