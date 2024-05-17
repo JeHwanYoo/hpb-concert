@@ -74,7 +74,7 @@ describe('EnqueueApiController (e2e)', () => {
   })
 
   describe('POST /enqueue', () => {
-    it('Use case - EnqueueApiCreateToken (201)', async () => {
+    it('Use case - EnqueueUsecaseCreateToken (201)', async () => {
       const response = await request.post('/v1/enqueues')
 
       expect(response.status).to.be.eq(201)

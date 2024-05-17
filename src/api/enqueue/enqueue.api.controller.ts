@@ -13,7 +13,7 @@ import {
 import { DecodedToken } from '../../domain/token/token.decorator'
 import { UserTokenModel } from '../../domain/token/model/token.model'
 import { UserTokenGuard } from '../../domain/token/token.guard'
-import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
+import { EnqueueUsecaseCreateToken } from './usecase/enqueue.usecase.create-token'
 
 @Controller({
   path: 'enqueues',
@@ -21,7 +21,9 @@ import { EnqueueApiCreateToken } from './usecase/enqueue.api.create-token'
 })
 @ApiTags('Enqueues')
 export class EnqueueApiController {
-  constructor(private readonly enqueueApiCreateToken: EnqueueApiCreateToken) {}
+  constructor(
+    private readonly enqueueApiCreateToken: EnqueueUsecaseCreateToken,
+  ) {}
 
   @Post()
   @ApiOperation({
