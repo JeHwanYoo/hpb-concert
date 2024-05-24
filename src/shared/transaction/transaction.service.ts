@@ -9,16 +9,13 @@ export interface TransactionService {
   /**
    *
    * @param transactionLevel
-   * @param operations
+   * @param operation
    * @returns The last result of operations
    * @description Ensures atomicity of the transaction during the session
    */
   tx<Return, Connection = unknown>(
     transactionLevel: TransactionLevel,
-    operations: [
-      ...TransactionalOperation<void, Connection>[],
-      TransactionalOperation<Return, Connection>,
-    ],
+    operation: TransactionalOperation<Return, Connection>,
   ): Promise<Return>
 }
 

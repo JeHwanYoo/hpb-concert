@@ -41,7 +41,8 @@ export class SeatService {
       throw new DomainException('AcquireLockError')
     }
 
-    return this.transactionService.tx(TransactionLevel.ReadCommitted, [
+    return this.transactionService.tx(
+      TransactionLevel.ReadCommitted,
       async conn => {
         const beforeReserving = await this.seatsRepository.findOneBy({
           seatNo: reservationModel.seatNo,
@@ -73,7 +74,7 @@ export class SeatService {
 
         return createdSeat
       },
-    ])
+    )
   }
 
   async pay(seatId: string, holderId: string): Promise<SeatModel> {
@@ -84,37 +85,36 @@ export class SeatService {
 
     return this.transactionService.tx<SeatModel>(
       TransactionLevel.ReadCommitted,
-      [
-        async conn => {
-          const beforePaying = await this.seatsRepository.findOneBy({
-            id: seatId,
-          })(conn)
 
-          if (!beforePaying) {
-            throw new DomainException('Not Reserved')
-          }
+      async conn => {
+        const beforePaying = await this.seatsRepository.findOneBy({
+          id: seatId,
+        })(conn)
 
-          if (beforePaying.holderId !== holderId) {
-            throw new DomainException('Not Authorized')
-          }
+        if (!beforePaying) {
+          throw new DomainException('Not Reserved')
+        }
 
-          if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-            throw new DomainException('Deadline Exceeds')
-          }
+        if (beforePaying.holderId !== holderId) {
+          throw new DomainException('Not Authorized')
+        }
 
-          if (beforePaying.paidAt) {
-            throw new DomainException('Already paid')
-          }
+        if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
+          throw new DomainException('Deadline Exceeds')
+        }
 
-          const paidSeat = await this.seatsRepository.update(seatId, {
-            paidAt: new Date(),
-          })(conn)
+        if (beforePaying.paidAt) {
+          throw new DomainException('Already paid')
+        }
 
-          await this.lockService.releaseLock(lockKey, lockValue)
+        const paidSeat = await this.seatsRepository.update(seatId, {
+          paidAt: new Date(),
+        })(conn)
 
-          return paidSeat
-        },
-      ],
+        await this.lockService.releaseLock(lockKey, lockValue)
+
+        return paidSeat
+      },
     )
   }
 

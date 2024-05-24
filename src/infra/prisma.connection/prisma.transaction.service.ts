@@ -5,7 +5,8 @@ import {
   TransactionService,
 } from '../../shared/transaction/transaction.service'
 import { PrismaService } from './prisma.service'
-import { Prisma } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+import * as runtime from '@prisma/client/runtime/library'
 
 export const PrismaTransactionMap: Record<
   TransactionLevel,
@@ -19,19 +20,13 @@ export const PrismaTransactionMap: Record<
 export class PrismaTransactionService implements TransactionService {
   constructor(private readonly prisma: PrismaService) {}
 
-  tx<Return>(
+  tx<Return, Connection = Omit<PrismaClient, runtime.ITXClientDenyList>>(
     transactionLevel: TransactionLevel,
-    operations: [
-      ...TransactionalOperation<void>[],
-      TransactionalOperation<Return>,
-    ],
+    operation: TransactionalOperation<Return, Connection>,
   ): Promise<Return> {
-    return this.prisma.$transaction(
-      async (conn: PrismaService) => {
-        for (const operation of operations.slice(0, -1)) {
-          await operation(conn)
-        }
-        return (await operations.at(-1)(conn)) as Return
+    return this.prisma.$transaction<Return>(
+      conn => {
+        return operation(conn as Connection)
       },
       {
         isolationLevel: PrismaTransactionMap[transactionLevel],
