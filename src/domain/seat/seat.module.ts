@@ -1,25 +1,19 @@
-import { DynamicModule, Module, Provider, Type } from '@nestjs/common'
-import { SeatRepository, SeatsRepositoryToken } from './seat.repository'
+import { DynamicModule, Module, Type } from '@nestjs/common'
 import { SeatService } from './seat.service'
 
 export interface SeatsModuleProps {
-  SeatsRepository: new (...args: unknown[]) => SeatRepository
   DBModule: Type | DynamicModule
+  RepositoryModule: Type | DynamicModule
   CacheModule: Type | DynamicModule
 }
 
 @Module({})
 export class SeatModule {
   static forFeature(props: SeatsModuleProps): DynamicModule {
-    const dynamicRepositoryProvider: Provider = {
-      provide: SeatsRepositoryToken,
-      useClass: props.SeatsRepository,
-    }
-
     return {
       module: SeatModule,
-      imports: [props.DBModule, props.CacheModule],
-      providers: [SeatService, dynamicRepositoryProvider],
+      imports: [props.DBModule, props.CacheModule, props.RepositoryModule],
+      providers: [SeatService],
       exports: [SeatService],
     }
   }

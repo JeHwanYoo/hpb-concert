@@ -6,7 +6,7 @@ import {
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 
-export const SeatsRepositoryToken = 'SeatRepository'
+export const SeatRepositoryToken = 'SeatRepository'
 
 export interface SeatRepository<Connection = unknown> {
   create(

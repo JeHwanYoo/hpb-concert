@@ -2,7 +2,7 @@ import { ConcertCreationModel, ConcertModel } from './model/concert.model'
 import { TransactionalOperation } from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 
-export const ConcertsRepositoryToken = 'ConcertsRepository'
+export const ConcertRepositoryToken = 'ConcertsRepository'
 
 export interface ConcertRepository<Connection = unknown> {
   create(

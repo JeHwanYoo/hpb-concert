@@ -1,15 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ConcertCreationModel, ConcertModel } from './model/concert.model'
-import {
-  ConcertRepository,
-  ConcertsRepositoryToken,
-} from './concert.repository'
+import { ConcertRepository, ConcertRepositoryToken } from './concert.repository'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 
 @Injectable()
 export class ConcertService {
   constructor(
-    @Inject(ConcertsRepositoryToken)
+    @Inject(ConcertRepositoryToken)
     private readonly concertsRepository: ConcertRepository,
   ) {}
 

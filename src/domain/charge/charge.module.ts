@@ -1,26 +1,19 @@
-import { DynamicModule, Module, Provider, Type } from '@nestjs/common'
-import { ChargeRepository, ChargeRepositoryToken } from './charge.repository'
+import { DynamicModule, Module, Type } from '@nestjs/common'
 import { ChargeService } from './charge.service'
-import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
 
 export interface ChargesModuleProps {
-  ChargeRepository: new (...args: unknown[]) => ChargeRepository
   DBModule: Type | DynamicModule
+  RepositoryModule: Type | DynamicModule
   CacheModule: Type | DynamicModule
 }
 
 @Module({})
 export class ChargeModule {
   static forFeature(props: ChargesModuleProps): DynamicModule {
-    const dynamicRepositoryProvider: Provider = {
-      provide: ChargeRepositoryToken,
-      useClass: props.ChargeRepository,
-    }
-
     return {
       module: ChargeModule,
-      imports: [PrismaModule, props.DBModule, props.CacheModule],
-      providers: [ChargeService, dynamicRepositoryProvider],
+      imports: [props.DBModule, props.CacheModule, props.RepositoryModule],
+      providers: [ChargeService],
       exports: [ChargeService],
     }
   }

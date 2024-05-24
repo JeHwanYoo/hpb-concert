@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { SeatRepository, SeatsRepositoryToken } from './seat.repository'
+import { SeatRepository, SeatRepositoryToken } from './seat.repository'
 import { SeatModel, SeatReservationModel } from './model/seat.model'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import {
@@ -20,7 +20,7 @@ const lockKey = 'lock_key'
 @Injectable()
 export class SeatService {
   constructor(
-    @Inject(SeatsRepositoryToken)
+    @Inject(SeatRepositoryToken)
     private readonly seatsRepository: SeatRepository,
     @Inject(TransactionServiceToken)
     private readonly transactionService: TransactionService,

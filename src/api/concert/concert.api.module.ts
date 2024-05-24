@@ -4,12 +4,8 @@ import { SeatModule } from '../../domain/seat/seat.module'
 import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
 import { RedisCacheModule } from '../../infra/redis/redis.cache.module'
 import { ChargeModule } from '../../domain/charge/charge.module'
-import { ChargePrismaRepository } from '../../infra/prisma.repository/charge/charge.prisma.repository'
-import { BillPrismaRepository } from '../../infra/prisma.repository/bill/bill.prisma.repository'
 import { ConcertApiController } from './concert.api.controller'
 import { ConcertModule } from '../../domain/concert/concert.module'
-import { ConcertPrismaRepository } from '../../infra/prisma.repository/concert/concert.prisma.repository'
-import { SeatPrismaRepository } from '../../infra/prisma.repository/seat/seat.prisma.repository'
 import { BillModule } from '../../domain/bill/bill.module'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
@@ -19,6 +15,10 @@ import { ConcertUsecaseGetSeats } from './usecase/concert.usecase.get-seats'
 import { ConcertUsecasePaySeat } from './usecase/concert.usecase.pay-seat'
 import { ConcertUsecaseReserveSeat } from './usecase/concert.usecase.reserve-seat'
 import { KafkaModule } from '../../infra/kafka/kafka.module'
+import { ConcertPrismaRepositoryModule } from '../../infra/prisma.repository/concert/concert.prisma.repository.module'
+import { SeatPrismaRepositoryModule } from '../../infra/prisma.repository/seat/seat.prisma.repository.module'
+import { ChargePrismaRepositoryModule } from '../../infra/prisma.repository/charge/charge.prisma.repository.module'
+import { BillPrismaRepositoryModule } from '../../infra/prisma.repository/bill/bill.prisma.repository.module'
 
 @Module({
   imports: [
@@ -32,23 +32,23 @@ import { KafkaModule } from '../../infra/kafka/kafka.module'
       }),
     }),
     ConcertModule.forFeature({
-      ConcertRepository: ConcertPrismaRepository,
       DBModule: PrismaModule,
+      RepositoryModule: ConcertPrismaRepositoryModule,
       CacheModule: RedisCacheModule,
     }),
     SeatModule.forFeature({
-      SeatsRepository: SeatPrismaRepository,
       DBModule: PrismaModule,
+      RepositoryModule: SeatPrismaRepositoryModule,
       CacheModule: RedisCacheModule,
     }),
     ChargeModule.forFeature({
-      ChargeRepository: ChargePrismaRepository,
       DBModule: PrismaModule,
+      RepositoryModule: ChargePrismaRepositoryModule,
       CacheModule: RedisCacheModule,
     }),
     BillModule.forFeature({
-      BillRepository: BillPrismaRepository,
       DBModule: PrismaModule,
+      RepositoryModule: BillPrismaRepositoryModule,
       CacheModule: RedisCacheModule,
     }),
     KafkaModule,

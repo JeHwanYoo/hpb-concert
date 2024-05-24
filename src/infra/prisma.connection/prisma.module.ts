@@ -11,12 +11,6 @@ import { TransactionServiceToken } from '../../shared/transaction/transaction.se
       useClass: PrismaTransactionService,
     },
   ],
-  exports: [
-    PrismaService,
-    {
-      provide: TransactionServiceToken,
-      useClass: PrismaTransactionService,
-    },
-  ],
+  exports: [PrismaService, TransactionServiceToken],
 })
 export class PrismaModule {}

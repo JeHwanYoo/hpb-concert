@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { SeatService } from './seat.service'
-import { SeatsRepositoryToken } from './seat.repository'
+import { SeatRepositoryToken } from './seat.repository'
 import { v4 } from 'uuid'
 import { addMinutes, differenceInMinutes } from 'date-fns'
 import { faker } from '@faker-js/faker'
@@ -19,7 +19,7 @@ describe('SeatsService', () => {
       providers: [
         SeatService,
         {
-          provide: SeatsRepositoryToken,
+          provide: SeatRepositoryToken,
           useValue: mockRepository,
         },
         {

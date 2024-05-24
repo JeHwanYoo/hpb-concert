@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ConcertService } from './concert.service'
-import { ConcertsRepositoryToken } from './concert.repository'
+import { ConcertRepositoryToken } from './concert.repository'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
 
@@ -16,7 +16,7 @@ describe('ConcertsService', () => {
       providers: [
         ConcertService,
         {
-          provide: ConcertsRepositoryToken,
+          provide: ConcertRepositoryToken,
           useValue: mockRepository,
         },
       ],

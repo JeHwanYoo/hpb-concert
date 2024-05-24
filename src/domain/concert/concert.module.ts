@@ -1,30 +1,19 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common'
-import {
-  ConcertRepository,
-  ConcertsRepositoryToken,
-} from './concert.repository'
+import { DynamicModule, Module, Type } from '@nestjs/common'
 import { ConcertService } from './concert.service'
-import { PrismaModule } from '../../infra/prisma.connection/prisma.module'
-import { RedisCacheModule } from '../../infra/redis/redis.cache.module'
 
 export interface ConcertsModuleProps {
-  ConcertRepository: new (...args: unknown[]) => ConcertRepository
-  DBModule: PrismaModule
-  CacheModule: RedisCacheModule
+  DBModule: Type | DynamicModule
+  RepositoryModule: Type | DynamicModule
+  CacheModule: Type | DynamicModule
 }
 
 @Module({})
 export class ConcertModule {
   static forFeature(props: ConcertsModuleProps): DynamicModule {
-    const dynamicRepositoryProvider: Provider = {
-      provide: ConcertsRepositoryToken,
-      useClass: props.ConcertRepository,
-    }
-
     return {
       module: ConcertModule,
-      imports: [PrismaModule],
-      providers: [ConcertService, dynamicRepositoryProvider],
+      imports: [props.DBModule, props.RepositoryModule, props.CacheModule],
+      providers: [ConcertService],
       exports: [ConcertService],
     }
   }
