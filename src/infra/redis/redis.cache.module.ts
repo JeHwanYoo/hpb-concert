@@ -20,11 +20,6 @@ import { LockServiceToken } from '../../shared/lock/lock.service'
       useClass: RedisDistributedLockService,
     },
   ],
-  exports: [
-    {
-      provide: LockServiceToken,
-      useClass: RedisDistributedLockService,
-    },
-  ],
+  exports: [LockServiceToken],
 })
 export class RedisCacheModule {}
