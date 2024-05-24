@@ -24,5 +24,5 @@ export interface SeatRepository<Connection = unknown> {
   update(
     seatId: string,
     updatingModel: SeatUpdatingModel,
-  ): TransactionalOperation<SeatModel | null, Connection>
+  ): TransactionalOperation<SeatModel, Connection>
 }

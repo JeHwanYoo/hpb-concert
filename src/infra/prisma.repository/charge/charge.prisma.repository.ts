@@ -35,19 +35,14 @@ export class ChargePrismaRepository implements ChargeRepository {
   update(
     userId: string,
     updatingModel: ChargeUpdatingModel,
-  ): TransactionalOperation<ChargeModel | null, PrismaService> {
+  ): TransactionalOperation<ChargeModel, PrismaService> {
     return async connection => {
-      try {
-        return await (connection ?? this.prisma).charge.update({
-          where: {
-            userId,
-          },
-          data: updatingModel,
-        })
-      } catch (e) {
-        // todo logging
-        return null
-      }
+      return (connection ?? this.prisma).charge.update({
+        where: {
+          userId,
+        },
+        data: updatingModel,
+      })
     }
   }
 }

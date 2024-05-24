@@ -31,5 +31,5 @@ export interface ChargeRepository<Connection = unknown> {
   update(
     userId: string,
     updatingModel: ChargeUpdatingModel,
-  ): TransactionalOperation<ChargeModel | null, Connection>
+  ): TransactionalOperation<ChargeModel, Connection>
 }

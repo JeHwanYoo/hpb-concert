@@ -14,6 +14,8 @@ import {
 } from '../../shared/shared.exception'
 import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
 import { v4 } from 'uuid'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import Redis from 'ioredis'
 
 const lockKey = 'lock_key'
 
@@ -26,6 +28,7 @@ export class SeatService {
     private readonly transactionService: TransactionService,
     @Inject(LockServiceToken)
     private readonly lockService: LockService,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async reserve(reservationModel: SeatReservationModel): Promise<SeatModel> {
@@ -40,35 +43,35 @@ export class SeatService {
 
     return this.transactionService.tx(TransactionLevel.ReadCommitted, [
       async conn => {
-        try {
-          const beforeReserving = await this.seatsRepository.findOneBy({
-            seatNo: reservationModel.seatNo,
-          })(conn)
+        const beforeReserving = await this.seatsRepository.findOneBy({
+          seatNo: reservationModel.seatNo,
+        })(conn)
 
-          if (differenceInMinutes(new Date(), beforeReserving?.deadline) < 5) {
-            throw new DomainException('Already reserved')
-          }
+        if (differenceInMinutes(new Date(), beforeReserving?.deadline) < 5) {
+          throw new DomainException('Already reserved')
+        }
 
-          if (beforeReserving?.paidAt) {
-            throw new DomainException('Already paid')
-          }
+        if (beforeReserving?.paidAt) {
+          throw new DomainException('Already paid')
+        }
 
-          if (beforeReserving?.deadline) {
-            return this.seatsRepository.update(beforeReserving.id, {
-              ...reservationModel,
-              reservedAt,
-              deadline,
-            })(conn)
-          }
-
-          return await this.seatsRepository.create({
+        if (beforeReserving?.deadline) {
+          return this.seatsRepository.update(beforeReserving.id, {
             ...reservationModel,
             reservedAt,
             deadline,
           })(conn)
-        } finally {
-          await this.lockService.releaseLock(lockKey, lockValue)
         }
+
+        const createdSeat = await this.seatsRepository.create({
+          ...reservationModel,
+          reservedAt,
+          deadline,
+        })(conn)
+
+        await this.lockService.releaseLock(lockKey, lockValue)
+
+        return createdSeat
       },
     ])
   }
@@ -83,33 +86,33 @@ export class SeatService {
       TransactionLevel.ReadCommitted,
       [
         async conn => {
-          try {
-            const beforePaying = await this.seatsRepository.findOneBy({
-              id: seatId,
-            })(conn)
+          const beforePaying = await this.seatsRepository.findOneBy({
+            id: seatId,
+          })(conn)
 
-            if (!beforePaying) {
-              throw new DomainException('Not Reserved')
-            }
-
-            if (beforePaying.holderId !== holderId) {
-              throw new DomainException('Not Authorized')
-            }
-
-            if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
-              throw new DomainException('Deadline Exceeds')
-            }
-
-            if (beforePaying.paidAt) {
-              throw new DomainException('Already paid')
-            }
-
-            return await this.seatsRepository.update(seatId, {
-              paidAt: new Date(),
-            })(conn)
-          } finally {
-            await this.lockService.releaseLock(lockKey, lockValue)
+          if (!beforePaying) {
+            throw new DomainException('Not Reserved')
           }
+
+          if (beforePaying.holderId !== holderId) {
+            throw new DomainException('Not Authorized')
+          }
+
+          if (differenceInMinutes(new Date(), beforePaying.deadline) > 5) {
+            throw new DomainException('Deadline Exceeds')
+          }
+
+          if (beforePaying.paidAt) {
+            throw new DomainException('Already paid')
+          }
+
+          const paidSeat = await this.seatsRepository.update(seatId, {
+            paidAt: new Date(),
+          })(conn)
+
+          await this.lockService.releaseLock(lockKey, lockValue)
+
+          return paidSeat
         },
       ],
     )

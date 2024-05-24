@@ -44,21 +44,16 @@ export class SeatPrismaRepository implements SeatRepository {
   update(
     seatId: string,
     updatingModel: SeatUpdatingModel,
-  ): TransactionalOperation<SeatModel | null, PrismaService> {
+  ): TransactionalOperation<SeatModel, PrismaService> {
     return async connection => {
       const { holderId, ...rest } = updatingModel
-      try {
-        return await (connection ?? this.prisma).seat.update({
-          where: {
-            id: seatId,
-            holderId,
-          },
-          data: rest,
-        })
-      } catch (e) {
-        // todo logging
-        return null
-      }
+      return (connection ?? this.prisma).seat.update({
+        where: {
+          id: seatId,
+          holderId,
+        },
+        data: rest,
+      })
     }
   }
 }
