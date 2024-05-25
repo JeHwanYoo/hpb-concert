@@ -7,6 +7,10 @@ import { addMinutes, differenceInMinutes } from 'date-fns'
 import { faker } from '@faker-js/faker'
 import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
 import { LockServiceToken } from '../../shared/lock/lock.service'
+import {
+  REDIS_MODULE_CONNECTION,
+  REDIS_MODULE_CONNECTION_TOKEN,
+} from '@nestjs-modules/ioredis/dist/redis.constants'
 
 describe('SeatsService', () => {
   let service: SeatService
@@ -28,7 +32,7 @@ describe('SeatsService', () => {
             tx: vi
               .fn()
               .mockImplementation(
-                async (_, operations: ReturnType<typeof vi.fn>[]) => {
+                async (operations: ReturnType<typeof vi.fn>[]) => {
                   for (const op of operations.slice(0, -1)) {
                     await op()
                   }
@@ -43,6 +47,11 @@ describe('SeatsService', () => {
             acquireLock: vi.fn().mockReturnValue(true),
             releaseLock: vi.fn(),
           },
+        },
+        {
+          provide:
+            REDIS_MODULE_CONNECTION + '_' + REDIS_MODULE_CONNECTION_TOKEN,
+          useValue: {},
         },
       ],
     }).compile()
