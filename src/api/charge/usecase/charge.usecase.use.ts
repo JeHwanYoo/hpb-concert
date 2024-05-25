@@ -1,7 +1,9 @@
 import { ChargeService } from '../../../domain/charge/charge.service'
 import { ChargeResponseDto } from '../dto/charge.api.dto'
 import { ChargeUpdatingModel } from '../../../domain/charge/model/charge.model'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class ChargeUsecaseUse {
   constructor(private readonly chargeService: ChargeService) {}
 
