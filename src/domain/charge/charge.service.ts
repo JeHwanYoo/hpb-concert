@@ -43,49 +43,43 @@ export class ChargeService {
     userId: string,
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(
-      TransactionLevel.ReadCommitted,
-      async conn => {
-        const beforeCharging = await this.chargeRepository.findOneBy({
-          userId,
-        })(conn)
+    return this.transactionService.tx<ChargeModel>(async conn => {
+      const beforeCharging = await this.chargeRepository.findOneBy({
+        userId,
+      })(conn)
 
-        if (!beforeCharging) {
-          throw new NotFoundDomainException()
-        }
+      if (!beforeCharging) {
+        throw new NotFoundDomainException()
+      }
 
-        return this.chargeRepository.update(userId, {
-          amount: beforeCharging.amount + updatingModel.amount,
-        })(conn)
-      },
-    )
+      return this.chargeRepository.update(userId, {
+        amount: beforeCharging.amount + updatingModel.amount,
+      })(conn)
+    }, TransactionLevel.ReadCommitted)
   }
 
   use(
     userId: string,
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(
-      TransactionLevel.ReadCommitted,
-      async conn => {
-        const beforeCharging = await this.chargeRepository.findOneBy({
-          userId,
-        })(conn)
+    return this.transactionService.tx<ChargeModel>(async conn => {
+      const beforeCharging = await this.chargeRepository.findOneBy({
+        userId,
+      })(conn)
 
-        if (!beforeCharging) {
-          throw new NotFoundDomainException()
-        }
+      if (!beforeCharging) {
+        throw new NotFoundDomainException()
+      }
 
-        const balance = beforeCharging.amount - updatingModel.amount
+      const balance = beforeCharging.amount - updatingModel.amount
 
-        if (balance < 0) {
-          throw new DomainException('Insufficient balance')
-        }
+      if (balance < 0) {
+        throw new DomainException('Insufficient balance')
+      }
 
-        return this.chargeRepository.update(userId, {
-          amount: balance,
-        })(conn)
-      },
-    )
+      return this.chargeRepository.update(userId, {
+        amount: balance,
+      })(conn)
+    }, TransactionLevel.ReadCommitted)
   }
 }

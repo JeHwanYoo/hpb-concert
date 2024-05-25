@@ -14,8 +14,8 @@ export interface TransactionService {
    * @description Ensures atomicity of the transaction during the session
    */
   tx<Return, Connection = unknown>(
-    transactionLevel: TransactionLevel,
     operation: TransactionalOperation<Return, Connection>,
+    transactionLevel: TransactionLevel,
   ): Promise<Return>
 }
 

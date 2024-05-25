@@ -21,8 +21,8 @@ export class PrismaTransactionService implements TransactionService {
   constructor(private readonly prisma: PrismaService) {}
 
   tx<Return, Connection = Omit<PrismaClient, runtime.ITXClientDenyList>>(
-    transactionLevel: TransactionLevel,
     operation: TransactionalOperation<Return, Connection>,
+    transactionLevel: TransactionLevel,
   ): Promise<Return> {
     return this.prisma.$transaction<Return>(
       conn => {
