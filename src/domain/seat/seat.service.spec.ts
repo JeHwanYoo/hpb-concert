@@ -173,7 +173,7 @@ describe('SeatsService', () => {
         .mockImplementation((_, { paidAt }) => () => ({ paidAt }))
     })
     it('should pay', async () => {
-      const paid = await service.pay('fake-id', 'fake-id')
+      const paid = await service.pay(0, 'fake-id', 'fake-id')
       expect(paid.paidAt).to.be.instanceof(Date)
     })
     it('should not pay if deadline exceeds', async () => {
@@ -184,7 +184,7 @@ describe('SeatsService', () => {
         holderId: 'fake-id',
       }))
 
-      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+      await expect(service.pay(0, 'fake-id', 'fake-id')).rejects.toThrow(
         'Deadline Exceeds',
       )
     })
@@ -197,14 +197,14 @@ describe('SeatsService', () => {
         holderId: 'fake-id',
       }))
 
-      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+      await expect(service.pay(0, 'fake-id', 'fake-id')).rejects.toThrow(
         'Already paid',
       )
     })
     it('should not pay if wat not reserved', async () => {
       mockRepository.findOneBy = vi.fn().mockReturnValue(() => null)
 
-      await expect(service.pay('fake-id', 'fake-id')).rejects.toThrow(
+      await expect(service.pay(0, 'fake-id', 'fake-id')).rejects.toThrow(
         'Not Reserved',
       )
     })
@@ -217,7 +217,7 @@ describe('SeatsService', () => {
         holderId: v4(),
       }))
 
-      await expect(service.pay('fake-id', v4())).rejects.toThrow(
+      await expect(service.pay(0, 'fake-id', v4())).rejects.toThrow(
         'Not Authorized',
       )
     })
