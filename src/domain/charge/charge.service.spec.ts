@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 import { ChargeService } from './charge.service'
 import { ChargeRepositoryToken } from './charge.repository'
-import { TransactionServiceToken } from '../../shared/transaction/transaction.service'
+import { LockServiceToken } from '../../shared/lock/lock.service'
 
 describe('ChargesService', () => {
   let service: ChargeService
@@ -19,18 +19,10 @@ describe('ChargesService', () => {
           useValue: mockRepository,
         },
         {
-          provide: TransactionServiceToken,
+          provide: LockServiceToken,
           useValue: {
-            tx: vi
-              .fn()
-              .mockImplementation(
-                async (_, operations: ReturnType<typeof vi.fn>[]) => {
-                  for (const op of operations.slice(0, -1)) {
-                    await op()
-                  }
-                  return operations.at(-1)()
-                },
-              ),
+            acquireLock: vi.fn().mockReturnValue(true),
+            releaseLock: vi.fn(),
           },
         },
       ],

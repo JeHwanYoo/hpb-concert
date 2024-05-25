@@ -5,24 +5,21 @@ import {
   ChargeModel,
   ChargeUpdatingModel,
 } from './model/charge.model'
-import {
-  TransactionLevel,
-  TransactionService,
-  TransactionServiceToken,
-} from '../../shared/transaction/transaction.service'
 import { IdentifierFrom } from '../../shared/shared.type.helper'
 import {
   DomainException,
   NotFoundDomainException,
 } from '../../shared/shared.exception'
+import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
+import { v4 } from 'uuid'
 
 @Injectable()
 export class ChargeService {
   constructor(
     @Inject(ChargeRepositoryToken)
     private chargeRepository: ChargeRepository,
-    @Inject(TransactionServiceToken)
-    private readonly transactionService: TransactionService,
+    @Inject(LockServiceToken)
+    private readonly lockService: LockService,
   ) {}
 
   create(creationModel: ChargeCreationModel): Promise<ChargeModel> {
@@ -39,47 +36,65 @@ export class ChargeService {
     return foundChargeModel
   }
 
-  charge(
+  async charge(
     userId: string,
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(async conn => {
-      const beforeCharging = await this.chargeRepository.findOneBy({
-        userId,
-      })(conn)
+    const lockKey = 'charge' + userId
+    const lockValue = v4()
 
-      if (!beforeCharging) {
-        throw new NotFoundDomainException()
-      }
+    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
+      throw new DomainException('AcquireLockError')
+    }
 
-      return this.chargeRepository.update(userId, {
-        amount: beforeCharging.amount + updatingModel.amount,
-      })(conn)
-    }, TransactionLevel.ReadCommitted)
+    const beforeCharging = await this.chargeRepository.findOneBy({
+      userId,
+    })()
+
+    if (!beforeCharging) {
+      throw new NotFoundDomainException()
+    }
+
+    const updatedCharge = await this.chargeRepository.update(userId, {
+      amount: beforeCharging.amount + updatingModel.amount,
+    })()
+
+    await this.lockService.releaseLock(lockKey, lockValue)
+
+    return updatedCharge
   }
 
-  use(
+  async use(
     userId: string,
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
-    return this.transactionService.tx<ChargeModel>(async conn => {
-      const beforeCharging = await this.chargeRepository.findOneBy({
-        userId,
-      })(conn)
+    const lockKey = 'charge' + userId
+    const lockValue = v4()
 
-      if (!beforeCharging) {
-        throw new NotFoundDomainException()
-      }
+    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
+      throw new DomainException('AcquireLockError')
+    }
 
-      const balance = beforeCharging.amount - updatingModel.amount
+    const beforeCharging = await this.chargeRepository.findOneBy({
+      userId,
+    })()
 
-      if (balance < 0) {
-        throw new DomainException('Insufficient balance')
-      }
+    if (!beforeCharging) {
+      throw new NotFoundDomainException()
+    }
 
-      return this.chargeRepository.update(userId, {
-        amount: balance,
-      })(conn)
-    }, TransactionLevel.ReadCommitted)
+    const balance = beforeCharging.amount - updatingModel.amount
+
+    if (balance < 0) {
+      throw new DomainException('Insufficient balance')
+    }
+
+    const updatedCharge = await this.chargeRepository.update(userId, {
+      amount: balance,
+    })()
+
+    await this.lockService.releaseLock(lockKey, lockValue)
+
+    return updatedCharge
   }
 }
