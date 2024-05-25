@@ -7,23 +7,12 @@ import { InjectRedis } from '@nestjs-modules/ioredis'
 export class RedisDistributedLockService implements LockService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
-  async acquireLock(
-    lockKey: string,
-    lockValue: string,
-    ttl = 5000,
-  ): Promise<boolean> {
-    const result = await this.redis.set(lockKey, lockValue, 'PX', ttl, 'NX')
+  async acquireLock(lockKey: string, ttl = 5000): Promise<boolean> {
+    const result = await this.redis.set(lockKey, '1', 'PX', ttl, 'NX')
     return result === 'OK'
   }
 
-  async releaseLock(lockKey: string, lockValue: string): Promise<void> {
-    const script = `
-      if redis.call("get", KEYS[1]) == ARGV[1] then
-        return redis.call("del", KEYS[1])
-      else
-        return 0
-      end
-    `
-    await this.redis.eval(script, 1, lockKey, lockValue)
+  async releaseLock(lockKey: string): Promise<boolean> {
+    return (await this.redis.del(lockKey)) === 1
   }
 }

@@ -11,7 +11,6 @@ import {
   NotFoundDomainException,
 } from '../../shared/shared.exception'
 import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
-import { v4 } from 'uuid'
 
 @Injectable()
 export class ChargeService {
@@ -41,27 +40,26 @@ export class ChargeService {
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
     const lockKey = 'charge' + userId
-    const lockValue = v4()
 
-    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
-      throw new DomainException('AcquireLockError')
+    try {
+      if (!(await this.lockService.acquireLock(lockKey))) {
+        throw new DomainException('AcquireLockError')
+      }
+
+      const beforeCharging = await this.chargeRepository.findOneBy({
+        userId,
+      })()
+
+      if (!beforeCharging) {
+        throw new NotFoundDomainException()
+      }
+
+      return await this.chargeRepository.update(userId, {
+        amount: beforeCharging.amount + updatingModel.amount,
+      })()
+    } finally {
+      await this.lockService.releaseLock(lockKey)
     }
-
-    const beforeCharging = await this.chargeRepository.findOneBy({
-      userId,
-    })()
-
-    if (!beforeCharging) {
-      throw new NotFoundDomainException()
-    }
-
-    const updatedCharge = await this.chargeRepository.update(userId, {
-      amount: beforeCharging.amount + updatingModel.amount,
-    })()
-
-    await this.lockService.releaseLock(lockKey, lockValue)
-
-    return updatedCharge
   }
 
   async use(
@@ -69,32 +67,31 @@ export class ChargeService {
     updatingModel: ChargeUpdatingModel,
   ): Promise<ChargeModel> {
     const lockKey = 'charge' + userId
-    const lockValue = v4()
 
-    if (!(await this.lockService.acquireLock(lockKey, lockValue))) {
-      throw new DomainException('AcquireLockError')
+    try {
+      if (!(await this.lockService.acquireLock(lockKey))) {
+        throw new DomainException('AcquireLockError')
+      }
+
+      const beforeCharging = await this.chargeRepository.findOneBy({
+        userId,
+      })()
+
+      if (!beforeCharging) {
+        throw new NotFoundDomainException()
+      }
+
+      const balance = beforeCharging.amount - updatingModel.amount
+
+      if (balance < 0) {
+        throw new DomainException('Insufficient balance')
+      }
+
+      return await this.chargeRepository.update(userId, {
+        amount: balance,
+      })()
+    } finally {
+      await this.lockService.releaseLock(lockKey)
     }
-
-    const beforeCharging = await this.chargeRepository.findOneBy({
-      userId,
-    })()
-
-    if (!beforeCharging) {
-      throw new NotFoundDomainException()
-    }
-
-    const balance = beforeCharging.amount - updatingModel.amount
-
-    if (balance < 0) {
-      throw new DomainException('Insufficient balance')
-    }
-
-    const updatedCharge = await this.chargeRepository.update(userId, {
-      amount: balance,
-    })()
-
-    await this.lockService.releaseLock(lockKey, lockValue)
-
-    return updatedCharge
   }
 }
