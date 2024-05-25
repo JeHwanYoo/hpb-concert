@@ -42,13 +42,13 @@ export class SeatPrismaRepository implements SeatRepository {
   }
 
   update(
-    seatId: string,
+    seatNo: number,
     updatingModel: SeatUpdatingModel,
   ): TransactionalOperation<SeatModel, PrismaService> {
     return connection => {
       return (connection ?? this.prisma).seat.update({
         where: {
-          id: seatId,
+          seatNo,
         },
         data: updatingModel,
       })

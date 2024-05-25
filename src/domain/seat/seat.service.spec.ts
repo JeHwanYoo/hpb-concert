@@ -32,11 +32,8 @@ describe('SeatsService', () => {
             tx: vi
               .fn()
               .mockImplementation(
-                async (operations: ReturnType<typeof vi.fn>[]) => {
-                  for (const op of operations.slice(0, -1)) {
-                    await op()
-                  }
-                  return operations.at(-1)()
+                async (operation: ReturnType<typeof vi.fn>) => {
+                  return operation()
                 },
               ),
           },

@@ -224,7 +224,7 @@ describe('ConcertsAPIController (e2e)', () => {
 
     it('should create a payment', async () => {
       const paidBillResponse = await request.post(
-        `/v1/concerts/${concert.id}/seats/${seat.id}/payments`,
+        `/v1/concerts/${concert.id}/seats/${seat.seatNo}/payments`,
       )
 
       expect(paidBillResponse.status).to.be.eq(201)

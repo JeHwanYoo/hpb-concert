@@ -16,8 +16,6 @@ import { LockService, LockServiceToken } from '../../shared/lock/lock.service'
 import { InjectRedis } from '@nestjs-modules/ioredis'
 import Redis from 'ioredis'
 
-const lockKey = 'lock_key'
-
 @Injectable()
 export class SeatService {
   constructor(
@@ -31,6 +29,9 @@ export class SeatService {
   ) {}
 
   async reserve(reservationModel: SeatReservationModel): Promise<SeatModel> {
+    const lockKey =
+      'seat' + reservationModel.concertId + reservationModel.seatNo.toString()
+
     const reservedAt = new Date()
     const deadline = addMinutes(reservedAt, 5)
 
@@ -53,7 +54,7 @@ export class SeatService {
         }
 
         if (beforeReserving?.deadline) {
-          return this.seatsRepository.update(beforeReserving.id, {
+          return this.seatsRepository.update(beforeReserving.seatNo, {
             ...reservationModel,
             reservedAt,
             deadline,
@@ -71,7 +72,13 @@ export class SeatService {
     }, TransactionLevel.ReadCommitted)
   }
 
-  async pay(seatId: string, holderId: string): Promise<SeatModel> {
+  async pay(
+    seatNo: number,
+    concertId: string,
+    holderId: string,
+  ): Promise<SeatModel> {
+    const lockKey = 'seat' + concertId + seatNo.toString()
+
     if (!(await this.lockService.acquireLock(lockKey))) {
       throw new DomainException('AcquireLockError')
     }
@@ -79,7 +86,7 @@ export class SeatService {
     return this.transactionService.tx<SeatModel>(async conn => {
       try {
         const beforePaying = await this.seatsRepository.findOneBy({
-          id: seatId,
+          seatNo,
         })(conn)
 
         if (!beforePaying) {
@@ -98,7 +105,7 @@ export class SeatService {
           throw new DomainException('Already paid')
         }
 
-        return await this.seatsRepository.update(seatId, {
+        return await this.seatsRepository.update(seatNo, {
           paidAt: new Date(),
         })(conn)
       } finally {

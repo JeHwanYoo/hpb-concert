@@ -18,7 +18,7 @@ export class ConcertUsecasePaySeat {
   async execute(
     holderId: string,
     concertId: string,
-    seatId: string,
+    seatNo: number,
   ): Promise<BillModel> {
     const concert = await this.concertService.findOneBy({ id: concertId })
 
@@ -27,18 +27,18 @@ export class ConcertUsecasePaySeat {
       await this.chargeService.use(holderId, {
         amount: concert.price,
       })
-      await this.seatService.pay(seatId, holderId)
+      const paidSeat = await this.seatService.pay(seatNo, concertId, holderId)
+
+      return await this.billService.create({
+        holderId,
+        seatId: paidSeat.id,
+        amount: concert.price,
+      })
     } catch (e) {
       if (e instanceof DomainException) {
         throw new BadRequestException(e.message, { cause: e })
       }
       throw e
     }
-
-    return this.billService.create({
-      holderId,
-      seatId,
-      amount: concert.price,
-    })
   }
 }

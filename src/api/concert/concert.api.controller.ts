@@ -150,7 +150,7 @@ export class ConcertApiController {
     )
   }
 
-  @Post(':concert_id/seats/:seat_id/payments')
+  @Post(':concert_id/seats/:seat_no/payments')
   @ApiOperation({
     description: '결제',
   })
@@ -170,13 +170,13 @@ export class ConcertApiController {
   @UseGuards(EnqueueTokenGuard)
   createPayment(
     @Param('concert_id') concertId: string,
-    @Param('seat_id') seatId: string,
+    @Param('seat_no', ParseIntPipe) seatNo: number,
     @DecodedToken<EnqueueTokenModel>() decodedEnqueueToken: EnqueueTokenModel,
   ): Promise<BillResponseDto> {
     return this.concertUsecasePaySeat.execute(
       decodedEnqueueToken.userId,
       concertId,
-      seatId,
+      seatNo,
     )
   }
 }
