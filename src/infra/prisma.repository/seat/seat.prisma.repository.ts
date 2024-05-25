@@ -45,7 +45,7 @@ export class SeatPrismaRepository implements SeatRepository {
     seatId: string,
     updatingModel: SeatUpdatingModel,
   ): TransactionalOperation<SeatModel, PrismaService> {
-    return async connection => {
+    return connection => {
       const { holderId, ...rest } = updatingModel
       return (connection ?? this.prisma).seat.update({
         where: {
